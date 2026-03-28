@@ -988,6 +988,232 @@
       height: 16px;
     }
 
+    /* ============================================
+       ARTWORK DETAIL MODAL
+       ============================================ */
+    .work-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10002;
+      background: var(--bg-primary);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.6s var(--transition);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .work-modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .work-modal-close {
+      position: fixed;
+      top: 28px;
+      right: 28px;
+      z-index: 10003;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s var(--transition);
+      backdrop-filter: blur(10px);
+    }
+
+    .work-modal-close:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      transform: rotate(90deg);
+    }
+
+    .work-detail {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 48px 80px;
+    }
+
+    .work-detail-header {
+      margin-bottom: 80px;
+    }
+
+    .work-detail-num {
+      font-size: clamp(100px, 15vw, 200px);
+      font-weight: 900;
+      line-height: 0.85;
+      letter-spacing: -6px;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--border-hover);
+      margin-bottom: 24px;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .work-modal-overlay.active .work-detail-num {
+      opacity: 1;
+      transform: translateY(0);
+      transition: all 0.8s 0.1s var(--transition);
+    }
+
+    .work-detail-title {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 700;
+      letter-spacing: -2px;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .work-modal-overlay.active .work-detail-title {
+      opacity: 1;
+      transform: translateY(0);
+      transition: all 0.8s 0.2s var(--transition);
+    }
+
+    .work-detail-title .serif {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .work-detail-meta {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 64px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .work-modal-overlay.active .work-detail-meta {
+      opacity: 1;
+      transform: translateY(0);
+      transition: all 0.8s 0.3s var(--transition);
+    }
+
+    .work-detail-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .work-detail-image {
+      position: sticky;
+      top: 100px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      opacity: 0;
+      transform: translateY(40px) scale(0.98);
+    }
+
+    .work-modal-overlay.active .work-detail-image {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      transition: all 1s 0.3s var(--transition);
+    }
+
+    .work-detail-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .work-detail-text {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .work-modal-overlay.active .work-detail-text {
+      opacity: 1;
+      transform: translateY(0);
+      transition: all 0.8s 0.5s var(--transition);
+    }
+
+    .work-detail-quote {
+      font-family: var(--font-serif);
+      font-size: clamp(24px, 3vw, 36px);
+      font-style: italic;
+      line-height: 1.5;
+      color: var(--text-primary);
+      margin-bottom: 48px;
+      position: relative;
+      padding-left: 32px;
+    }
+
+    .work-detail-quote::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: var(--accent);
+    }
+
+    .work-detail-desc {
+      font-size: 16px;
+      line-height: 2;
+      color: var(--text-secondary);
+      font-weight: 300;
+    }
+
+    .work-detail-desc p {
+      margin-bottom: 28px;
+    }
+
+    .work-detail-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .work-detail-divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin: 48px 0;
+    }
+
+    .work-detail-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .work-detail-info-item .info-label {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .work-detail-info-item .info-value {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    @media (max-width: 768px) {
+      .work-detail { padding: 100px 20px 60px; }
+      .work-detail-body { grid-template-columns: 1fr; }
+      .work-detail-image { position: relative; top: 0; }
+      .work-detail-info-grid { grid-template-columns: 1fr; }
+    }
+
     .contact-socials {
       display: flex;
       justify-content: center;
@@ -1231,7 +1457,7 @@
           </div>
           <h3 class="project-title">#01 43+1 — 力量与平衡</h3>
           <p class="project-desc">捕捉"力量被凝固"的瞬间。榔头本应是主导的工具，但在这里，它被定格在钉子的世界中——失去了攻击性，反而被钉子们支撑着、包围着。一个关于行动与克制之间悬停的身体叙事。</p>
-          <a href="#" class="project-link" data-hover>查看详情 <span>→</span></a>
+          <a href="#" class="project-link" data-hover onclick="openWork01(event)">查看详情 <span>→</span></a>
         </div>
       </div>
 
@@ -1447,6 +1673,56 @@
     </div>
   </section>
 
+  <!-- Work 01 Detail Modal -->
+  <div class="work-modal-overlay" id="work01Modal">
+    <button class="work-modal-close" onclick="closeWork01()">✕</button>
+    <div class="work-detail">
+      <div class="work-detail-header">
+        <div class="work-detail-num">#01</div>
+        <h2 class="work-detail-title">43+1 — <span class="serif">力量与平衡</span></h2>
+        <div class="work-detail-meta">
+          <span class="project-tag">立体装置</span>
+          <span class="project-tag">概念艺术</span>
+          <span class="project-tag">2025.10.26</span>
+        </div>
+      </div>
+      <div class="work-detail-body">
+        <div class="work-detail-image">
+          <img src="work01.jpg" alt="#01 43+1">
+        </div>
+        <div class="work-detail-text">
+          <div class="work-detail-label">创作理念</div>
+          <div class="work-detail-quote">
+            行动与克制之间的悬停——<br>那是力量被凝固的瞬间
+          </div>
+          <div class="work-detail-desc">
+            <p>作品《#01 43+1》的灵感来自于一个关于"力量与平衡"的身体瞬间。它捕捉了一只手高高举起榔头、即将敲下的一刻，我感受到身体内部的张力——那是一种在行动与克制之间的悬停。</p>
+            <p>我想捕捉这种"力量被凝固"的瞬间，于是选择用榔头与钉子来构建这个立体结构。榔头本应是主导的工具，但在这里，它却被定格在钉子的世界中——它失去了攻击性，反而被钉子们支撑着、包围着。</p>
+          </div>
+          <div class="work-detail-divider"></div>
+          <div class="work-detail-info-grid">
+            <div class="work-detail-info-item">
+              <div class="info-label">材料</div>
+              <div class="info-value">榔头、钉子、木板</div>
+            </div>
+            <div class="work-detail-info-item">
+              <div class="info-label">日期</div>
+              <div class="info-value">2025 / 10 / 26</div>
+            </div>
+            <div class="work-detail-info-item">
+              <div class="info-label">编号</div>
+              <div class="info-value">#01 of Series</div>
+            </div>
+            <div class="work-detail-info-item">
+              <div class="info-label">创作者</div>
+              <div class="info-value">杨子硕 Cali-Yang</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Card Modal -->
   <div class="modal-overlay" id="cardModal" onclick="closeCard(event)">
     <button class="modal-close" onclick="closeCard(event)">✕</button>
@@ -1599,10 +1875,31 @@
       }
     }
 
+    // ============================================
+    // WORK 01 DETAIL MODAL
+    // ============================================
+    const work01Modal = document.getElementById('work01Modal');
+
+    function openWork01(e) {
+      e.preventDefault();
+      work01Modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      work01Modal.scrollTop = 0;
+    }
+
+    function closeWork01() {
+      work01Modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && cardModal.classList.contains('active')) {
-        cardModal.classList.remove('active');
-        document.body.style.overflow = '';
+      if (e.key === 'Escape') {
+        if (work01Modal.classList.contains('active')) {
+          closeWork01();
+        } else if (cardModal.classList.contains('active')) {
+          cardModal.classList.remove('active');
+          document.body.style.overflow = '';
+        }
       }
     });
   </script>
