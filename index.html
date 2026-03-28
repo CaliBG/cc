@@ -210,10 +210,14 @@
     [data-theme="light"] .theme-toggle .icon-moon { display: none; }
     [data-theme="light"] .theme-toggle .icon-sun { display: block; }
 
-    .nav-logo img.logo-dark { display: none; }
-    .nav-logo img.logo-light { display: block; }
-    [data-theme="light"] .nav-logo img.logo-dark { display: block; }
-    [data-theme="light"] .nav-logo img.logo-light { display: none; }
+    .nav-logo img {
+      filter: invert(0);
+      transition: filter 0.4s var(--transition);
+    }
+
+    [data-theme="light"] .nav-logo img {
+      filter: invert(1);
+    }
 
     /* ============================================
        HERO SECTION
@@ -1385,8 +1389,7 @@
   <!-- Navigation -->
   <nav class="nav" id="nav">
     <div class="nav-logo">
-      <img src="logo-white.png" alt="YZS" class="logo-light" style="height:28px;width:auto;">
-      <img src="logo-black.png" alt="YZS" class="logo-dark" style="height:28px;width:auto;">
+      <img src="logo-white.png" alt="YZS" style="height:28px;width:auto;">
     </div>
     <ul class="nav-links">
       <li><a href="#about" data-hover>关于</a></li>
