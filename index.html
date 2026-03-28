@@ -211,12 +211,9 @@
     [data-theme="light"] .theme-toggle .icon-sun { display: block; }
 
     .nav-logo img {
-      filter: invert(0);
+      mix-blend-mode: difference;
+      filter: brightness(1);
       transition: filter 0.4s var(--transition);
-    }
-
-    [data-theme="light"] .nav-logo img {
-      filter: invert(1);
     }
 
     /* ============================================
