@@ -1461,21 +1461,22 @@
         </div>
       </div>
 
-      <!-- Project 2 -->
+      <!-- Project 2: #02 皮囊记忆 -->
       <div class="project-card reveal reveal-delay-1">
         <div class="project-thumb">
           <div class="project-thumb-inner">
-            <div class="project-gradient project-gradient-2"></div>
+            <img src="work02.jpg" alt="#02 皮囊记忆 Memory of the Flesh" style="width:100%;height:100%;object-fit:cover;">
           </div>
         </div>
         <div class="project-info">
           <div class="project-meta">
-            <span class="project-tag">UI/UX</span>
-            <span class="project-tag">App</span>
+            <span class="project-tag">镜面装置</span>
+            <span class="project-tag">互动艺术</span>
+            <span class="project-tag">2025</span>
           </div>
-          <h3 class="project-title">Zenith — 冥想应用</h3>
-          <p class="project-desc">以宁静与空间感为核心，为百万用户设计沉浸式冥想体验。</p>
-          <a href="#" class="project-link" data-hover>查看详情 <span>→</span></a>
+          <h3 class="project-title">#02 皮囊记忆 / Memory of the Flesh</h3>
+          <p class="project-desc">镜面被框入洁白的边界中，观者既成为观看者，也成为被观看者——一份关于"身体记忆"的存在证据。</p>
+          <a href="#" class="project-link" data-hover onclick="openWork02(event)">查看详情 <span>→</span></a>
         </div>
       </div>
 
@@ -1723,6 +1724,57 @@
     </div>
   </div>
 
+  <!-- Work 02 Detail Modal -->
+  <div class="work-modal-overlay" id="work02Modal">
+    <button class="work-modal-close" onclick="closeWork02()">✕</button>
+    <div class="work-detail">
+      <div class="work-detail-header">
+        <div class="work-detail-num">#02</div>
+        <h2 class="work-detail-title">皮囊记忆 / <span class="serif">Memory of the Flesh</span></h2>
+        <div class="work-detail-meta">
+          <span class="project-tag">镜面装置</span>
+          <span class="project-tag">互动艺术</span>
+          <span class="project-tag">2025.11.13</span>
+        </div>
+      </div>
+      <div class="work-detail-body">
+        <div class="work-detail-image">
+          <img src="work02.jpg" alt="#02 皮囊记忆">
+        </div>
+        <div class="work-detail-text">
+          <div class="work-detail-label">创作理念</div>
+          <div class="work-detail-quote">
+            当观众靠近镜面时，<br>他们既成为观看者，<br>也成为被观看者
+          </div>
+          <div class="work-detail-desc">
+            <p>镜面被框入洁白的边界中，像一张被档案化的证据页。观者在镜中看到的倒影，与现实重叠在一起，形成一种被动的对视关系。</p>
+            <p>画框象征"被社会规训的目光"，而镜面是"自我反思的现场"。当观众靠近镜面时，他们既成为观看者，也成为被观看者。</p>
+            <p>作品编号"#2"与日期标注"2025/11/13"，让这件作品带有档案与实验的意味——仿佛是一段关于"身体记忆"的研究样本，也是一份艺术家在特定时间留下的存在证据。</p>
+          </div>
+          <div class="work-detail-divider"></div>
+          <div class="work-detail-info-grid">
+            <div class="work-detail-info-item">
+              <div class="info-label">材料</div>
+              <div class="info-value">镜面、画框、印刷文字</div>
+            </div>
+            <div class="work-detail-info-item">
+              <div class="info-label">日期</div>
+              <div class="info-value">2025 / 11 / 13</div>
+            </div>
+            <div class="work-detail-info-item">
+              <div class="info-label">编号</div>
+              <div class="info-value">#02 of Series</div>
+            </div>
+            <div class="work-detail-info-item">
+              <div class="info-label">创作者</div>
+              <div class="info-value">杨子硕 Cali-Yang</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Card Modal -->
   <div class="modal-overlay" id="cardModal" onclick="closeCard(event)">
     <button class="modal-close" onclick="closeCard(event)">✕</button>
@@ -1892,9 +1944,28 @@
       document.body.style.overflow = '';
     }
 
+    // ============================================
+    // WORK 02 DETAIL MODAL
+    // ============================================
+    const work02Modal = document.getElementById('work02Modal');
+
+    function openWork02(e) {
+      e.preventDefault();
+      work02Modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      work02Modal.scrollTop = 0;
+    }
+
+    function closeWork02() {
+      work02Modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        if (work01Modal.classList.contains('active')) {
+        if (work02Modal.classList.contains('active')) {
+          closeWork02();
+        } else if (work01Modal.classList.contains('active')) {
           closeWork01();
         } else if (cardModal.classList.contains('active')) {
           cardModal.classList.remove('active');
