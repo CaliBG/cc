@@ -33,6 +33,36 @@
     }
 
     /* ============================================
+       LIGHT THEME
+       ============================================ */
+    [data-theme="light"] {
+      --bg-primary: #f5f5f0;
+      --bg-secondary: #eaeae5;
+      --bg-card: #ffffff;
+      --bg-card-hover: #fafafa;
+      --text-primary: #111111;
+      --text-secondary: #555555;
+      --text-muted: #999999;
+      --accent: #066cf4;
+      --accent-dim: rgba(6, 108, 244, 0.08);
+      --accent-glow: rgba(6, 108, 244, 0.15);
+      --border: rgba(0, 0, 0, 0.06);
+      --border-hover: rgba(0, 0, 0, 0.12);
+    }
+
+    [data-theme="light"] .noise { opacity: 0.015; }
+    [data-theme="light"] .hero-orb-1 { background: #066cf4; }
+    [data-theme="light"] .hero-orb-2 { background: #ff6b6b; }
+    [data-theme="light"] .cursor { border-color: #066cf4; }
+    [data-theme="light"] .cursor.hover { background: rgba(6, 108, 244, 0.1); }
+    [data-theme="light"] .nav { mix-blend-mode: normal; }
+    [data-theme="light"] .work-detail-num { -webkit-text-stroke-color: rgba(0, 0, 0, 0.08); }
+    [data-theme="light"] .modal-overlay { background: rgba(255, 255, 255, 0.9); }
+    [data-theme="light"] .modal-close { background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.1); color: #333; }
+    [data-theme="light"] .work-modal-overlay { background: var(--bg-primary); }
+    [data-theme="light"] .work-modal-close { background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.1); color: #333; }
+
+    /* ============================================
        RESET & BASE
        ============================================ */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -153,6 +183,38 @@
 
     .nav-links a:hover { color: var(--text-primary); }
     .nav-links a:hover::after { width: 100%; }
+
+    .theme-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border-hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s var(--transition);
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      color: var(--text-secondary);
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: rotate(180deg);
+    }
+
+    .theme-toggle svg { width: 16px; height: 16px; }
+    .theme-toggle .icon-moon { display: block; }
+    .theme-toggle .icon-sun { display: none; }
+    [data-theme="light"] .theme-toggle .icon-moon { display: none; }
+    [data-theme="light"] .theme-toggle .icon-sun { display: block; }
+
+    .nav-logo img.logo-dark { display: none; }
+    .nav-logo img.logo-light { display: block; }
+    [data-theme="light"] .nav-logo img.logo-dark { display: block; }
+    [data-theme="light"] .nav-logo img.logo-light { display: none; }
 
     /* ============================================
        HERO SECTION
@@ -1323,7 +1385,10 @@
 
   <!-- Navigation -->
   <nav class="nav" id="nav">
-    <div class="nav-logo"><img src="logo-white.png" alt="YZS" style="height:28px;width:auto;display:block;"></div>
+    <div class="nav-logo">
+      <img src="logo-white.png" alt="YZS" class="logo-light" style="height:28px;width:auto;">
+      <img src="logo-black.png" alt="YZS" class="logo-dark" style="height:28px;width:auto;">
+    </div>
     <ul class="nav-links">
       <li><a href="#about" data-hover>关于</a></li>
       <li><a href="#work" data-hover>作品</a></li>
@@ -1332,6 +1397,10 @@
       <li><a href="#contact" data-hover>联系</a></li>
       <li><a href="#" data-hover onclick="openCard(event)">名片</a></li>
     </ul>
+    <button class="theme-toggle" id="themeToggle" data-hover onclick="toggleTheme()" title="切换主题">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+    </button>
   </nav>
 
   <!-- Hero Section -->
@@ -2063,6 +2132,23 @@
       work02Modal.classList.remove('active');
       document.body.style.overflow = '';
     }
+
+    // ============================================
+    // THEME TOGGLE
+    // ============================================
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    }
+
+    // Load saved theme
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    })();
 
     // ============================================
     // WORK 04 DETAIL MODAL
