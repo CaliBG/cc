@@ -1499,21 +1499,22 @@
         </div>
       </div>
 
-      <!-- Project 4 -->
+      <!-- Project 4: #04 深海呼吸 -->
       <div class="project-card reveal reveal-delay-3">
         <div class="project-thumb">
           <div class="project-thumb-inner">
-            <div class="project-gradient project-gradient-4"></div>
+            <img src="work04.jpg" alt="#04 深海呼吸 — 智能可穿戴" style="width:100%;height:100%;object-fit:cover;">
           </div>
         </div>
         <div class="project-info">
           <div class="project-meta">
-            <span class="project-tag">SaaS</span>
-            <span class="project-tag">Dashboard</span>
+            <span class="project-tag">智能穿戴</span>
+            <span class="project-tag">仿生设计</span>
+            <span class="project-tag">团队协作</span>
           </div>
-          <h3 class="project-title">DevFlow — 开发者协作平台</h3>
-          <p class="project-desc">为技术团队打造的下一代项目管理与代码协作工具。</p>
-          <a href="#" class="project-link" data-hover>查看详情 <span>→</span></a>
+          <h3 class="project-title">#04 深海呼吸</h3>
+          <p class="project-desc">当社会压力如深海般无声蔓延，服饰表面流动的呼吸鳃结构将焦虑转化为可视的起伏波纹。</p>
+          <a href="#" class="project-link" data-hover onclick="openWork04(event)">查看详情 <span>→</span></a>
         </div>
       </div>
     </div>
@@ -1718,6 +1719,57 @@
             <div class="work-detail-info-item">
               <div class="info-label">创作者</div>
               <div class="info-value">杨子硕 Cali-Yang</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Work 04 Detail Modal -->
+  <div class="work-modal-overlay" id="work04Modal">
+    <button class="work-modal-close" onclick="closeWork04()">✕</button>
+    <div class="work-detail">
+      <div class="work-detail-header">
+        <div class="work-detail-num">#04</div>
+        <h2 class="work-detail-title">深海呼吸 — <span class="serif">压力代谢仪式</span></h2>
+        <div class="work-detail-meta">
+          <span class="project-tag">智能穿戴</span>
+          <span class="project-tag">仿生设计</span>
+          <span class="project-tag">交互装置</span>
+        </div>
+      </div>
+      <div class="work-detail-body">
+        <div class="work-detail-image">
+          <img src="work04.jpg" alt="#04 深海呼吸">
+        </div>
+        <div class="work-detail-text">
+          <div class="work-detail-label">创作理念</div>
+          <div class="work-detail-quote">
+            穿戴者与服饰共同呼吸，<br>在科技与身体的交融中，<br>完成无声的压力代谢
+          </div>
+          <div class="work-detail-desc">
+            <p>在这件智能可穿戴作品中，我们构想了一个近未来的隐喻：当社会压力如深海般无声蔓延，人类也随之演化。服饰表面流动的呼吸鳃结构，并非装饰——它随穿戴者的呼吸频率与心理压力，将焦虑转化为可视的起伏波纹，宛如深海生物在高压环境中的生存仪式。</p>
+            <p>与此同时，一条仿生感官脊柱从颈后延伸至脊椎，外露的感应单元如同神经突触般闪烁微光。它象征数字时代人类被强化的感知力——对信息、情绪与环境刺激的极度敏感，也折射出现代人无处隐藏的神经张力。</p>
+            <p>脊柱与呼吸鳃形成有机联觉系统，当外界压力攀升，脊柱流光加速脉动，鳃的开合频率也随之改变，构成一幅完整的压力生态可视化图景。这既是对深海适应机制的仿生致敬，亦是对当代生存状态的清醒凝视。</p>
+          </div>
+          <div class="work-detail-divider"></div>
+          <div class="work-detail-info-grid">
+            <div class="work-detail-info-item">
+              <div class="info-label">材料</div>
+              <div class="info-value">3D打印结构、传感器、电子元件、织物</div>
+            </div>
+            <div class="work-detail-info-item">
+              <div class="info-label">类型</div>
+              <div class="info-value">智能可穿戴交互装置</div>
+            </div>
+            <div class="work-detail-info-item">
+              <div class="info-label">编号</div>
+              <div class="info-value">#04 of Series</div>
+            </div>
+            <div class="work-detail-info-item">
+              <div class="info-label">团队</div>
+              <div class="info-value">杨子硕、陈炜翔、李卓霖、温勤学、庄嘉程、陈静怡</div>
             </div>
           </div>
         </div>
@@ -2013,6 +2065,23 @@
     }
 
     // ============================================
+    // WORK 04 DETAIL MODAL
+    // ============================================
+    const work04Modal = document.getElementById('work04Modal');
+
+    function openWork04(e) {
+      e.preventDefault();
+      work04Modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      work04Modal.scrollTop = 0;
+    }
+
+    function closeWork04() {
+      work04Modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // ============================================
     // WORK 03 DETAIL MODAL
     // ============================================
     const work03Modal = document.getElementById('work03Modal');
@@ -2031,7 +2100,9 @@
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        if (work03Modal.classList.contains('active')) {
+        if (work04Modal.classList.contains('active')) {
+          closeWork04();
+        } else if (work03Modal.classList.contains('active')) {
           closeWork03();
         } else if (work02Modal.classList.contains('active')) {
           closeWork02();
