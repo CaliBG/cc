@@ -1480,21 +1480,22 @@
         </div>
       </div>
 
-      <!-- Project 3 -->
+      <!-- Project 3: #03 痛 -->
       <div class="project-card reveal reveal-delay-2">
         <div class="project-thumb">
           <div class="project-thumb-inner">
-            <div class="project-gradient project-gradient-3"></div>
+            <img src="work03.jpg" alt="#03 痛" style="width:100%;height:100%;object-fit:cover;">
           </div>
         </div>
         <div class="project-info">
           <div class="project-meta">
-            <span class="project-tag">电商</span>
-            <span class="project-tag">全栈</span>
+            <span class="project-tag">综合材料</span>
+            <span class="project-tag">装置雕塑</span>
+            <span class="project-tag">2025</span>
           </div>
-          <h3 class="project-title">FLARE — 潮牌电商平台</h3>
-          <p class="project-desc">街头文化与科技感碰撞，打造 Z 世代的购物新体验。</p>
-          <a href="#" class="project-link" data-hover>查看详情 <span>→</span></a>
+          <h3 class="project-title">#03 痛</h3>
+          <p class="project-desc">以"皮囊"为核心意象，隐喻当代个体在社交滤镜与社会规训下被捆束、塑形的状态。</p>
+          <a href="#" class="project-link" data-hover onclick="openWork03(event)">查看详情 <span>→</span></a>
         </div>
       </div>
 
@@ -1713,6 +1714,56 @@
             <div class="work-detail-info-item">
               <div class="info-label">编号</div>
               <div class="info-value">#01 of Series</div>
+            </div>
+            <div class="work-detail-info-item">
+              <div class="info-label">创作者</div>
+              <div class="info-value">杨子硕 Cali-Yang</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Work 03 Detail Modal -->
+  <div class="work-modal-overlay" id="work03Modal">
+    <button class="work-modal-close" onclick="closeWork03()">✕</button>
+    <div class="work-detail">
+      <div class="work-detail-header">
+        <div class="work-detail-num">#03</div>
+        <h2 class="work-detail-title">痛 — <span class="serif">被规训的皮囊</span></h2>
+        <div class="work-detail-meta">
+          <span class="project-tag">综合材料</span>
+          <span class="project-tag">装置雕塑</span>
+          <span class="project-tag">2025</span>
+        </div>
+      </div>
+      <div class="work-detail-body">
+        <div class="work-detail-image">
+          <img src="work03.jpg" alt="#03 痛">
+        </div>
+        <div class="work-detail-text">
+          <div class="work-detail-label">创作理念</div>
+          <div class="work-detail-quote">
+            社会的规训如同密织的线，<br>将人的"外壳"<br>绑缚成标准的褶皱
+          </div>
+          <div class="work-detail-desc">
+            <p>《#03 痛》以"皮囊"为核心意象，隐喻当代个体在社交滤镜与社会规训下被捆束、塑形的状态。</p>
+            <p>作品借鉴久保田華布对"残像记忆"的处理，以金属网与石膏的叠加象征被压缩的情绪与碎裂的自我形状。钢丝与石膏的质感碰撞、色彩的冷暖与对比，共同构成一段关于规训、记忆与自我挣脱的视觉叙事。</p>
+          </div>
+          <div class="work-detail-divider"></div>
+          <div class="work-detail-info-grid">
+            <div class="work-detail-info-item">
+              <div class="info-label">材料</div>
+              <div class="info-value">金属网、石膏、钢丝、色彩颜料</div>
+            </div>
+            <div class="work-detail-info-item">
+              <div class="info-label">灵感</div>
+              <div class="info-value">久保田華布 · 残像记忆</div>
+            </div>
+            <div class="work-detail-info-item">
+              <div class="info-label">编号</div>
+              <div class="info-value">#03 of Series</div>
             </div>
             <div class="work-detail-info-item">
               <div class="info-label">创作者</div>
@@ -1961,9 +2012,28 @@
       document.body.style.overflow = '';
     }
 
+    // ============================================
+    // WORK 03 DETAIL MODAL
+    // ============================================
+    const work03Modal = document.getElementById('work03Modal');
+
+    function openWork03(e) {
+      e.preventDefault();
+      work03Modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      work03Modal.scrollTop = 0;
+    }
+
+    function closeWork03() {
+      work03Modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        if (work02Modal.classList.contains('active')) {
+        if (work03Modal.classList.contains('active')) {
+          closeWork03();
+        } else if (work02Modal.classList.contains('active')) {
           closeWork02();
         } else if (work01Modal.classList.contains('active')) {
           closeWork01();
