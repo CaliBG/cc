@@ -1619,17 +1619,10 @@
         <span class="service-name">青年文化策展</span>
         <span class="service-arrow">→</span>
       </div>
-      <div class="service-item reveal" style="cursor:pointer;" onclick="document.getElementById('social-links').style.display = document.getElementById('social-links').style.display === 'none' ? 'flex' : 'none'">
+      <div class="service-item reveal" style="cursor:pointer;" onclick="document.getElementById('socialModal').classList.add('active');document.body.style.overflow='hidden';">
         <span class="service-num">07</span>
         <span class="service-name">作品视觉呈现</span>
         <span class="service-arrow">→</span>
-      </div>
-      <div id="social-links" style="display:none;flex-wrap:wrap;gap:12px;padding:20px 0 10px;margin-left:60px;">
-        <a href="https://www.xiaohongshu.com/user/profile/60e45d75000000002002f229?xsec_token=YBVMNXmJezIr5KqiwXTQm4UvQ6SGNVd9RA0ET9lp-wI8Y=&xsec_source=app_share&xhsshare=CopyLink&shareRedId=ODZHNDhJOz42NzUyOTgwNjgzOTlKNzhC&apptime=1769496056&share_id=252ce6729b3448ea810663e75eaecb66" target="_blank" style="padding:10px 20px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);text-decoration:none;font-size:14px;transition:all 0.3s var(--transition);">小红书</a>
-        <a href="https://www.douyin.com/user/MS4wLjABAAAAwZDZH1-khE631mUgvp1U0ZsJM7w-yoLCMUymkTEPzxiA1Y5peo-hNZLApZ4LORoi" target="_blank" style="padding:10px 20px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);text-decoration:none;font-size:14px;transition:all 0.3s var(--transition);">抖音</a>
-        <a href="https://space.bilibili.com/3690996065897028" target="_blank" style="padding:10px 20px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);text-decoration:none;font-size:14px;transition:all 0.3s var(--transition);">Bilibili</a>
-        <a href="https://www.instagram.com/caliyang0693?igsh=dm15eTJ3MWYxN2F0&utm_source=qr" target="_blank" style="padding:10px 20px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);text-decoration:none;font-size:14px;transition:all 0.3s var(--transition);">Instagram</a>
-        <a href="https://www.youtube.com/@yzs-cali-yang" target="_blank" style="padding:10px 20px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);text-decoration:none;font-size:14px;transition:all 0.3s var(--transition);">YouTube</a>
       </div>
     </div>
   </section>
@@ -1963,6 +1956,22 @@
     </div>
   </div>
 
+  <!-- Social Links Modal -->
+  <div class="modal-overlay" id="socialModal" onclick="closeSocial(event)">
+    <button class="modal-close" onclick="closeSocial(event)">✕</button>
+    <div class="modal-card" onclick="event.stopPropagation()" style="padding:48px 40px;background:var(--bg-card);text-align:center;">
+      <h3 style="font-size:24px;margin-bottom:8px;font-weight:700;">作品视觉呈现</h3>
+      <p style="color:var(--text-secondary);font-size:14px;margin-bottom:32px;">关注我的社交媒体，查看更多创作内容</p>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <a href="https://www.xiaohongshu.com/user/profile/60e45d75000000002002f229?xsec_token=YBVMNXmJezIr5KqiwXTQm4UvQ6SGNVd9RA0ET9lp-wI8Y=&xsec_source=app_share&xhsshare=CopyLink&shareRedId=ODZHNDhJOz42NzUyOTgwNjgzOTlKNzhC&apptime=1769496056&share_id=252ce6729b3448ea810663e75eaecb66" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);text-decoration:none;font-size:15px;transition:all 0.3s var(--transition);">小红书 <span style="color:var(--accent);">→</span></a>
+        <a href="https://www.douyin.com/user/MS4wLjABAAAAwZDZH1-khE631mUgvp1U0ZsJM7w-yoLCMUymkTEPzxiA1Y5peo-hNZLApZ4LORoi" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);text-decoration:none;font-size:15px;transition:all 0.3s var(--transition);">抖音 <span style="color:var(--accent);">→</span></a>
+        <a href="https://space.bilibili.com/3690996065897028" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);text-decoration:none;font-size:15px;transition:all 0.3s var(--transition);">Bilibili <span style="color:var(--accent);">→</span></a>
+        <a href="https://www.instagram.com/caliyang0693?igsh=dm15eTJ3MWYxN2F0&utm_source=qr" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);text-decoration:none;font-size:15px;transition:all 0.3s var(--transition);">Instagram <span style="color:var(--accent);">→</span></a>
+        <a href="https://www.youtube.com/@yzs-cali-yang" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);text-decoration:none;font-size:15px;transition:all 0.3s var(--transition);">YouTube <span style="color:var(--accent);">→</span></a>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="footer">
     <div>© 2026 YZS — Yet Zero Sense. 杨子硕</div>
@@ -2103,6 +2112,18 @@
       e.stopPropagation();
       if (e.target === cardModal || e.target.classList.contains('modal-close')) {
         cardModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    }
+
+    // ============================================
+    // SOCIAL LINKS MODAL
+    // ============================================
+    const socialModal = document.getElementById('socialModal');
+    function closeSocial(e) {
+      e.stopPropagation();
+      if (e.target === socialModal || e.target.classList.contains('modal-close')) {
+        socialModal.classList.remove('active');
         document.body.style.overflow = '';
       }
     }
