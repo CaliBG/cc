@@ -2132,35 +2132,50 @@
       }, { passive: true });
 
       // Gyroscope support for mobile — tilt maps to cursor position
-      let gyroEnabled = false;
       function handleOrientation(e) {
-        // gamma: left/right tilt (-90 to 90), beta: front/back tilt (-180 to 180)
-        const gamma = e.gamma || 0; // left-right
-        const beta = e.beta || 0;   // front-back
+        if (e.gamma === null) return;
+        const gamma = e.gamma || 0;
+        const beta = e.beta || 0;
         const r = container.getBoundingClientRect();
-        // Map gamma (-45..45) to full width of container
         const clampedGamma = Math.max(-45, Math.min(45, gamma));
-        const clampedBeta = Math.max(-45, Math.min(45, beta - 45)); // offset: phone held ~45deg
+        const clampedBeta = Math.max(-45, Math.min(45, beta - 45));
         cursor.x = r.left + r.width * ((clampedGamma + 45) / 90);
         cursor.y = r.top + r.height * ((clampedBeta + 45) / 90);
-        gyroEnabled = true;
       }
 
-      // iOS 13+ requires permission request
-      if (typeof DeviceOrientationEvent !== 'undefined' &&
-          typeof DeviceOrientationEvent.requestPermission === 'function') {
-        // Request on first touch
-        window.addEventListener('touchstart', function reqGyro() {
-          DeviceOrientationEvent.requestPermission().then(state => {
-            if (state === 'granted') {
-              window.addEventListener('deviceorientation', handleOrientation);
-            }
-          }).catch(() => {});
-          window.removeEventListener('touchstart', reqGyro);
-        }, { once: true });
-      } else if (typeof DeviceOrientationEvent !== 'undefined') {
-        // Android and older iOS — just listen
+      function enableGyro() {
         window.addEventListener('deviceorientation', handleOrientation);
+        // Hide the hint once enabled
+        var hint = document.getElementById('gyroHint');
+        if (hint) hint.style.display = 'none';
+      }
+
+      // Detect mobile
+      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      if (isMobile && typeof DeviceOrientationEvent !== 'undefined') {
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+          // iOS 13+ — must request in a click handler
+          // Show a hint so user knows to tap
+          var hint = document.createElement('div');
+          hint.id = 'gyroHint';
+          hint.textContent = '轻触屏幕以启用体感交互';
+          hint.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);' +
+            'padding:10px 24px;background:var(--accent);color:var(--bg-primary);border-radius:100px;' +
+            'font-size:13px;font-weight:600;z-index:9998;cursor:pointer;letter-spacing:1px;' +
+            'animation:fadeIn 1s 1.5s var(--transition) forwards;opacity:0;';
+          document.body.appendChild(hint);
+
+          document.addEventListener('click', function reqGyro() {
+            DeviceOrientationEvent.requestPermission().then(function(state) {
+              if (state === 'granted') enableGyro();
+            }).catch(function() {});
+            document.removeEventListener('click', reqGyro);
+          }, { once: true });
+        } else {
+          // Android — just listen
+          enableGyro();
+        }
       }
 
       // Sizing
