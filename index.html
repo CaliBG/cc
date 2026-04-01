@@ -1395,6 +1395,8 @@
       .hero { padding: 0 20px; }
       .section { padding: 80px 20px; }
       .text-pressure-container { height: auto; }
+      .text-pressure-line { white-space: normal; flex-wrap: wrap; }
+      .text-pressure-contact { height: auto; }
       .about-stats { grid-template-columns: repeat(3, 1fr); gap: 16px; }
       .stat .stat-number { font-size: 28px; }
       .footer { flex-direction: column; gap: 16px; text-align: center; }
@@ -2211,8 +2213,9 @@
         // Sizing
         function setSize() {
           const cw = container.getBoundingClientRect().width;
-          let fs = cw / (longestLine.length / 2.6);
-          fs = Math.max(fs, 32);
+          var ratio = window.innerWidth <= 768 ? 1.8 : 2.6;
+          let fs = cw / (longestLine.length / ratio);
+          fs = Math.max(fs, 20);
           title.style.fontSize = fs + 'px';
         }
         let resizeTimer;
