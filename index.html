@@ -322,7 +322,7 @@
     /* TextPressure hero title */
     .text-pressure-container {
       width: 100%;
-      height: clamp(80px, 15vw, 200px);
+      height: auto;
       margin-bottom: 32px;
       position: relative;
     }
@@ -333,12 +333,15 @@
       margin: 0;
       text-align: center;
       user-select: none;
-      white-space: nowrap;
       font-weight: 100;
       width: 100%;
       color: var(--text-primary);
+    }
+
+    .text-pressure-line {
       display: flex;
       justify-content: center;
+      white-space: nowrap;
     }
 
     .text-pressure-title span {
@@ -883,7 +886,7 @@
     /* TextPressure in contact section */
     .text-pressure-contact {
       width: 100%;
-      height: clamp(60px, 10vw, 140px);
+      height: auto;
       margin-bottom: 32px;
       position: relative;
     }
@@ -2185,23 +2188,31 @@
         const title = document.getElementById(titleId);
         if (!container || !title) return;
 
-        const chars = text.split('');
+        const lines = text.split('\n');
         const spans = [];
-        chars.forEach(char => {
-          const span = document.createElement('span');
-          span.textContent = char;
-          span.dataset.char = char;
-          span.style.display = 'inline-block';
-          if (char === ' ') span.style.width = '0.3em';
-          title.appendChild(span);
-          spans.push(span);
+        // Find the longest line for font sizing
+        const longestLine = lines.reduce((a, b) => a.length > b.length ? a : b);
+
+        lines.forEach((line, li) => {
+          const lineDiv = document.createElement('div');
+          lineDiv.className = 'text-pressure-line';
+          line.split('').forEach(char => {
+            const span = document.createElement('span');
+            span.textContent = char;
+            span.dataset.char = char;
+            span.style.display = 'inline-block';
+            if (char === ' ') span.style.width = '0.3em';
+            lineDiv.appendChild(span);
+            spans.push(span);
+          });
+          title.appendChild(lineDiv);
         });
 
         // Sizing
         function setSize() {
           const cw = container.getBoundingClientRect().width;
-          let fs = cw / (chars.length / 2);
-          fs = Math.max(fs, 24);
+          let fs = cw / (longestLine.length / 2.6);
+          fs = Math.max(fs, 32);
           title.style.fontSize = fs + 'px';
         }
         let resizeTimer;
@@ -2216,8 +2227,8 @@
 
       // Init both instances
       const instances = [
-        createInstance('textPressureContainer', 'textPressureTitle', 'YET ZERO SENSE'),
-        createInstance('textPressureContact', 'textPressureContactTitle', 'LEAVE A TRACE')
+        createInstance('textPressureContainer', 'textPressureTitle', "Welcome to\nCali-Yang's personal\nportfolio website"),
+        createInstance('textPressureContact', 'textPressureContactTitle', "LEAVE A TRACE")
       ].filter(Boolean);
 
       // Single shared animation loop
