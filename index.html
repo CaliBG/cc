@@ -8,6 +8,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <style>
+    @font-face {
+      font-family: 'Compressa VF';
+      src: url('https://res.cloudinary.com/dr6lvwubh/raw/upload/v1529908256/CompressaPRO-GX.woff2');
+      font-style: normal;
+    }
+  </style>
+  <style>
     /* ============================================
        CSS CUSTOM PROPERTIES
        ============================================ */
@@ -225,6 +232,7 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
+      align-items: center;
       padding: 0 48px;
       position: relative;
       overflow: hidden;
@@ -273,7 +281,12 @@
     .hero-content {
       position: relative;
       z-index: 1;
+      width: 100%;
       max-width: 1200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
     }
 
     .hero-tag {
@@ -306,37 +319,34 @@
       50% { opacity: 0.3; }
     }
 
-    .hero-title {
-      font-size: clamp(56px, 8vw, 120px);
-      font-weight: 800;
-      line-height: 0.95;
-      letter-spacing: -3px;
+    /* TextPressure hero title */
+    .text-pressure-container {
+      width: 100%;
+      height: clamp(80px, 15vw, 200px);
       margin-bottom: 32px;
+      position: relative;
     }
 
-    .hero-title .line {
-      display: block;
-      overflow: hidden;
+    .text-pressure-title {
+      font-family: 'Compressa VF', var(--font-sans);
+      text-transform: uppercase;
+      margin: 0;
+      text-align: center;
+      user-select: none;
+      white-space: nowrap;
+      font-weight: 100;
+      width: 100%;
+      color: var(--text-primary);
+      display: flex;
+      justify-content: center;
     }
 
-    .hero-title .line span {
+    .text-pressure-title span {
       display: inline-block;
-      transform: translateY(100%);
-      animation: revealUp 1.2s var(--transition) forwards;
     }
 
-    .hero-title .line:nth-child(2) span { animation-delay: 0.15s; }
-    .hero-title .line:nth-child(3) span { animation-delay: 0.3s; }
-
-    .hero-title .italic {
-      font-family: var(--font-serif);
-      font-weight: 400;
-      font-style: italic;
-      color: var(--accent);
-    }
-
-    @keyframes revealUp {
-      to { transform: translateY(0); }
+    @keyframes fadeIn {
+      to { opacity: 1; }
     }
 
     .hero-sub {
@@ -348,10 +358,6 @@
       margin-bottom: 48px;
       opacity: 0;
       animation: fadeIn 1s 0.6s var(--transition) forwards;
-    }
-
-    @keyframes fadeIn {
-      to { opacity: 1; }
     }
 
     .hero-cta {
@@ -1363,7 +1369,7 @@
       .nav-links { display: none; }
       .hero { padding: 0 20px; }
       .section { padding: 80px 20px; }
-      .hero-title { letter-spacing: -1.5px; }
+      .text-pressure-container { height: clamp(60px, 12vw, 120px); }
       .about-stats { grid-template-columns: repeat(3, 1fr); gap: 16px; }
       .stat .stat-number { font-size: 28px; }
       .footer { flex-direction: column; gap: 16px; text-align: center; }
@@ -1409,11 +1415,9 @@
         <span class="dot"></span>
         Designing, Learning, Becoming · 2026
       </div>
-      <h1 class="hero-title">
-        <span class="line"><span>在感知过剩的</span></span>
-        <span class="line"><span>时代，<em class="italic">重获</em></span></span>
-        <span class="line"><span>零感</span></span>
-      </h1>
+      <div class="text-pressure-container" id="textPressureContainer">
+        <h1 class="text-pressure-title" id="textPressureTitle"></h1>
+      </div>
       <p class="hero-sub">
         我们拒绝多余的修辞，只谈存在本身。YZS 是年轻灵魂的留白区——一个探索"无我"与"存在"边界的青年视觉品牌。
       </p>
@@ -2085,6 +2089,135 @@
     }, { threshold: 0.5 });
 
     stats.forEach(stat => statsObserver.observe(stat));
+
+    // ============================================
+    // TEXT PRESSURE EFFECT
+    // ============================================
+    (function initTextPressure() {
+      const text = 'YET ZERO SENSE';
+      const container = document.getElementById('textPressureContainer');
+      const title = document.getElementById('textPressureTitle');
+      if (!container || !title) return;
+
+      // Create character spans
+      const chars = text.split('');
+      const spans = [];
+      chars.forEach(char => {
+        const span = document.createElement('span');
+        span.textContent = char;
+        span.dataset.char = char;
+        span.style.display = 'inline-block';
+        if (char === ' ') span.style.width = '0.3em';
+        title.appendChild(span);
+        spans.push(span);
+      });
+
+      // Mouse tracking
+      const mouse = { x: 0, y: 0 };
+      const cursor = { x: 0, y: 0 };
+
+      const rect = container.getBoundingClientRect();
+      mouse.x = rect.left + rect.width / 2;
+      mouse.y = rect.top + rect.height / 2;
+      cursor.x = mouse.x;
+      cursor.y = mouse.y;
+
+      window.addEventListener('mousemove', e => {
+        cursor.x = e.clientX;
+        cursor.y = e.clientY;
+      });
+      window.addEventListener('touchmove', e => {
+        cursor.x = e.touches[0].clientX;
+        cursor.y = e.touches[0].clientY;
+      }, { passive: true });
+
+      // Gyroscope support for mobile — tilt maps to cursor position
+      let gyroEnabled = false;
+      function handleOrientation(e) {
+        // gamma: left/right tilt (-90 to 90), beta: front/back tilt (-180 to 180)
+        const gamma = e.gamma || 0; // left-right
+        const beta = e.beta || 0;   // front-back
+        const r = container.getBoundingClientRect();
+        // Map gamma (-45..45) to full width of container
+        const clampedGamma = Math.max(-45, Math.min(45, gamma));
+        const clampedBeta = Math.max(-45, Math.min(45, beta - 45)); // offset: phone held ~45deg
+        cursor.x = r.left + r.width * ((clampedGamma + 45) / 90);
+        cursor.y = r.top + r.height * ((clampedBeta + 45) / 90);
+        gyroEnabled = true;
+      }
+
+      // iOS 13+ requires permission request
+      if (typeof DeviceOrientationEvent !== 'undefined' &&
+          typeof DeviceOrientationEvent.requestPermission === 'function') {
+        // Request on first touch
+        window.addEventListener('touchstart', function reqGyro() {
+          DeviceOrientationEvent.requestPermission().then(state => {
+            if (state === 'granted') {
+              window.addEventListener('deviceorientation', handleOrientation);
+            }
+          }).catch(() => {});
+          window.removeEventListener('touchstart', reqGyro);
+        }, { once: true });
+      } else if (typeof DeviceOrientationEvent !== 'undefined') {
+        // Android and older iOS — just listen
+        window.addEventListener('deviceorientation', handleOrientation);
+      }
+
+      // Sizing
+      function setSize() {
+        const cw = container.getBoundingClientRect().width;
+        let fs = cw / (chars.length / 2);
+        fs = Math.max(fs, 24);
+        title.style.fontSize = fs + 'px';
+      }
+
+      let resizeTimer;
+      function debouncedSetSize() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(setSize, 100);
+      }
+      setSize();
+      window.addEventListener('resize', debouncedSetSize);
+
+      // Helper functions
+      function dist(a, b) {
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        return Math.sqrt(dx * dx + dy * dy);
+      }
+
+      function getAttr(distance, maxDist, minVal, maxVal) {
+        const val = maxVal - Math.abs((maxVal * distance) / maxDist);
+        return Math.max(minVal, val + minVal);
+      }
+
+      // Animation loop
+      function animate() {
+        mouse.x += (cursor.x - mouse.x) / 15;
+        mouse.y += (cursor.y - mouse.y) / 15;
+
+        const titleRect = title.getBoundingClientRect();
+        const maxDist = titleRect.width / 2;
+
+        spans.forEach(span => {
+          const r = span.getBoundingClientRect();
+          const center = { x: r.x + r.width / 2, y: r.y + r.height / 2 };
+          const d = dist(mouse, center);
+
+          const wdth = Math.floor(getAttr(d, maxDist, 5, 200));
+          const wght = Math.floor(getAttr(d, maxDist, 100, 900));
+          const ital = getAttr(d, maxDist, 0, 1).toFixed(2);
+
+          const fvs = "'wght' " + wght + ", 'wdth' " + wdth + ", 'ital' " + ital;
+          if (span.style.fontVariationSettings !== fvs) {
+            span.style.fontVariationSettings = fvs;
+          }
+        });
+
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
 
     // ============================================
     // PARALLAX HERO ORBS
