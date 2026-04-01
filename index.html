@@ -321,7 +321,8 @@
 
     /* TextPressure hero title */
     .text-pressure-container {
-      width: 100%;
+      width: 100vw;
+      margin-left: calc(-50vw + 50%);
       height: auto;
       margin-bottom: 32px;
       position: relative;
@@ -885,7 +886,8 @@
 
     /* TextPressure in contact section */
     .text-pressure-contact {
-      width: 100%;
+      width: 100vw;
+      margin-left: calc(-50vw + 50%);
       height: auto;
       margin-bottom: 32px;
       position: relative;
@@ -2206,13 +2208,23 @@
           title.appendChild(lineDiv);
         });
 
-        // Sizing
+        // Sizing — fit text edge-to-edge
         function setSize() {
           const cw = container.getBoundingClientRect().width;
-          var ratio = window.innerWidth <= 768 ? 2.4 : 3.5;
-          let fs = cw / (longestLine.length / ratio);
-          fs = Math.max(fs, 20);
+          // Start with an estimate, then measure and adjust to fill width
+          let fs = cw / longestLine.length * 2;
           title.style.fontSize = fs + 'px';
+          // Find the longest rendered line and scale to fit
+          var lineEls = title.querySelectorAll('.text-pressure-line');
+          var maxLineW = 0;
+          lineEls.forEach(function(el) {
+            var w = el.scrollWidth;
+            if (w > maxLineW) maxLineW = w;
+          });
+          if (maxLineW > 0) {
+            fs = fs * (cw / maxLineW);
+            title.style.fontSize = fs + 'px';
+          }
         }
         let resizeTimer;
         window.addEventListener('resize', () => {
