@@ -880,6 +880,28 @@
       color: var(--accent);
     }
 
+    /* TextPressure in contact section */
+    .text-pressure-contact {
+      width: 100%;
+      height: clamp(60px, 10vw, 140px);
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .text-pressure-contact .text-pressure-title {
+      font-family: 'Compressa VF', var(--font-sans);
+      text-transform: uppercase;
+      margin: 0;
+      text-align: center;
+      user-select: none;
+      white-space: nowrap;
+      font-weight: 100;
+      width: 100%;
+      color: var(--text-primary);
+      display: flex;
+      justify-content: center;
+    }
+
     .contact-sub {
       font-size: 17px;
       color: var(--text-secondary);
@@ -1700,9 +1722,9 @@
   <section class="section" id="contact">
     <div class="contact">
       <div class="section-label reveal">开始对话</div>
-      <h2 class="contact-title reveal reveal-delay-1">
-        留下痕迹<br>或者 <span class="serif">留白</span>
-      </h2>
+      <div class="text-pressure-contact reveal reveal-delay-1" id="textPressureContact">
+        <h2 class="text-pressure-title" id="textPressureContactTitle"></h2>
+      </div>
       <p class="contact-sub reveal reveal-delay-2">
         如果你也在思考"存在"与"无"的边界，或者只是想聊聊——空白本身就是一种回应。
       </p>
@@ -2091,72 +2113,40 @@
     stats.forEach(stat => statsObserver.observe(stat));
 
     // ============================================
-    // TEXT PRESSURE EFFECT
+    // TEXT PRESSURE EFFECT (shared across instances)
     // ============================================
     (function initTextPressure() {
-      const text = 'YET ZERO SENSE';
-      const container = document.getElementById('textPressureContainer');
-      const title = document.getElementById('textPressureTitle');
-      if (!container || !title) return;
-
-      // Create character spans
-      const chars = text.split('');
-      const spans = [];
-      chars.forEach(char => {
-        const span = document.createElement('span');
-        span.textContent = char;
-        span.dataset.char = char;
-        span.style.display = 'inline-block';
-        if (char === ' ') span.style.width = '0.3em';
-        title.appendChild(span);
-        spans.push(span);
-      });
-
-      // Mouse tracking
-      const mouse = { x: 0, y: 0 };
-      const cursor = { x: 0, y: 0 };
-
-      const rect = container.getBoundingClientRect();
-      mouse.x = rect.left + rect.width / 2;
-      mouse.y = rect.top + rect.height / 2;
-      cursor.x = mouse.x;
-      cursor.y = mouse.y;
+      // Shared cursor state
+      const globalCursor = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
       window.addEventListener('mousemove', e => {
-        cursor.x = e.clientX;
-        cursor.y = e.clientY;
+        globalCursor.x = e.clientX;
+        globalCursor.y = e.clientY;
       });
       window.addEventListener('touchmove', e => {
-        cursor.x = e.touches[0].clientX;
-        cursor.y = e.touches[0].clientY;
+        globalCursor.x = e.touches[0].clientX;
+        globalCursor.y = e.touches[0].clientY;
       }, { passive: true });
 
-      // Gyroscope support for mobile — tilt maps to cursor position
-      function handleOrientation(e) {
-        if (e.gamma === null) return;
-        const gamma = e.gamma || 0;
-        const beta = e.beta || 0;
-        const r = container.getBoundingClientRect();
-        const clampedGamma = Math.max(-45, Math.min(45, gamma));
-        const clampedBeta = Math.max(-45, Math.min(45, beta - 45));
-        cursor.x = r.left + r.width * ((clampedGamma + 45) / 90);
-        cursor.y = r.top + r.height * ((clampedBeta + 45) / 90);
-      }
-
-      function enableGyro() {
-        window.addEventListener('deviceorientation', handleOrientation);
-        // Hide the hint once enabled
-        var hint = document.getElementById('gyroHint');
-        if (hint) hint.style.display = 'none';
-      }
-
-      // Detect mobile
+      // Gyroscope — updates globalCursor for all instances
       var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
       if (isMobile && typeof DeviceOrientationEvent !== 'undefined') {
+        function handleOrientation(e) {
+          if (e.gamma === null) return;
+          const gamma = Math.max(-45, Math.min(45, e.gamma || 0));
+          const beta = Math.max(-45, Math.min(45, (e.beta || 0) - 45));
+          globalCursor.x = window.innerWidth * ((gamma + 45) / 90);
+          globalCursor.y = window.innerHeight * ((beta + 45) / 90);
+        }
+
+        function enableGyro() {
+          window.addEventListener('deviceorientation', handleOrientation);
+          var hint = document.getElementById('gyroHint');
+          if (hint) hint.style.display = 'none';
+        }
+
         if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-          // iOS 13+ — must request in a click handler
-          // Show a hint so user knows to tap
           var hint = document.createElement('div');
           hint.id = 'gyroHint';
           hint.textContent = '轻触屏幕以启用体感交互';
@@ -2173,26 +2163,9 @@
             document.removeEventListener('click', reqGyro);
           }, { once: true });
         } else {
-          // Android — just listen
           enableGyro();
         }
       }
-
-      // Sizing
-      function setSize() {
-        const cw = container.getBoundingClientRect().width;
-        let fs = cw / (chars.length / 2);
-        fs = Math.max(fs, 24);
-        title.style.fontSize = fs + 'px';
-      }
-
-      let resizeTimer;
-      function debouncedSetSize() {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(setSize, 100);
-      }
-      setSize();
-      window.addEventListener('resize', debouncedSetSize);
 
       // Helper functions
       function dist(a, b) {
@@ -2206,29 +2179,71 @@
         return Math.max(minVal, val + minVal);
       }
 
-      // Animation loop
-      function animate() {
-        mouse.x += (cursor.x - mouse.x) / 15;
-        mouse.y += (cursor.y - mouse.y) / 15;
+      // Create a TextPressure instance
+      function createInstance(containerId, titleId, text) {
+        const container = document.getElementById(containerId);
+        const title = document.getElementById(titleId);
+        if (!container || !title) return;
 
-        const titleRect = title.getBoundingClientRect();
-        const maxDist = titleRect.width / 2;
-
-        spans.forEach(span => {
-          const r = span.getBoundingClientRect();
-          const center = { x: r.x + r.width / 2, y: r.y + r.height / 2 };
-          const d = dist(mouse, center);
-
-          const wdth = Math.floor(getAttr(d, maxDist, 5, 200));
-          const wght = Math.floor(getAttr(d, maxDist, 100, 900));
-          const ital = getAttr(d, maxDist, 0, 1).toFixed(2);
-
-          const fvs = "'wght' " + wght + ", 'wdth' " + wdth + ", 'ital' " + ital;
-          if (span.style.fontVariationSettings !== fvs) {
-            span.style.fontVariationSettings = fvs;
-          }
+        const chars = text.split('');
+        const spans = [];
+        chars.forEach(char => {
+          const span = document.createElement('span');
+          span.textContent = char;
+          span.dataset.char = char;
+          span.style.display = 'inline-block';
+          if (char === ' ') span.style.width = '0.3em';
+          title.appendChild(span);
+          spans.push(span);
         });
 
+        // Sizing
+        function setSize() {
+          const cw = container.getBoundingClientRect().width;
+          let fs = cw / (chars.length / 2);
+          fs = Math.max(fs, 24);
+          title.style.fontSize = fs + 'px';
+        }
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(setSize, 100);
+        });
+        setSize();
+
+        return { container, title, spans, mouse: { x: globalCursor.x, y: globalCursor.y } };
+      }
+
+      // Init both instances
+      const instances = [
+        createInstance('textPressureContainer', 'textPressureTitle', 'YET ZERO SENSE'),
+        createInstance('textPressureContact', 'textPressureContactTitle', 'LEAVE A TRACE')
+      ].filter(Boolean);
+
+      // Single shared animation loop
+      function animate() {
+        instances.forEach(inst => {
+          inst.mouse.x += (globalCursor.x - inst.mouse.x) / 15;
+          inst.mouse.y += (globalCursor.y - inst.mouse.y) / 15;
+
+          const titleRect = inst.title.getBoundingClientRect();
+          const maxDist = titleRect.width / 2;
+
+          inst.spans.forEach(span => {
+            const r = span.getBoundingClientRect();
+            const center = { x: r.x + r.width / 2, y: r.y + r.height / 2 };
+            const d = dist(inst.mouse, center);
+
+            const wdth = Math.floor(getAttr(d, maxDist, 5, 200));
+            const wght = Math.floor(getAttr(d, maxDist, 100, 900));
+            const ital = getAttr(d, maxDist, 0, 1).toFixed(2);
+
+            const fvs = "'wght' " + wght + ", 'wdth' " + wdth + ", 'ital' " + ital;
+            if (span.style.fontVariationSettings !== fvs) {
+              span.style.fontVariationSettings = fvs;
+            }
+          });
+        });
         requestAnimationFrame(animate);
       }
       animate();
