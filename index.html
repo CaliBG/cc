@@ -2120,18 +2120,14 @@
     (function initTextPressure() {
       // Shared cursor state
       const globalCursor = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
       window.addEventListener('mousemove', e => {
         globalCursor.x = e.clientX;
         globalCursor.y = e.clientY;
       });
-      window.addEventListener('touchmove', e => {
-        globalCursor.x = e.touches[0].clientX;
-        globalCursor.y = e.touches[0].clientY;
-      }, { passive: true });
 
       // Gyroscope — updates globalCursor for all instances
-      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
       if (isMobile && typeof DeviceOrientationEvent !== 'undefined') {
         function handleOrientation(e) {
