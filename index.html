@@ -2150,20 +2150,41 @@
         if (typeof DeviceOrientationEvent.requestPermission === 'function') {
           var overlay = document.createElement('div');
           overlay.id = 'gyroOverlay';
-          overlay.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;gap:16px;">' +
-            '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.8;">' +
-            '<rect x="5" y="2" width="14" height="20" rx="3"/>' +
-            '<path d="M12 18h.01"/>' +
-            '<path d="M8 1l2 2M16 1l-2 2" opacity="0.5"/>' +
-            '</svg>' +
-            '<span style="font-size:18px;font-weight:600;letter-spacing:1px;">轻触屏幕以启用体感交互</span>' +
-            '<span style="font-size:13px;opacity:0.6;">Tap to enable gyroscope interaction</span>' +
-            '</div>';
           overlay.style.cssText = 'position:fixed;inset:0;z-index:10001;display:flex;align-items:center;' +
-            'justify-content:center;background:rgba(0,0,0,0.4);backdrop-filter:blur(24px);' +
-            '-webkit-backdrop-filter:blur(24px);color:#fff;cursor:pointer;' +
-            'transition:opacity 0.6s ease;opacity:1;';
+            'justify-content:center;background:rgba(0,0,0,0.5);backdrop-filter:blur(28px);' +
+            '-webkit-backdrop-filter:blur(28px);color:#fff;cursor:pointer;' +
+            'transition:opacity 0.8s ease;opacity:1;';
+
+          overlay.innerHTML =
+            '<div style="display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;padding:0 32px;">' +
+              // Step 1: Logo
+              '<img src="logo-white.png" alt="YZS" style="height:60px;width:auto;opacity:0;transition:opacity 0.8s ease;" id="gyroLogo">' +
+              // Step 2: Welcome text
+              '<div style="opacity:0;transition:opacity 0.8s ease;" id="gyroWelcome">' +
+                '<div style="font-size:22px;font-weight:700;letter-spacing:2px;margin-bottom:6px;">欢迎访问YZS个人网站</div>' +
+                '<div style="font-size:13px;opacity:0.5;">Welcome to YZS Personal Website</div>' +
+              '</div>' +
+              // Step 3: Tap hint
+              '<div style="opacity:0;transition:opacity 0.8s ease;margin-top:16px;" id="gyroTapHint">' +
+                '<div style="width:48px;height:48px;border:2px solid rgba(255,255,255,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;animation:pulse 2s ease-in-out infinite;">' +
+                  '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>' +
+                '</div>' +
+                '<div style="font-size:16px;font-weight:600;letter-spacing:1px;">轻触屏幕以启用体感交互</div>' +
+              '</div>' +
+            '</div>';
+
           document.body.appendChild(overlay);
+
+          // Sequenced animation
+          setTimeout(function() {
+            document.getElementById('gyroLogo').style.opacity = '1';
+          }, 300);
+          setTimeout(function() {
+            document.getElementById('gyroWelcome').style.opacity = '1';
+          }, 1200);
+          setTimeout(function() {
+            document.getElementById('gyroTapHint').style.opacity = '1';
+          }, 2200);
 
           overlay.addEventListener('click', function() {
             DeviceOrientationEvent.requestPermission().then(function(state) {
