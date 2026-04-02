@@ -2122,10 +2122,12 @@
       const globalCursor = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
       var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-      window.addEventListener('mousemove', e => {
-        globalCursor.x = e.clientX;
-        globalCursor.y = e.clientY;
-      });
+      if (!isMobile) {
+        window.addEventListener('mousemove', e => {
+          globalCursor.x = e.clientX;
+          globalCursor.y = e.clientY;
+        });
+      }
 
       // Gyroscope — updates globalCursor for all instances
 
@@ -2252,11 +2254,6 @@
             title.style.fontSize = fs + 'px';
           }
         }
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-          clearTimeout(resizeTimer);
-          resizeTimer = setTimeout(setSize, 100);
-        });
         setSize();
 
         return { container, title, spans, mouse: { x: globalCursor.x, y: globalCursor.y } };
