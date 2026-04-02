@@ -2140,25 +2140,35 @@
 
         function enableGyro() {
           window.addEventListener('deviceorientation', handleOrientation);
-          var hint = document.getElementById('gyroHint');
-          if (hint) hint.style.display = 'none';
+          var overlay = document.getElementById('gyroOverlay');
+          if (overlay) {
+            overlay.style.opacity = '0';
+            setTimeout(function() { overlay.remove(); }, 600);
+          }
         }
 
         if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-          var hint = document.createElement('div');
-          hint.id = 'gyroHint';
-          hint.textContent = '轻触屏幕以启用体感交互';
-          hint.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);' +
-            'padding:10px 24px;background:var(--accent);color:var(--bg-primary);border-radius:100px;' +
-            'font-size:13px;font-weight:600;z-index:9998;cursor:pointer;letter-spacing:1px;' +
-            'animation:fadeIn 1s 1.5s var(--transition) forwards;opacity:0;';
-          document.body.appendChild(hint);
+          var overlay = document.createElement('div');
+          overlay.id = 'gyroOverlay';
+          overlay.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;gap:16px;">' +
+            '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.8;">' +
+            '<rect x="5" y="2" width="14" height="20" rx="3"/>' +
+            '<path d="M12 18h.01"/>' +
+            '<path d="M8 1l2 2M16 1l-2 2" opacity="0.5"/>' +
+            '</svg>' +
+            '<span style="font-size:18px;font-weight:600;letter-spacing:1px;">轻触屏幕以启用体感交互</span>' +
+            '<span style="font-size:13px;opacity:0.6;">Tap to enable gyroscope interaction</span>' +
+            '</div>';
+          overlay.style.cssText = 'position:fixed;inset:0;z-index:10001;display:flex;align-items:center;' +
+            'justify-content:center;background:rgba(0,0,0,0.4);backdrop-filter:blur(24px);' +
+            '-webkit-backdrop-filter:blur(24px);color:#fff;cursor:pointer;' +
+            'transition:opacity 0.6s ease;opacity:1;';
+          document.body.appendChild(overlay);
 
-          document.addEventListener('click', function reqGyro() {
+          overlay.addEventListener('click', function() {
             DeviceOrientationEvent.requestPermission().then(function(state) {
               if (state === 'granted') enableGyro();
-            }).catch(function() {});
-            document.removeEventListener('click', reqGyro);
+            }).catch(function() { enableGyro(); });
           }, { once: true });
         } else {
           enableGyro();
