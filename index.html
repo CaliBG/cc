@@ -63,7 +63,6 @@
     [data-theme="light"] .hero-orb-2 { background: #ff6b6b; }
     [data-theme="light"] .cursor { border-color: #066cf4; }
     [data-theme="light"] .cursor.hover { background: rgba(6, 108, 244, 0.1); }
-    [data-theme="light"] .nav { mix-blend-mode: normal; }
     [data-theme="light"] .work-detail-num { -webkit-text-stroke-color: rgba(0, 0, 0, 0.08); }
     [data-theme="light"] .modal-overlay { background: rgba(255, 255, 255, 0.9); }
     [data-theme="light"] .modal-close { background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.1); color: #333; }
@@ -148,8 +147,15 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      mix-blend-mode: difference;
-      transition: padding 0.4s var(--transition);
+      transition: padding 0.4s var(--transition), background 0.4s var(--transition);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    [data-theme="light"] .nav {
+      background: rgba(255, 255, 255, 0.65);
     }
 
     .nav.scrolled { padding: 16px 48px; }
