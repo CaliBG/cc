@@ -2406,7 +2406,8 @@
             if (w > maxLineW) maxLineW = w;
           });
           if (maxLineW > 0) {
-            var scale = window.innerWidth <= 768 ? 1.0 : 1.35;
+            var vw = window.innerWidth;
+            var scale = vw <= 480 ? 0.85 : vw <= 768 ? 0.85 + (vw - 480) / (768 - 480) * 0.15 : vw <= 1440 ? 1.0 + (vw - 768) / (1440 - 768) * 0.35 : 1.35;
             fs = fs * (cw / maxLineW) * scale;
             title.style.fontSize = fs + 'px';
           }
