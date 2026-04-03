@@ -1610,6 +1610,25 @@
           <a href="#" class="project-link" data-hover onclick="openWork04(event)">查看详情 <span>→</span></a>
         </div>
       </div>
+
+      <!-- Project 5: #05 拓印-流动的痕 -->
+      <div class="project-card reveal reveal-delay-1">
+        <div class="project-thumb">
+          <div class="project-thumb-inner">
+            <img src="work05.jpg" alt="#05 拓印-流动的痕 — 交互装置" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-meta">
+            <span class="project-tag">交互装置</span>
+            <span class="project-tag">时间感知</span>
+            <span class="project-tag">团队协作</span>
+          </div>
+          <h3 class="project-title">#05 拓印-流动的痕</h3>
+          <p class="project-desc">以"沙"为媒介，将无形的时间感知转化为可观察与触摸的流动痕迹，距离即介入，观众即参与者。</p>
+          <a href="#" class="project-link" data-hover onclick="openWork05(event)">查看详情 <span>→</span></a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1981,6 +2000,58 @@
             <div class="work-detail-info-item">
               <div class="info-label">创作者</div>
               <div class="info-value">杨子硕 Cali-Yang</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Work 05 Detail Modal -->
+  <div class="work-modal-overlay" id="work05Modal">
+    <button class="work-modal-close" onclick="closeWork05()">✕</button>
+    <div class="work-detail">
+      <div class="work-detail-header">
+        <div class="work-detail-num">#05</div>
+        <h2 class="work-detail-title">拓印-流动的痕</h2>
+        <div class="work-detail-meta">
+          <span class="project-tag">交互装置</span>
+          <span class="project-tag">时间感知</span>
+          <span class="project-tag">团队协作</span>
+        </div>
+      </div>
+      <div class="work-detail-body">
+        <div class="work-detail-image">
+          <img src="work05.jpg" alt="#05 拓印-流动的痕">
+        </div>
+        <div class="work-detail-text">
+          <div class="work-detail-label">创作理念</div>
+          <div class="work-detail-quote">
+            试图控制时间只会加速其流失，<br>而真正的"留痕"来自顺应与沉淀
+          </div>
+          <div class="work-detail-desc">
+            <p>《拓印-流动的痕》是一件以"时间感知"为核心议题的交互装置。作品从心理层面对时间展开探讨，关注人在不同情绪与专注状态下所产生的"时间感知扭曲"现象——当人焦虑或专注时，时间仿佛被拉长；而在放松或沉浸娱乐时，时间却悄然加速流逝。</p>
+            <p>装置以"沙"为核心媒介，借助其流动性与可塑性，隐喻时间的易逝与留痕特性。整体形态为一个直径约30cm的圆形黑色沙台，中央堆起沙丘，底部隐藏机械结构与传感系统。</p>
+            <p>当观众靠近时，超声波传感器触发装置运作，沙丘在震动与旋转中逐渐崩塌与流动，呈现出被"唤醒"的时间状态；当观众远离，装置缓慢回归静止，但沙面已留下不可逆的痕迹，记录下刚刚发生的"时间轨迹"。</p>
+            <p>这种"距离即介入"的交互逻辑，使观众从旁观者转变为时间流动的参与者。作品强调，时间并非单向消逝，而是在不断覆盖与重构中循环生成。通过这一装置，观众得以在可视化的流动与残留之间，重新感知时间的存在，并反思自身在快节奏生活中的状态。</p>
+          </div>
+          <div class="work-detail-divider"></div>
+          <div class="work-detail-info-grid">
+            <div class="work-detail-info-item">
+              <div class="info-label">材料</div>
+              <div class="info-value">黑色沙、圆形沙台、超声波传感器、机械结构</div>
+            </div>
+            <div class="work-detail-info-item">
+              <div class="info-label">类型</div>
+              <div class="info-value">交互装置 / 时间感知</div>
+            </div>
+            <div class="work-detail-info-item">
+              <div class="info-label">编号</div>
+              <div class="info-value">#05 of Series</div>
+            </div>
+            <div class="work-detail-info-item">
+              <div class="info-label">团队</div>
+              <div class="info-value">杨子硕、黄雪颖、申一辰、邱敏婧、崔晴瑜</div>
             </div>
           </div>
         </div>
@@ -2460,9 +2531,28 @@
       document.body.style.overflow = '';
     }
 
+    // ============================================
+    // WORK 05 DETAIL MODAL
+    // ============================================
+    const work05Modal = document.getElementById('work05Modal');
+
+    function openWork05(e) {
+      e.preventDefault();
+      work05Modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      work05Modal.scrollTop = 0;
+    }
+
+    function closeWork05() {
+      work05Modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        if (work04Modal.classList.contains('active')) {
+        if (work05Modal.classList.contains('active')) {
+          closeWork05();
+        } else if (work04Modal.classList.contains('active')) {
           closeWork04();
         } else if (work03Modal.classList.contains('active')) {
           closeWork03();
