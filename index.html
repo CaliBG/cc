@@ -915,8 +915,6 @@
       white-space: nowrap;
       font-weight: 100;
       width: 100%;
-      max-width: 100%;
-      overflow: hidden;
       color: var(--text-primary);
       display: flex;
       justify-content: center;
@@ -1784,7 +1782,7 @@
           <img class="testimonial-avatar" src="zerone-avatar.jpg" alt="Zerone">
           <div>
             <div class="testimonial-name">Zerone</div>
-            <div class="testimonial-role"></div>
+            <div class="testimonial-role">Hidweek 主教</div>
           </div>
         </div>
       </div>
@@ -2408,13 +2406,7 @@
             if (w > maxLineW) maxLineW = w;
           });
           if (maxLineW > 0) {
-            var vw = window.innerWidth;
-            var scale = vw <= 480 ? 0.85 : vw <= 768 ? 0.85 + (vw - 480) / (768 - 480) * 0.15 : vw <= 1440 ? 1.0 + (vw - 768) / (1440 - 768) * 0.35 : 1.35;
-            fs = fs * (cw / maxLineW) * scale;
-            // Prevent text from exceeding container width
-            if (fs * longestLine.length * 0.6 > cw) {
-              fs = cw / (longestLine.length * 0.6);
-            }
+            fs = fs * (cw / maxLineW) * 0.98;
             title.style.fontSize = fs + 'px';
           }
         }
