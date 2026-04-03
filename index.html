@@ -78,6 +78,7 @@
       scroll-behavior: smooth;
       scrollbar-width: thin;
       scrollbar-color: var(--text-muted) transparent;
+      overflow-x: hidden;
     }
 
     body {
@@ -2275,7 +2276,7 @@
     (function initTextPressure() {
       // Shared cursor state
       const globalCursor = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
       if (!isMobile) {
         window.addEventListener('mousemove', e => {
