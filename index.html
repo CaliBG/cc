@@ -2405,7 +2405,8 @@
             if (w > maxLineW) maxLineW = w;
           });
           if (maxLineW > 0) {
-            fs = fs * (cw / maxLineW) * 1.35;
+            var scale = window.innerWidth <= 768 ? 1.0 : 1.35;
+            fs = fs * (cw / maxLineW) * scale;
             title.style.fontSize = fs + 'px';
           }
         }
