@@ -343,6 +343,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      line-height: 0.85;
     }
 
     .text-pressure-line {
@@ -899,8 +900,9 @@
     /* TextPressure in contact section */
     .text-pressure-contact {
       width: 100%;
+      max-width: 900px;
+      margin: 0 auto 32px;
       height: auto;
-      margin-bottom: 32px;
     }
 
     .text-pressure-contact .text-pressure-title {
@@ -2403,13 +2405,14 @@
             if (w > maxLineW) maxLineW = w;
           });
           if (maxLineW > 0) {
-            fs = fs * (cw / maxLineW);
+            fs = fs * (cw / maxLineW) * 1.35;
             title.style.fontSize = fs + 'px';
           }
         }
         setSize();
+        window.addEventListener('resize', setSize);
 
-        return { container, title, spans, mouse: { x: globalCursor.x, y: globalCursor.y } };
+        return { container, title, spans, setSize, mouse: { x: globalCursor.x, y: globalCursor.y } };
       }
 
       // Init both instances
@@ -2417,6 +2420,11 @@
         createInstance('textPressureContainer', 'textPressureTitle', "Welcome to\nCali-Yang's personal\nportfolio website"),
         createInstance('textPressureContact', 'textPressureContactTitle', "LEAVE A TRACE")
       ].filter(Boolean);
+
+      // Wait for variable font to fully load before calculating size
+      document.fonts.ready.then(function() {
+        instances.forEach(function(inst) { inst.setSize(); });
+      });
 
       // Single shared animation loop
       function animate() {
