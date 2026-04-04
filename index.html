@@ -199,7 +199,11 @@
     .nav-links a:hover { color: var(--text-primary); }
     .nav-links a:hover::after { width: 100%; }
 
-    .theme-toggle {
+    .nav-settings {
+      position: relative;
+    }
+
+    .settings-toggle {
       width: 40px;
       height: 40px;
       border-radius: 50%;
@@ -214,17 +218,102 @@
       color: var(--text-secondary);
     }
 
-    .theme-toggle:hover {
+    .settings-toggle:hover {
       border-color: var(--accent);
       color: var(--accent);
-      transform: rotate(180deg);
+      transform: rotate(90deg);
     }
 
-    .theme-toggle svg { width: 16px; height: 16px; }
-    .theme-toggle .icon-moon { display: block; }
-    .theme-toggle .icon-sun { display: none; }
-    [data-theme="light"] .theme-toggle .icon-moon { display: none; }
-    [data-theme="light"] .theme-toggle .icon-sun { display: block; }
+    .settings-dropdown {
+      position: absolute;
+      top: calc(100% + 12px);
+      right: 0;
+      min-width: 180px;
+      padding: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: all 0.3s var(--transition);
+      z-index: 1000;
+    }
+
+    .settings-dropdown.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .settings-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .settings-item:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .settings-item .icon-moon { display: block; }
+    .settings-item .icon-sun { display: none; }
+    [data-theme="light"] .settings-item .icon-moon { display: none; }
+    [data-theme="light"] .settings-item .icon-sun { display: block; }
+
+    .settings-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 8px 0;
+    }
+
+    .settings-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 4px 12px 8px;
+    }
+
+    .settings-lang-group {
+      display: flex;
+      gap: 6px;
+      padding: 0 8px 4px;
+    }
+
+    .settings-lang-btn {
+      flex: 1;
+      padding: 8px 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .settings-lang-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .settings-lang-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
 
     .nav-logo img.logo-dark { display: none; }
     .nav-logo img.logo-light { display: block; }
@@ -1484,16 +1573,31 @@
       <img src="logo-black.png" alt="YZS" class="logo-dark" style="height:28px;width:auto;">
     </div>
     <ul class="nav-links">
-      <li><a href="#about" data-hover>关于</a></li>
-      <li><a href="#work" data-hover>作品</a></li>
-      <li><a href="#services" data-hover>服务</a></li>
-      <li><a href="#testimonials" data-hover>评价</a></li>
-      <li><a href="#contact" data-hover>联系</a></li>
+      <li><a href="#about" data-hover data-i18n="nav_about">关于</a></li>
+      <li><a href="#work" data-hover data-i18n="nav_work">作品</a></li>
+      <li><a href="#services" data-hover data-i18n="nav_services">服务</a></li>
+      <li><a href="#testimonials" data-hover data-i18n="nav_testimonials">评价</a></li>
+      <li><a href="#contact" data-hover data-i18n="nav_contact">联系</a></li>
     </ul>
-    <button class="theme-toggle" id="themeToggle" data-hover onclick="toggleTheme()" title="切换主题">
-      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-    </button>
+    <div class="nav-settings">
+      <button class="settings-toggle" id="settingsToggle" data-hover onclick="toggleSettings()" title="设置">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+      <div class="settings-dropdown" id="settingsDropdown">
+        <div class="settings-item" onclick="toggleTheme();toggleSettings();">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <span data-i18n="settings_theme">切换主题</span>
+        </div>
+        <div class="settings-divider"></div>
+        <div class="settings-label" data-i18n="settings_lang">语言</div>
+        <div class="settings-lang-group">
+          <button class="settings-lang-btn" data-lang="zh" onclick="setLang('zh')">中</button>
+          <button class="settings-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+          <button class="settings-lang-btn" data-lang="ja" onclick="setLang('ja')">日</button>
+        </div>
+      </div>
+    </div>
   </nav>
 
   <!-- Hero Section -->
@@ -1506,14 +1610,14 @@
       <div class="text-pressure-container" id="textPressureContainer">
         <h1 class="text-pressure-title" id="textPressureTitle"></h1>
       </div>
-      <p class="hero-sub">
+      <p class="hero-sub" data-i18n="hero_sub">
         我们拒绝多余的修辞，只谈存在本身。YZS 是年轻灵魂的留白区——一个探索"无我"与"存在"边界的青年视觉品牌。
       </p>
       <div class="hero-cta">
-        <a href="#work" class="btn-primary magnetic" data-hover>
+        <a href="#work" class="btn-primary magnetic" data-hover data-i18n-html="hero_cta1">
           探索作品 <span class="arrow">→</span>
         </a>
-        <a href="#contact" class="btn-outline magnetic" data-hover>
+        <a href="#contact" class="btn-outline magnetic" data-hover data-i18n="hero_cta2">
           开始对话
         </a>
       </div>
@@ -1521,23 +1625,6 @@
 
   </section>
 
-  <!-- Marquee -->
-  <div class="marquee-section">
-    <div class="marquee-track">
-      <div class="marquee-item">拒绝标签 <span class="sep"></span></div>
-      <div class="marquee-item">只留思考 <span class="sep"></span></div>
-      <div class="marquee-item">设计物 <span class="sep"></span></div>
-      <div class="marquee-item">也设计无物 <span class="sep"></span></div>
-      <div class="marquee-item">感知归零 <span class="sep"></span></div>
-      <div class="marquee-item">意义重启 <span class="sep"></span></div>
-      <div class="marquee-item">拒绝标签 <span class="sep"></span></div>
-      <div class="marquee-item">只留思考 <span class="sep"></span></div>
-      <div class="marquee-item">设计物 <span class="sep"></span></div>
-      <div class="marquee-item">也设计无物 <span class="sep"></span></div>
-      <div class="marquee-item">感知归零 <span class="sep"></span></div>
-      <div class="marquee-item">意义重启 <span class="sep"></span></div>
-    </div>
-  </div>
 
   <!-- About Section -->
   <section class="section" id="about">
@@ -1547,29 +1634,29 @@
       </div>
       <div class="about-text">
         <div class="section-header">
-          <div class="section-label reveal">关于</div>
+          <div class="section-label reveal" data-i18n="label_about">关于</div>
           <div class="text-pressure-container reveal reveal-delay-1" id="textPressureAbout" style="margin-bottom:16px;">
             <h2 class="text-pressure-title" id="textPressureAboutTitle"></h2>
           </div>
         </div>
-        <p class="reveal reveal-delay-2">
+        <p class="reveal reveal-delay-2" data-i18n="about_p1">
           我们生活在一个"过度感知"的时代。情绪被算法放大，色彩被符号化，连"真实"都被包装成消费品。YZS 不提供答案，只提供空白。
         </p>
-        <p class="reveal reveal-delay-2">
+        <p class="reveal reveal-delay-2" data-i18n="about_p2">
           我们设计物，也设计"无物"。让生活回到"零感"——那个一切重新开始的地方。我是杨子硕，一名热爱设计与视觉的美术生，喜欢用细腻的线条表达思考。我相信艺术的力量不在于高冷的展览，而在于生活被放大的温度。
         </p>
         <div class="about-stats reveal reveal-delay-3">
           <div class="stat">
             <div class="stat-number">20+</div>
-            <div class="stat-label">项目完成</div>
+            <div class="stat-label" data-i18n="stat_projects">项目完成</div>
           </div>
           <div class="stat">
             <div class="stat-number">5+</div>
-            <div class="stat-label">国内客户</div>
+            <div class="stat-label" data-i18n="stat_clients">国内客户</div>
           </div>
           <div class="stat">
             <div class="stat-number">10+</div>
-            <div class="stat-label">设计奖项</div>
+            <div class="stat-label" data-i18n="stat_awards">设计奖项</div>
           </div>
         </div>
       </div>
@@ -1579,7 +1666,7 @@
   <!-- Work Section -->
   <section class="section" id="work">
     <div class="section-header" style="max-width:1400px;margin:0 auto 80px;">
-      <div class="section-label reveal">作品</div>
+      <div class="section-label reveal" data-i18n="label_works">作品</div>
       <div class="text-pressure-container reveal reveal-delay-1" id="textPressureWorks" style="margin-bottom:16px;">
         <h2 class="text-pressure-title" id="textPressureWorksTitle"></h2>
       </div>
@@ -1598,8 +1685,8 @@
             <span class="project-tag">概念艺术</span>
             <span class="project-tag">2025</span>
           </div>
-          <h3 class="project-title">#01 43+1 — 力量与平衡</h3>
-          <p class="project-desc">捕捉"力量被凝固"的瞬间。榔头本应是主导的工具，但在这里，它被定格在钉子的世界中——失去了攻击性，反而被钉子们支撑着、包围着。一个关于行动与克制之间悬停的身体叙事。</p>
+          <h3 class="project-title" data-i18n="w1_title">#01 43+1 — 力量与平衡</h3>
+          <p class="project-desc" data-i18n="w1_desc">捕捉"力量被凝固"的瞬间。榔头本应是主导的工具，但在这里，它被定格在钉子的世界中——失去了攻击性，反而被钉子们支撑着、包围着。一个关于行动与克制之间悬停的身体叙事。</p>
         </div>
       </div>
 
@@ -1616,8 +1703,8 @@
             <span class="project-tag">互动艺术</span>
             <span class="project-tag">2025</span>
           </div>
-          <h3 class="project-title">#02 皮囊记忆 / Memory of the Flesh</h3>
-          <p class="project-desc">镜面被框入洁白的边界中，观者既成为观看者，也成为被观看者——一份关于"身体记忆"的存在证据。</p>
+          <h3 class="project-title" data-i18n="w2_title">#02 皮囊记忆 / Memory of the Flesh</h3>
+          <p class="project-desc" data-i18n="w2_desc">镜面被框入洁白的边界中，观者既成为观看者，也成为被观看者——一份关于"身体记忆"的存在证据。</p>
         </div>
       </div>
 
@@ -1634,8 +1721,8 @@
             <span class="project-tag">装置雕塑</span>
             <span class="project-tag">2025</span>
           </div>
-          <h3 class="project-title">#03 痛</h3>
-          <p class="project-desc">以"皮囊"为核心意象，隐喻当代个体在社交滤镜与社会规训下被捆束、塑形的状态。</p>
+          <h3 class="project-title" data-i18n="w3_title">#03 痛</h3>
+          <p class="project-desc" data-i18n="w3_desc">以"皮囊"为核心意象，隐喻当代个体在社交滤镜与社会规训下被捆束、塑形的状态。</p>
         </div>
       </div>
 
@@ -1652,8 +1739,8 @@
             <span class="project-tag">仿生设计</span>
             <span class="project-tag">团队协作</span>
           </div>
-          <h3 class="project-title">#04 深海呼吸</h3>
-          <p class="project-desc">当社会压力如深海般无声蔓延，服饰表面流动的呼吸鳃结构将焦虑转化为可视的起伏波纹。</p>
+          <h3 class="project-title" data-i18n="w4_title">#04 深海呼吸</h3>
+          <p class="project-desc" data-i18n="w4_desc">当社会压力如深海般无声蔓延，服饰表面流动的呼吸鳃结构将焦虑转化为可视的起伏波纹。</p>
         </div>
       </div>
 
@@ -1670,8 +1757,8 @@
             <span class="project-tag">时间感知</span>
             <span class="project-tag">团队协作</span>
           </div>
-          <h3 class="project-title">#05 拓印-流动的痕</h3>
-          <p class="project-desc">以"沙"为媒介，将无形的时间感知转化为可观察与触摸的流动痕迹，距离即介入，观众即参与者。</p>
+          <h3 class="project-title" data-i18n="w5_title">#05 拓印-流动的痕</h3>
+          <p class="project-desc" data-i18n="w5_desc">以"沙"为媒介，将无形的时间感知转化为可观察与触摸的流动痕迹，距离即介入，观众即参与者。</p>
         </div>
       </div>
     </div>
@@ -1680,7 +1767,7 @@
   <!-- Services Section -->
   <section class="section" id="services">
     <div class="section-header" style="max-width:1400px;margin:0 auto 80px;">
-      <div class="section-label reveal">服务</div>
+      <div class="section-label reveal" data-i18n="label_services">服务</div>
       <div class="text-pressure-container reveal reveal-delay-1" id="textPressureServices" style="margin-bottom:16px;">
         <h2 class="text-pressure-title" id="textPressureServicesTitle"></h2>
       </div>
@@ -1688,12 +1775,12 @@
     <div class="services-list">
       <a href="scc-brand.pdf" target="_blank" class="service-item reveal" style="text-decoration:none;color:inherit;cursor:pointer;">
         <span class="service-num">01</span>
-        <span class="service-name">品牌视觉搭建</span>
+        <span class="service-name" data-i18n="svc_brand">品牌视觉搭建</span>
         <span class="service-arrow">→</span>
       </a>
       <div class="service-item reveal" style="cursor:pointer;" onclick="document.getElementById('socialModal').classList.add('active');document.body.style.overflow='hidden';">
         <span class="service-num">02</span>
-        <span class="service-name">社媒视觉链接</span>
+        <span class="service-name" data-i18n="svc_social">社媒视觉链接</span>
         <span class="service-arrow">→</span>
       </div>
     </div>
@@ -1702,7 +1789,7 @@
   <!-- Testimonials Section -->
   <section class="section" id="testimonials">
     <div class="section-header" style="max-width:1400px;margin:0 auto 80px;">
-      <div class="section-label reveal">评价</div>
+      <div class="section-label reveal" data-i18n="label_testimonials">评价</div>
       <div class="text-pressure-container reveal reveal-delay-1" id="textPressureTestimonials" style="margin-bottom:16px;">
         <h2 class="text-pressure-title" id="textPressureTestimonialsTitle"></h2>
       </div>
@@ -1716,12 +1803,12 @@
           <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
         </div>
-        <p class="testimonial-text">"子硕对设计细节的把控力令人叹服。他不仅仅是在做设计，更是在讲述一个品牌的故事。最终成果远超我们的预期。"</p>
+        <p class="testimonial-text" data-i18n="t1_text">"子硕对设计细节的把控力令人叹服。他不仅仅是在做设计，更是在讲述一个品牌的故事。最终成果远超我们的预期。"</p>
         <div class="testimonial-author">
           <img class="testimonial-avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="李明">
           <div>
-            <div class="testimonial-name">李明</div>
-            <div class="testimonial-role">NOVA 银行 · CEO</div>
+            <div class="testimonial-name" data-i18n="t1_name">李明</div>
+            <div class="testimonial-role" data-i18n="t1_role">NOVA 银行 · CEO</div>
           </div>
         </div>
       </div>
@@ -1734,12 +1821,12 @@
           <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
         </div>
-        <p class="testimonial-text">"子硕身上有一种很少见的组合：美术生的感知力，加上对技术工具毫不畏惧的探索欲。他对品牌视觉的理解不只是做好看的东西，而是能从哲学层面思考'为什么要这样做'。对 AIGC 和 vibe coding 的探索也不是浅尝辄止，而是真正融入了自己的设计工作流。他总是同时在推进好几件事——品牌设计、网站搭建、自媒体运营——每一件都不敷衍，从不等别人推着走，永远自己找方向。本科阶段就能独立完成从品牌定位到视觉落地的全流程，自驱力极强，未来可期。"</p>
+        <p class="testimonial-text" data-i18n="t2_text">"子硕身上有一种很少见的组合：美术生的感知力，加上对技术工具毫不畏惧的探索欲。他对品牌视觉的理解不只是做好看的东西，而是能从哲学层面思考'为什么要这样做'。对 AIGC 和 vibe coding 的探索也不是浅尝辄止，而是真正融入了自己的设计工作流。他总是同时在推进好几件事——品牌设计、网站搭建、自媒体运营——每一件都不敷衍，从不等别人推着走，永远自己找方向。本科阶段就能独立完成从品牌定位到视觉落地的全流程，自驱力极强，未来可期。"</p>
         <div class="testimonial-author">
           <img class="testimonial-avatar" src="liuyanjun-avatar.jpg" alt="刘彦君">
           <div>
-            <div class="testimonial-name">刘彦君</div>
-            <div class="testimonial-role">华南筑真科技</div>
+            <div class="testimonial-name" data-i18n="t2_name">刘彦君</div>
+            <div class="testimonial-role" data-i18n="t2_role">华南筑真科技</div>
           </div>
         </div>
       </div>
@@ -1752,12 +1839,12 @@
           <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
         </div>
-        <p class="testimonial-text">"从思路到落地，每一个环节，子硕都能比较稳定的跟进，并且能够给到一些启发性的建设意见，很期待他未来能创造出更有张力的作品。"</p>
+        <p class="testimonial-text" data-i18n="t3_text">"从思路到落地，每一个环节，子硕都能比较稳定的跟进，并且能够给到一些启发性的建设意见，很期待他未来能创造出更有张力的作品。"</p>
         <div class="testimonial-author">
           <img class="testimonial-avatar" src="zerone-avatar.jpg" alt="Zerone">
           <div>
             <div class="testimonial-name">Zerone</div>
-            <div class="testimonial-role">Hidweek 主教</div>
+            <div class="testimonial-role" data-i18n="t3_role">Hidweek 主教</div>
           </div>
         </div>
       </div>
@@ -1767,21 +1854,21 @@
   <!-- Contact Section -->
   <section class="section" id="contact">
     <div class="contact">
-      <div class="section-label reveal">联系</div>
+      <div class="section-label reveal" data-i18n="label_contact">联系</div>
       <div class="text-pressure-container reveal reveal-delay-1" id="textPressureContact" style="margin-bottom:16px;">
         <h2 class="text-pressure-title" id="textPressureContactTitle"></h2>
       </div>
-      <p class="contact-sub reveal reveal-delay-2">
+      <p class="contact-sub reveal reveal-delay-2" data-i18n="contact_sub">
         如果你也在思考"存在"与"无"的边界，或者只是想聊聊——空白本身就是一种回应。
       </p>
       <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
         <button class="btn-card reveal reveal-delay-3 magnetic" data-hover onclick="openCard(event)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M8 10h.01"/><path d="M12 10h4"/><path d="M8 14h8"/></svg>
-          查看我的名片
+          <span data-i18n="btn_card">查看我的名片</span>
         </button>
         <button class="btn-card reveal reveal-delay-3 magnetic" data-hover onclick="openResume(event)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-          查看我的简历
+          <span data-i18n="btn_resume">查看我的简历</span>
         </button>
       </div>
       <div class="contact-divider"></div>
@@ -1816,7 +1903,7 @@
     <div class="work-detail">
       <div class="work-detail-header">
         <div class="work-detail-num">#01</div>
-        <h2 class="work-detail-title">43+1 — <span class="serif">力量与平衡</span></h2>
+        <h2 class="work-detail-title" data-i18n-html="wd1_title">43+1 — <span class="serif">力量与平衡</span></h2>
         <div class="work-detail-meta">
           <span class="project-tag">立体装置</span>
           <span class="project-tag">概念艺术</span>
@@ -1834,30 +1921,30 @@
           </div>
         </div>
         <div class="work-detail-text">
-          <div class="work-detail-label">创作理念</div>
-          <div class="work-detail-quote">
+          <div class="work-detail-label" data-i18n="wd_concept">创作理念</div>
+          <div class="work-detail-quote" data-i18n-html="wd1_quote">
             行动与克制之间的悬停——<br>那是力量被凝固的瞬间
           </div>
-          <div class="work-detail-desc">
+          <div class="work-detail-desc" data-i18n-html="wd1_desc">
             <p>作品《#01 43+1》的灵感来自于一个关于"力量与平衡"的身体瞬间。它捕捉了一只手高高举起榔头、即将敲下的一刻，我感受到身体内部的张力——那是一种在行动与克制之间的悬停。</p>
             <p>我想捕捉这种"力量被凝固"的瞬间，于是选择用榔头与钉子来构建这个立体结构。榔头本应是主导的工具，但在这里，它却被定格在钉子的世界中——它失去了攻击性，反而被钉子们支撑着、包围着。</p>
           </div>
           <div class="work-detail-divider"></div>
           <div class="work-detail-info-grid">
             <div class="work-detail-info-item">
-              <div class="info-label">材料</div>
-              <div class="info-value">榔头、钉子、木板</div>
+              <div class="info-label" data-i18n="wd_material">材料</div>
+              <div class="info-value" data-i18n="wd1_material">榔头、钉子、木板</div>
             </div>
             <div class="work-detail-info-item">
-              <div class="info-label">日期</div>
+              <div class="info-label" data-i18n="wd_date">日期</div>
               <div class="info-value">2025 / 10 / 26</div>
             </div>
             <div class="work-detail-info-item">
-              <div class="info-label">编号</div>
+              <div class="info-label" data-i18n="wd_number">编号</div>
               <div class="info-value">#01 of Series</div>
             </div>
             <div class="work-detail-info-item">
-              <div class="info-label">创作者</div>
+              <div class="info-label" data-i18n="wd_creator">创作者</div>
               <div class="info-value">杨子硕 Cali-Yang</div>
             </div>
           </div>
@@ -1872,7 +1959,7 @@
     <div class="work-detail">
       <div class="work-detail-header">
         <div class="work-detail-num">#04</div>
-        <h2 class="work-detail-title">深海呼吸 — <span class="serif">压力代谢仪式</span></h2>
+        <h2 class="work-detail-title" data-i18n-html="wd4_title">深海呼吸 — <span class="serif">压力代谢仪式</span></h2>
         <div class="work-detail-meta">
           <span class="project-tag">智能穿戴</span>
           <span class="project-tag">仿生设计</span>
@@ -1887,11 +1974,11 @@
           </div>
         </div>
         <div class="work-detail-text">
-          <div class="work-detail-label">创作理念</div>
-          <div class="work-detail-quote">
+          <div class="work-detail-label" data-i18n="wd_concept">创作理念</div>
+          <div class="work-detail-quote" data-i18n-html="wd4_quote">
             穿戴者与服饰共同呼吸，<br>在科技与身体的交融中，<br>完成无声的压力代谢
           </div>
-          <div class="work-detail-desc">
+          <div class="work-detail-desc" data-i18n-html="wd4_desc">
             <p>在这件智能可穿戴作品中，我们构想了一个近未来的隐喻：当社会压力如深海般无声蔓延，人类也随之演化。服饰表面流动的呼吸鳃结构，并非装饰——它随穿戴者的呼吸频率与心理压力，将焦虑转化为可视的起伏波纹，宛如深海生物在高压环境中的生存仪式。</p>
             <p>与此同时，一条仿生感官脊柱从颈后延伸至脊椎，外露的感应单元如同神经突触般闪烁微光。它象征数字时代人类被强化的感知力——对信息、情绪与环境刺激的极度敏感，也折射出现代人无处隐藏的神经张力。</p>
             <p>脊柱与呼吸鳃形成有机联觉系统，当外界压力攀升，脊柱流光加速脉动，鳃的开合频率也随之改变，构成一幅完整的压力生态可视化图景。这既是对深海适应机制的仿生致敬，亦是对当代生存状态的清醒凝视。</p>
@@ -1899,19 +1986,19 @@
           <div class="work-detail-divider"></div>
           <div class="work-detail-info-grid">
             <div class="work-detail-info-item">
-              <div class="info-label">材料</div>
-              <div class="info-value">3D打印结构、传感器、电子元件、织物</div>
+              <div class="info-label" data-i18n="wd_material">材料</div>
+              <div class="info-value" data-i18n="wd4_material">3D打印结构、传感器、电子元件、织物</div>
             </div>
             <div class="work-detail-info-item">
-              <div class="info-label">类型</div>
-              <div class="info-value">智能可穿戴交互装置</div>
+              <div class="info-label" data-i18n="wd_type">类型</div>
+              <div class="info-value" data-i18n="wd4_type">智能可穿戴交互装置</div>
             </div>
             <div class="work-detail-info-item">
-              <div class="info-label">编号</div>
+              <div class="info-label" data-i18n="wd_number">编号</div>
               <div class="info-value">#04 of Series</div>
             </div>
             <div class="work-detail-info-item">
-              <div class="info-label">团队</div>
+              <div class="info-label" data-i18n="wd_team">团队</div>
               <div class="info-value">杨子硕、陈炜翔、李卓霖、温勤学、庄嘉程、陈静怡</div>
             </div>
           </div>
@@ -1926,7 +2013,7 @@
     <div class="work-detail">
       <div class="work-detail-header">
         <div class="work-detail-num">#03</div>
-        <h2 class="work-detail-title">痛 — <span class="serif">被规训的皮囊</span></h2>
+        <h2 class="work-detail-title" data-i18n-html="wd3_title">痛 — <span class="serif">被规训的皮囊</span></h2>
         <div class="work-detail-meta">
           <span class="project-tag">综合材料</span>
           <span class="project-tag">装置雕塑</span>
@@ -1943,30 +2030,30 @@
           </div>
         </div>
         <div class="work-detail-text">
-          <div class="work-detail-label">创作理念</div>
-          <div class="work-detail-quote">
+          <div class="work-detail-label" data-i18n="wd_concept">创作理念</div>
+          <div class="work-detail-quote" data-i18n-html="wd3_quote">
             社会的规训如同密织的线，<br>将人的"外壳"<br>绑缚成标准的褶皱
           </div>
-          <div class="work-detail-desc">
+          <div class="work-detail-desc" data-i18n-html="wd3_desc">
             <p>《#03 痛》以"皮囊"为核心意象，隐喻当代个体在社交滤镜与社会规训下被捆束、塑形的状态。</p>
             <p>作品借鉴久保田華布对"残像记忆"的处理，以金属网与石膏的叠加象征被压缩的情绪与碎裂的自我形状。钢丝与石膏的质感碰撞、色彩的冷暖与对比，共同构成一段关于规训、记忆与自我挣脱的视觉叙事。</p>
           </div>
           <div class="work-detail-divider"></div>
           <div class="work-detail-info-grid">
             <div class="work-detail-info-item">
-              <div class="info-label">材料</div>
-              <div class="info-value">金属网、石膏、钢丝、色彩颜料</div>
+              <div class="info-label" data-i18n="wd_material">材料</div>
+              <div class="info-value" data-i18n="wd3_material">金属网、石膏、钢丝、色彩颜料</div>
             </div>
             <div class="work-detail-info-item">
-              <div class="info-label">灵感</div>
-              <div class="info-value">久保田華布 · 残像记忆</div>
+              <div class="info-label" data-i18n="wd_inspiration">灵感</div>
+              <div class="info-value" data-i18n="wd3_inspiration">久保田華布 · 残像记忆</div>
             </div>
             <div class="work-detail-info-item">
-              <div class="info-label">编号</div>
+              <div class="info-label" data-i18n="wd_number">编号</div>
               <div class="info-value">#03 of Series</div>
             </div>
             <div class="work-detail-info-item">
-              <div class="info-label">创作者</div>
+              <div class="info-label" data-i18n="wd_creator">创作者</div>
               <div class="info-value">杨子硕 Cali-Yang</div>
             </div>
           </div>
@@ -1981,7 +2068,7 @@
     <div class="work-detail">
       <div class="work-detail-header">
         <div class="work-detail-num">#02</div>
-        <h2 class="work-detail-title">皮囊记忆 / <span class="serif">Memory of the Flesh</span></h2>
+        <h2 class="work-detail-title" data-i18n-html="wd2_title">皮囊记忆 / <span class="serif">Memory of the Flesh</span></h2>
         <div class="work-detail-meta">
           <span class="project-tag">镜面装置</span>
           <span class="project-tag">互动艺术</span>
@@ -2000,11 +2087,11 @@
           </div>
         </div>
         <div class="work-detail-text">
-          <div class="work-detail-label">创作理念</div>
-          <div class="work-detail-quote">
+          <div class="work-detail-label" data-i18n="wd_concept">创作理念</div>
+          <div class="work-detail-quote" data-i18n-html="wd2_quote">
             当观众靠近镜面时，<br>他们既成为观看者，<br>也成为被观看者
           </div>
-          <div class="work-detail-desc">
+          <div class="work-detail-desc" data-i18n-html="wd2_desc">
             <p>镜面被框入洁白的边界中，像一张被档案化的证据页。观者在镜中看到的倒影，与现实重叠在一起，形成一种被动的对视关系。</p>
             <p>画框象征"被社会规训的目光"，而镜面是"自我反思的现场"。当观众靠近镜面时，他们既成为观看者，也成为被观看者。</p>
             <p>作品编号"#2"与日期标注"2025/11/13"，让这件作品带有档案与实验的意味——仿佛是一段关于"身体记忆"的研究样本，也是一份艺术家在特定时间留下的存在证据。</p>
@@ -2012,19 +2099,19 @@
           <div class="work-detail-divider"></div>
           <div class="work-detail-info-grid">
             <div class="work-detail-info-item">
-              <div class="info-label">材料</div>
-              <div class="info-value">镜面、画框、印刷文字</div>
+              <div class="info-label" data-i18n="wd_material">材料</div>
+              <div class="info-value" data-i18n="wd2_material">镜面、画框、印刷文字</div>
             </div>
             <div class="work-detail-info-item">
-              <div class="info-label">日期</div>
+              <div class="info-label" data-i18n="wd_date">日期</div>
               <div class="info-value">2025 / 11 / 13</div>
             </div>
             <div class="work-detail-info-item">
-              <div class="info-label">编号</div>
+              <div class="info-label" data-i18n="wd_number">编号</div>
               <div class="info-value">#02 of Series</div>
             </div>
             <div class="work-detail-info-item">
-              <div class="info-label">创作者</div>
+              <div class="info-label" data-i18n="wd_creator">创作者</div>
               <div class="info-value">杨子硕 Cali-Yang</div>
             </div>
           </div>
@@ -2039,7 +2126,7 @@
     <div class="work-detail">
       <div class="work-detail-header">
         <div class="work-detail-num">#05</div>
-        <h2 class="work-detail-title">拓印-流动的痕</h2>
+        <h2 class="work-detail-title" data-i18n="wd5_title">拓印-流动的痕</h2>
         <div class="work-detail-meta">
           <span class="project-tag">交互装置</span>
           <span class="project-tag">时间感知</span>
@@ -2051,11 +2138,11 @@
           <img src="work05.jpg" alt="#05 拓印-流动的痕">
         </div>
         <div class="work-detail-text">
-          <div class="work-detail-label">创作理念</div>
-          <div class="work-detail-quote">
+          <div class="work-detail-label" data-i18n="wd_concept">创作理念</div>
+          <div class="work-detail-quote" data-i18n-html="wd5_quote">
             试图控制时间只会加速其流失，<br>而真正的"留痕"来自顺应与沉淀
           </div>
-          <div class="work-detail-desc">
+          <div class="work-detail-desc" data-i18n-html="wd5_desc">
             <p>《拓印-流动的痕》是一件以"时间感知"为核心议题的交互装置。作品从心理层面对时间展开探讨，关注人在不同情绪与专注状态下所产生的"时间感知扭曲"现象——当人焦虑或专注时，时间仿佛被拉长；而在放松或沉浸娱乐时，时间却悄然加速流逝。</p>
             <p>装置以"沙"为核心媒介，借助其流动性与可塑性，隐喻时间的易逝与留痕特性。整体形态为一个直径约30cm的圆形黑色沙台，中央堆起沙丘，底部隐藏机械结构与传感系统。</p>
             <p>当观众靠近时，超声波传感器触发装置运作，沙丘在震动与旋转中逐渐崩塌与流动，呈现出被"唤醒"的时间状态；当观众远离，装置缓慢回归静止，但沙面已留下不可逆的痕迹，记录下刚刚发生的"时间轨迹"。</p>
@@ -2064,19 +2151,19 @@
           <div class="work-detail-divider"></div>
           <div class="work-detail-info-grid">
             <div class="work-detail-info-item">
-              <div class="info-label">材料</div>
-              <div class="info-value">黑色沙、圆形沙台、超声波传感器、机械结构</div>
+              <div class="info-label" data-i18n="wd_material">材料</div>
+              <div class="info-value" data-i18n="wd5_material">黑色沙、圆形沙台、超声波传感器、机械结构</div>
             </div>
             <div class="work-detail-info-item">
-              <div class="info-label">类型</div>
-              <div class="info-value">交互装置 / 时间感知</div>
+              <div class="info-label" data-i18n="wd_type">类型</div>
+              <div class="info-value" data-i18n="wd5_type">交互装置 / 时间感知</div>
             </div>
             <div class="work-detail-info-item">
-              <div class="info-label">编号</div>
+              <div class="info-label" data-i18n="wd_number">编号</div>
               <div class="info-value">#05 of Series</div>
             </div>
             <div class="work-detail-info-item">
-              <div class="info-label">团队</div>
+              <div class="info-label" data-i18n="wd_team">团队</div>
               <div class="info-value">杨子硕、黄雪颖、申一辰、邱敏婧、崔晴瑜</div>
             </div>
           </div>
@@ -2123,7 +2210,7 @@
   <footer class="footer">
     <div>© 2026 YZS — Yet Zero Sense. 杨子硕</div>
     <div class="footer-right">
-      <span>感知归零，一切重新开始</span>
+      <span data-i18n="footer_slogan">感知归零，一切重新开始</span>
     </div>
   </footer>
 
@@ -2278,34 +2365,51 @@
 
           overlay.innerHTML =
             '<div style="display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;padding:0 32px;">' +
-              // Step 1: Logo
               '<img src="logo-white.png" alt="YZS" style="height:60px;width:auto;opacity:0;transition:opacity 0.8s ease;" id="gyroLogo">' +
-              // Step 2: Welcome text
-              '<div style="opacity:0;transition:opacity 0.8s ease;" id="gyroWelcome">' +
-                '<div style="font-size:22px;font-weight:700;letter-spacing:2px;margin-bottom:6px;">欢迎访问YZS个人网站</div>' +
-                '<div style="font-size:13px;opacity:0.5;">Welcome to YZS Personal Website</div>' +
+              '<div id="gyroWelcome">' +
+                '<div id="gyroTitle" style="font-size:22px;font-weight:700;letter-spacing:2px;margin-bottom:6px;overflow:hidden;"></div>' +
+                '<div id="gyroSub" style="font-size:13px;opacity:0.5;overflow:hidden;"></div>' +
               '</div>' +
-              // Step 3: Tap hint
-              '<div style="opacity:0;transition:opacity 0.8s ease;margin-top:16px;" id="gyroTapHint">' +
-                '<div style="width:48px;height:48px;border:2px solid rgba(255,255,255,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;animation:pulse 2s ease-in-out infinite;">' +
+              '<div id="gyroTapHint" style="margin-top:16px;">' +
+                '<div style="width:48px;height:48px;border:2px solid rgba(255,255,255,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;animation:pulse 2s ease-in-out infinite;opacity:0;transition:opacity 0.8s ease;" id="gyroIcon">' +
                   '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>' +
                 '</div>' +
-                '<div style="font-size:16px;font-weight:600;letter-spacing:1px;">轻触屏幕以启用体感交互</div>' +
+                '<div id="gyroHintText" style="font-size:16px;font-weight:600;letter-spacing:1px;overflow:hidden;"></div>' +
               '</div>' +
             '</div>';
 
           document.body.appendChild(overlay);
+
+          // SplitText animation helper
+          function splitTextAnimate(el, text, delay, charDelay) {
+            el.innerHTML = '';
+            text.split('').forEach(function(char, i) {
+              var span = document.createElement('span');
+              span.textContent = char;
+              span.style.cssText = 'display:inline-block;opacity:0;transform:translateY(30px);transition:opacity 0.5s ease,transform 0.5s ease;';
+              if (char === ' ') span.style.width = '0.3em';
+              el.appendChild(span);
+              setTimeout(function() {
+                span.style.opacity = '1';
+                span.style.transform = 'translateY(0)';
+              }, delay + i * charDelay);
+            });
+          }
 
           // Sequenced animation
           setTimeout(function() {
             document.getElementById('gyroLogo').style.opacity = '1';
           }, 300);
           setTimeout(function() {
-            document.getElementById('gyroWelcome').style.opacity = '1';
+            splitTextAnimate(document.getElementById('gyroTitle'), '欢迎访问YZS个人网站', 0, 60);
           }, 1200);
           setTimeout(function() {
-            document.getElementById('gyroTapHint').style.opacity = '1';
-          }, 2200);
+            splitTextAnimate(document.getElementById('gyroSub'), 'Welcome to YZS Personal Website', 0, 30);
+          }, 1800);
+          setTimeout(function() {
+            document.getElementById('gyroIcon').style.opacity = '1';
+            splitTextAnimate(document.getElementById('gyroHintText'), '轻触屏幕以启用体感交互', 0, 50);
+          }, 2800);
 
           overlay.addEventListener('click', function() {
             DeviceOrientationEvent.requestPermission().then(function(state) {
@@ -2675,6 +2779,173 @@
         }
       }
     });
+
+    // ============================================
+    // LANGUAGE SWITCH (中/EN/日)
+    // ============================================
+    var currentLang = localStorage.getItem('lang') || 'zh';
+    var langs = ['zh', 'en', 'ja'];
+    var langLabels = { zh: '中', en: 'EN', ja: '日' };
+
+    var i18n = {
+      zh: {
+        nav_about: '关于', nav_work: '作品', nav_services: '服务', nav_testimonials: '评价', nav_contact: '联系',
+        hero_sub: '我们拒绝多余的修辞，只谈存在本身。YZS 是年轻灵魂的留白区——一个探索"无我"与"存在"边界的青年视觉品牌。',
+        hero_cta1: '探索作品 <span class="arrow">→</span>', hero_cta2: '开始对话',
+        label_about: '关于', label_works: '作品', label_services: '服务', label_testimonials: '评价', label_contact: '联系',
+        about_p1: '我们生活在一个"过度感知"的时代。情绪被算法放大，色彩被符号化，连"真实"都被包装成消费品。YZS 不提供答案，只提供空白。',
+        about_p2: '我们设计物，也设计"无物"。让生活回到"零感"——那个一切重新开始的地方。我是杨子硕，一名热爱设计与视觉的美术生，喜欢用细腻的线条表达思考。我相信艺术的力量不在于高冷的展览，而在于生活被放大的温度。',
+        stat_projects: '项目完成', stat_clients: '国内客户', stat_awards: '设计奖项',
+        w1_title: '#01 43+1 — 力量与平衡', w1_desc: '捕捉"力量被凝固"的瞬间。榔头本应是主导的工具，但在这里，它被定格在钉子的世界中——失去了攻击性，反而被钉子们支撑着、包围着。一个关于行动与克制之间悬停的身体叙事。',
+        w2_title: '#02 皮囊记忆 / Memory of the Flesh', w2_desc: '镜面被框入洁白的边界中，观者既成为观看者，也成为被观看者——一份关于"身体记忆"的存在证据。',
+        w3_title: '#03 痛', w3_desc: '以"皮囊"为核心意象，隐喻当代个体在社交滤镜与社会规训下被捆束、塑形的状态。',
+        w4_title: '#04 深海呼吸', w4_desc: '当社会压力如深海般无声蔓延，服饰表面流动的呼吸鳃结构将焦虑转化为可视的起伏波纹。',
+        w5_title: '#05 拓印-流动的痕', w5_desc: '以"沙"为媒介，将无形的时间感知转化为可观察与触摸的流动痕迹，距离即介入，观众即参与者。',
+        svc_brand: '品牌视觉搭建', svc_social: '社媒视觉链接',
+        t1_text: '"子硕对设计细节的把控力令人叹服。他不仅仅是在做设计，更是在讲述一个品牌的故事。最终成果远超我们的预期。"', t1_name: '李明', t1_role: 'NOVA 银行 · CEO',
+        t2_text: '"子硕身上有一种很少见的组合：美术生的感知力，加上对技术工具毫不畏惧的探索欲。他对品牌视觉的理解不只是做好看的东西，而是能从哲学层面思考\'为什么要这样做\'。对 AIGC 和 vibe coding 的探索也不是浅尝辄止，而是真正融入了自己的设计工作流。他总是同时在推进好几件事——品牌设计、网站搭建、自媒体运营——每一件都不敷衍，从不等别人推着走，永远自己找方向。本科阶段就能独立完成从品牌定位到视觉落地的全流程，自驱力极强，未来可期。"', t2_name: '刘彦君', t2_role: '华南筑真科技',
+        t3_text: '"从思路到落地，每一个环节，子硕都能比较稳定的跟进，并且能够给到一些启发性的建设意见，很期待他未来能创造出更有张力的作品。"', t3_role: 'Hidweek 主教',
+        btn_card: '查看我的名片', btn_resume: '查看我的简历',
+        contact_sub: '如果你也在思考"存在"与"无"的边界，或者只是想聊聊——空白本身就是一种回应。',
+        footer_slogan: '感知归零，一切重新开始',
+        settings_theme: '切换主题', settings_lang: '语言',
+        wd1_title: '43+1 — <span class="serif">力量与平衡</span>', wd2_title: '皮囊记忆 / <span class="serif">Memory of the Flesh</span>', wd3_title: '痛 — <span class="serif">被规训的皮囊</span>', wd4_title: '深海呼吸 — <span class="serif">压力代谢仪式</span>', wd5_title: '拓印-流动的痕',
+        wd_concept: '创作理念', wd_material: '材料', wd_date: '日期', wd_number: '编号', wd_creator: '创作者', wd_type: '类型', wd_team: '团队', wd_inspiration: '灵感',
+        wd1_quote: '行动与克制之间的悬停——<br>那是力量被凝固的瞬间',
+        wd1_desc: '<p>作品《#01 43+1》的灵感来自于一个关于"力量与平衡"的身体瞬间。它捕捉了一只手高高举起榔头、即将敲下的一刻，我感受到身体内部的张力——那是一种在行动与克制之间的悬停。</p><p>我想捕捉这种"力量被凝固"的瞬间，于是选择用榔头与钉子来构建这个立体结构。榔头本应是主导的工具，但在这里，它却被定格在钉子的世界中——它失去了攻击性，反而被钉子们支撑着、包围着。</p>',
+        wd1_material: '榔头、钉子、木板',
+        wd2_quote: '当观众靠近镜面时，<br>他们既成为观看者，<br>也成为被观看者',
+        wd2_desc: '<p>镜面被框入洁白的边界中，像一张被档案化的证据页。观者在镜中看到的倒影，与现实重叠在一起，形成一种被动的对视关系。</p><p>画框象征"被社会规训的目光"，而镜面是"自我反思的现场"。当观众靠近镜面时，他们既成为观看者，也成为被观看者。</p><p>作品编号"#2"与日期标注"2025/11/13"，让这件作品带有档案与实验的意味——仿佛是一段关于"身体记忆"的研究样本，也是一份艺术家在特定时间留下的存在证据。</p>',
+        wd2_material: '镜面、画框、印刷文字',
+        wd3_quote: '社会的规训如同密织的线，<br>将人的"外壳"<br>绑缚成标准的褶皱',
+        wd3_desc: '<p>《#03 痛》以"皮囊"为核心意象，隐喻当代个体在社交滤镜与社会规训下被捆束、塑形的状态。</p><p>作品借鉴久保田華布对"残像记忆"的处理，以金属网与石膏的叠加象征被压缩的情绪与碎裂的自我形状。钢丝与石膏的质感碰撞、色彩的冷暖与对比，共同构成一段关于规训、记忆与自我挣脱的视觉叙事。</p>',
+        wd3_material: '金属网、石膏、钢丝、色彩颜料', wd3_inspiration: '久保田華布 · 残像记忆',
+        wd4_quote: '穿戴者与服饰共同呼吸，<br>在科技与身体的交融中，<br>完成无声的压力代谢',
+        wd4_desc: '<p>在这件智能可穿戴作品中，我们构想了一个近未来的隐喻：当社会压力如深海般无声蔓延，人类也随之演化。服饰表面流动的呼吸鳃结构，并非装饰——它随穿戴者的呼吸频率与心理压力，将焦虑转化为可视的起伏波纹，宛如深海生物在高压环境中的生存仪式。</p><p>与此同时，一条仿生感官脊柱从颈后延伸至脊椎，外露的感应单元如同神经突触般闪烁微光。它象征数字时代人类被强化的感知力——对信息、情绪与环境刺激的极度敏感，也折射出现代人无处隐藏的神经张力。</p><p>脊柱与呼吸鳃形成有机联觉系统，当外界压力攀升，脊柱流光加速脉动，鳃的开合频率也随之改变，构成一幅完整的压力生态可视化图景。这既是对深海适应机制的仿生致敬，亦是对当代生存状态的清醒凝视。</p>',
+        wd4_material: '3D打印结构、传感器、电子元件、织物', wd4_type: '智能可穿戴交互装置',
+        wd5_quote: '试图控制时间只会加速其流失，<br>而真正的"留痕"来自顺应与沉淀',
+        wd5_desc: '<p>《拓印-流动的痕》是一件以"时间感知"为核心议题的交互装置。作品从心理层面对时间展开探讨，关注人在不同情绪与专注状态下所产生的"时间感知扭曲"现象——当人焦虑或专注时，时间仿佛被拉长；而在放松或沉浸娱乐时，时间却悄然加速流逝。</p><p>装置以"沙"为核心媒介，借助其流动性与可塑性，隐喻时间的易逝与留痕特性。整体形态为一个直径约30cm的圆形黑色沙台，中央堆起沙丘，底部隐藏机械结构与传感系统。</p><p>当观众靠近时，超声波传感器触发装置运作，沙丘在震动与旋转中逐渐崩塌与流动，呈现出被"唤醒"的时间状态；当观众远离，装置缓慢回归静止，但沙面已留下不可逆的痕迹，记录下刚刚发生的"时间轨迹"。</p><p>这种"距离即介入"的交互逻辑，使观众从旁观者转变为时间流动的参与者。作品强调，时间并非单向消逝，而是在不断覆盖与重构中循环生成。通过这一装置，观众得以在可视化的流动与残留之间，重新感知时间的存在，并反思自身在快节奏生活中的状态。</p>',
+        wd5_material: '黑色沙、圆形沙台、超声波传感器、机械结构', wd5_type: '交互装置 / 时间感知'
+      },
+      en: {
+        nav_about: 'About', nav_work: 'Works', nav_services: 'Services', nav_testimonials: 'Testimonials', nav_contact: 'Contact',
+        hero_sub: 'We reject unnecessary rhetoric and speak only of existence itself. YZS is a blank canvas for young souls — a youth visual brand exploring the boundary between "selflessness" and "being".',
+        hero_cta1: 'Explore Works <span class="arrow">→</span>', hero_cta2: 'Get in Touch',
+        label_about: 'About', label_works: 'Works', label_services: 'Services', label_testimonials: 'Testimonials', label_contact: 'Contact',
+        about_p1: 'We live in an era of "over-perception". Emotions are amplified by algorithms, colors are symbolized, and even "authenticity" is packaged as a commodity. YZS offers no answers — only blank space.',
+        about_p2: 'We design objects, and we design "nothingness". Bringing life back to "zero sense" — the place where everything begins anew. I\'m Yang Zishuo, an art student passionate about design and visual expression, who loves to articulate thoughts through delicate lines. I believe the power of art lies not in elitist exhibitions, but in the amplified warmth of everyday life.',
+        stat_projects: 'Projects', stat_clients: 'Clients', stat_awards: 'Awards',
+        w1_title: '#01 43+1 — Force & Balance', w1_desc: 'Capturing the moment when "force is frozen". The hammer should be the dominant tool, but here it is fixed in the world of nails — stripped of aggression, supported and surrounded. A bodily narrative of hovering between action and restraint.',
+        w2_title: '#02 Memory of the Flesh', w2_desc: 'A mirror framed in pristine white. The viewer becomes both the observer and the observed — a piece of evidence about "body memory".',
+        w3_title: '#03 Pain', w3_desc: 'Using "skin" as a core metaphor, it symbolizes how contemporary individuals are bound and shaped under social filters and disciplinary norms.',
+        w4_title: '#04 Deep Sea Breathing', w4_desc: 'As social pressure spreads silently like the deep sea, the breathing gill structures on the garment surface transform anxiety into visible undulating ripples.',
+        w5_title: '#05 Imprint — Flowing Traces', w5_desc: 'Using "sand" as a medium, transforming invisible time perception into observable, touchable flowing traces. Distance means engagement; the audience becomes the participant.',
+        svc_brand: 'Brand Visual Identity', svc_social: 'Social Media Links',
+        t1_text: '"Zishuo\'s control over design details is impressive. He\'s not just designing — he\'s telling a brand\'s story. The final result far exceeded our expectations."', t1_name: 'Li Ming', t1_role: 'NOVA Bank · CEO',
+        t2_text: '"Zishuo has a rare combination: the perceptiveness of an art student, plus a fearless curiosity for technical tools. His understanding of brand visuals goes beyond making things look good — he thinks philosophically about \'why do it this way\'. His exploration of AIGC and vibe coding isn\'t superficial but truly integrated into his design workflow. He\'s always pushing multiple things forward — brand design, website building, social media — none half-hearted, never waiting to be told what to do. Completing the full pipeline from brand positioning to visual execution independently as an undergraduate shows exceptional self-drive."', t2_name: 'Liu Yanjun', t2_role: 'South China Zhuzhen Tech',
+        t3_text: '"From concept to execution, Zishuo follows through steadily at every stage and offers inspiring suggestions. I look forward to seeing him create even more powerful works in the future."', t3_role: 'Hidweek Bishop',
+        btn_card: 'View My Card', btn_resume: 'View My Resume',
+        contact_sub: 'If you\'re also pondering the boundary between "being" and "nothingness", or just want to chat — silence itself is a response.',
+        footer_slogan: 'Perception reset, everything begins anew',
+        settings_theme: 'Toggle Theme', settings_lang: 'Language',
+        wd1_title: '43+1 — <span class="serif">Force & Balance</span>', wd2_title: 'Memory of the Flesh / <span class="serif">皮囊记忆</span>', wd3_title: 'Pain — <span class="serif">Disciplined Skin</span>', wd4_title: 'Deep Sea Breathing — <span class="serif">Pressure Metabolism</span>', wd5_title: 'Imprint — Flowing Traces',
+        wd_concept: 'Concept', wd_material: 'Material', wd_date: 'Date', wd_number: 'No.', wd_creator: 'Creator', wd_type: 'Type', wd_team: 'Team', wd_inspiration: 'Inspiration',
+        wd1_quote: 'Hovering between action and restraint —<br>the moment force is frozen',
+        wd1_desc: '<p>The work "#01 43+1" draws inspiration from a bodily moment of "force and balance". It captures the instant of raising a hammer high, about to strike — the internal tension of the body, a suspension between action and restraint.</p><p>I wanted to capture this moment of "frozen force", choosing hammers and nails to build this three-dimensional structure. The hammer should be the dominant tool, but here it is fixed in the world of nails — stripped of aggression, supported and surrounded by them.</p>',
+        wd1_material: 'Hammer, nails, wood board',
+        wd2_quote: 'When viewers approach the mirror,<br>they become both the observer<br>and the observed',
+        wd2_desc: '<p>The mirror is framed within pristine white boundaries, like an archived evidence page. The viewer\'s reflection overlaps with reality, forming a passive confrontational relationship.</p><p>The frame symbolizes "the gaze disciplined by society", while the mirror is "the site of self-reflection". When viewers approach, they become both observer and observed.</p><p>The work number "#2" and date "2025/11/13" give this piece an archival, experimental quality — as if it were a research sample about "body memory", and evidence of the artist\'s existence at a specific moment.</p>',
+        wd2_material: 'Mirror, frame, printed text',
+        wd3_quote: 'Society\'s discipline is like densely woven threads,<br>binding our "outer shells"<br>into standard folds',
+        wd3_desc: '<p>"#03 Pain" uses "skin" as its core metaphor, symbolizing how contemporary individuals are bound and shaped under social media filters and societal norms.</p><p>Inspired by Kubota Kafu\'s treatment of "afterimage memory", the work uses layered metal mesh and plaster to symbolize compressed emotions and fractured self-identity. The textural collision of steel wire and plaster, the contrast of warm and cool colors, together compose a visual narrative about discipline, memory, and self-liberation.</p>',
+        wd3_material: 'Metal mesh, plaster, steel wire, pigments', wd3_inspiration: 'Kubota Kafu · Afterimage Memory',
+        wd4_quote: 'The wearer and garment breathe together,<br>in the fusion of technology and body,<br>completing a silent pressure metabolism',
+        wd4_desc: '<p>In this smart wearable work, we envisioned a near-future metaphor: as social pressure spreads silently like the deep sea, humans evolve accordingly. The breathing gill structures flowing across the garment surface are not decoration — they transform anxiety into visible undulating ripples synchronized with the wearer\'s breathing rate and psychological pressure, like deep-sea creatures\' survival rituals in high-pressure environments.</p><p>Meanwhile, a biomimetic sensory spine extends from the back of the neck to the spine, with exposed sensing units flickering like neural synapses. It symbolizes humanity\'s enhanced perception in the digital age — extreme sensitivity to information, emotions, and environmental stimuli.</p><p>The spine and breathing gills form an organic synesthetic system. As external pressure rises, the spine\'s flowing light accelerates, and the gills\' opening and closing frequency changes accordingly, creating a complete pressure ecosystem visualization.</p>',
+        wd4_material: '3D printed structure, sensors, electronic components, fabric', wd4_type: 'Smart wearable interactive device',
+        wd5_quote: 'Trying to control time only accelerates its loss,<br>while true "traces" come from acceptance and settling',
+        wd5_desc: '<p>"Imprint — Flowing Traces" is an interactive installation centered on "time perception". The work explores time from a psychological perspective, focusing on the "time perception distortion" that occurs in different emotional and focused states — when anxious or focused, time seems to stretch; when relaxed or immersed in entertainment, time quietly accelerates.</p><p>The installation uses "sand" as its core medium, leveraging its fluidity and malleability to metaphorize time\'s transience and trace-leaving qualities. The overall form is a circular black sand platform approximately 30cm in diameter, with a sand dune in the center and hidden mechanical structures and sensor systems underneath.</p><p>When viewers approach, ultrasonic sensors trigger the device, and the sand dune gradually collapses and flows through vibration and rotation, presenting an "awakened" state of time; when viewers move away, the device slowly returns to stillness, but irreversible traces remain on the sand surface.</p><p>This "distance equals engagement" interaction logic transforms the audience from bystanders into participants in time\'s flow. The work emphasizes that time does not simply pass in one direction, but cyclically generates through continuous covering and reconstruction.</p>',
+        wd5_material: 'Black sand, circular sand platform, ultrasonic sensors, mechanical structure', wd5_type: 'Interactive installation / Time perception'
+      },
+      ja: {
+        nav_about: '紹介', nav_work: '作品', nav_services: 'サービス', nav_testimonials: '評価', nav_contact: '連絡',
+        hero_sub: '余分な修辞を拒否し、存在そのものだけを語る。YZS は若い魂のための余白——「無我」と「存在」の境界を探求する青年ビジュアルブランド。',
+        hero_cta1: '作品を見る <span class="arrow">→</span>', hero_cta2: '対話を始める',
+        label_about: '紹介', label_works: '作品', label_services: 'サービス', label_testimonials: '評価', label_contact: '連絡',
+        about_p1: '私たちは「過剰感知」の時代に生きている。感情はアルゴリズムに増幅され、色は記号化され、「本物」さえも商品として包装される。YZS は答えを提供しない——ただ空白を提供する。',
+        about_p2: '私たちはモノをデザインし、「無」もデザインする。生活を「ゼロ感覚」に戻す——すべてが再び始まる場所へ。私は楊子碩、デザインとビジュアルを愛する美術学生。繊細な線で思考を表現することが好きです。芸術の力は高尚な展覧会にあるのではなく、日常の温もりを増幅させることにあると信じています。',
+        stat_projects: 'プロジェクト', stat_clients: 'クライアント', stat_awards: '受賞歴',
+        w1_title: '#01 43+1 — 力と均衡', w1_desc: '「力が凝固する」瞬間を捉える。ハンマーは本来支配的な道具であるべきだが、ここでは釘の世界に固定され——攻撃性を失い、釘たちに支えられ、囲まれている。行動と抑制の間に漂う身体の物語。',
+        w2_title: '#02 皮膚の記憶', w2_desc: '鏡が純白の枠に収められている。観者は観察者であると同時に、観察される者にもなる——「身体の記憶」に関する存在の証拠。',
+        w3_title: '#03 痛み', w3_desc: '「皮膚」を核心的なイメージとし、SNSフィルターと社会規範の下で束縛され、成形される現代個人を暗喩する。',
+        w4_title: '#04 深海の呼吸', w4_desc: '社会的圧力が深海のように静かに広がるとき、衣服表面の呼吸鰓構造が不安を目に見える波紋に変換する。',
+        w5_title: '#05 拓印——流れる痕跡', w5_desc: '「砂」を媒介として、目に見えない時間の知覚を観察可能で触れることのできる流動する痕跡に変換する。距離は介入であり、観客は参加者となる。',
+        svc_brand: 'ブランドビジュアル構築', svc_social: 'SNSリンク',
+        t1_text: '「子碩のデザインディテールへのこだわりは驚嘆に値する。彼はただデザインしているのではなく、ブランドの物語を語っている。最終成果は我々の期待をはるかに超えた。」', t1_name: '李明', t1_role: 'NOVA銀行 · CEO',
+        t2_text: '「子碩には珍しい組み合わせがある：美術学生の感性と、技術ツールへの恐れ知らずの探究心。ブランドビジュアルへの理解は見た目を良くすることに留まらず、「なぜこうするのか」を哲学的に考えられる。AIGCやvibe codingの探求も表面的ではなく、自身のデザインワークフローに真に統合している。常に複数のことを同時に推進し——ブランドデザイン、ウェブ構築、SNS運営——どれも手を抜かず、指示を待たず、常に自ら方向を見つける。学部段階でブランドポジショニングからビジュアル実装まで一貫して独立完成できる、自己駆動力が極めて強い、将来有望。」', t2_name: '劉彦君', t2_role: '華南筑真科技',
+        t3_text: '「構想から実装まで、あらゆる段階で子碩は安定してフォローし、示唆に富む建設的な意見を出せる。彼が将来さらに張力のある作品を生み出すことを楽しみにしている。」', t3_role: 'Hidweek 司教',
+        btn_card: '名刺を見る', btn_resume: '履歴書を見る',
+        contact_sub: '「存在」と「無」の境界について考えているなら、あるいはただ話したいだけなら——沈黙そのものが一つの応答です。',
+        footer_slogan: '感覚をリセット、すべてが再び始まる',
+        settings_theme: 'テーマ切替', settings_lang: '言語',
+        wd1_title: '43+1 — <span class="serif">力と均衡</span>', wd2_title: '皮膚の記憶 / <span class="serif">Memory of the Flesh</span>', wd3_title: '痛み — <span class="serif">規律された皮膚</span>', wd4_title: '深海の呼吸 — <span class="serif">圧力代謝の儀式</span>', wd5_title: '拓印——流れる痕跡',
+        wd_concept: 'コンセプト', wd_material: '素材', wd_date: '日付', wd_number: '番号', wd_creator: '制作者', wd_type: 'タイプ', wd_team: 'チーム', wd_inspiration: 'インスピレーション',
+        wd1_quote: '行動と抑制の間の漂い——<br>力が凝固する瞬間',
+        wd1_desc: '<p>作品「#01 43+1」は「力と均衡」に関する身体の瞬間からインスピレーションを得ている。ハンマーを高く振り上げ、打ち下ろそうとする瞬間を捉えた——身体内部の張力、行動と抑制の間の宙吊り状態。</p><p>この「力が凝固する」瞬間を捉えたいと思い、ハンマーと釘でこの立体構造を構築した。ハンマーは本来支配的な道具であるべきだが、ここでは釘の世界に固定され——攻撃性を失い、釘たちに支えられ、囲まれている。</p>',
+        wd1_material: 'ハンマー、釘、木板',
+        wd2_quote: '観者が鏡に近づくとき、<br>彼らは観察者であると同時に、<br>観察される者にもなる',
+        wd2_desc: '<p>鏡が純白の枠に収められ、アーカイブされた証拠ページのように見える。観者が鏡に映る姿は現実と重なり、受動的な対峙関係を形成する。</p><p>枠は「社会に規律された視線」を象徴し、鏡は「自己省察の現場」である。観者が近づくと、観察者であると同時に観察される者にもなる。</p><p>作品番号「#2」と日付「2025/11/13」は、この作品にアーカイブ的・実験的な意味合いを与える——「身体の記憶」に関する研究サンプルであり、特定の時間におけるアーティストの存在証拠でもある。</p>',
+        wd2_material: '鏡、額縁、印刷テキスト',
+        wd3_quote: '社会の規律は密に織られた糸のように、<br>人の「外殻」を<br>標準的な襞に縛り付ける',
+        wd3_desc: '<p>「#03 痛み」は「皮膚」を核心的イメージとし、SNSフィルターと社会規範の下で束縛され、成形される現代個人を暗喩する。</p><p>久保田華布の「残像記憶」の処理を参考に、金属メッシュと石膏の重ね合わせで圧縮された感情と砕けた自己の形を象徴している。ワイヤーと石膏のテクスチャの衝突、色の寒暖とコントラストが、規律、記憶、自己解放についての視覚的物語を構成する。</p>',
+        wd3_material: '金属メッシュ、石膏、ワイヤー、顔料', wd3_inspiration: '久保田華布 · 残像記憶',
+        wd4_quote: '着用者と衣服が共に呼吸し、<br>テクノロジーと身体の融合の中で、<br>無音の圧力代謝を完成させる',
+        wd4_desc: '<p>このスマートウェアラブル作品では、近未来の隠喩を構想した：社会的圧力が深海のように静かに広がるとき、人類もそれに応じて進化する。衣服表面の呼吸鰓構造は装飾ではなく——着用者の呼吸頻率と心理的圧力に同期して、不安を目に見える波紋に変換する。</p><p>同時に、首の後ろから脊椎に延びるバイオミメティクス感覚脊柱があり、露出した感知ユニットはシナプスのように微光を放つ。デジタル時代における人類の強化された知覚力を象徴している。</p><p>脊柱と呼吸鰓は有機的な共感覚システムを形成する。外部圧力が上昇すると、脊柱の光の流れが加速し、鰓の開閉頻度も変化する。</p>',
+        wd4_material: '3Dプリント構造、センサー、電子部品、布地', wd4_type: 'スマートウェアラブルインタラクティブ装置',
+        wd5_quote: '時間を制御しようとすることは流失を加速するだけ、<br>真の「痕跡」は順応と沈殿から生まれる',
+        wd5_desc: '<p>「拓印——流れる痕跡」は「時間知覚」を核心テーマとするインタラクティブインスタレーション。心理的レベルから時間を探究し、異なる感情や集中状態で生じる「時間知覚の歪み」に注目する——不安や集中時には時間が引き延ばされ、リラックスや没入時には時間が加速する。</p><p>装置は「砂」を核心媒体とし、その流動性と可塑性を活かして時間の儚さと痕跡を残す特性を隠喩する。</p><p>観客が近づくと、超音波センサーが装置を起動し、砂丘が振動と回転で崩壊・流動する。観客が離れると、装置はゆっくり静止に戻るが、砂面には不可逆の痕跡が残る。</p><p>この「距離＝介入」のインタラクションにより、観客は傍観者から時間の流れの参加者へと変わる。</p>',
+        wd5_material: '黒砂、円形砂台、超音波センサー、機械構造', wd5_type: 'インタラクティブインスタレーション / 時間知覚'
+      }
+    };
+
+    function applyLang(lang) {
+      var dict = i18n[lang];
+      if (!dict) return;
+      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n');
+        if (dict[key]) el.textContent = dict[key];
+      });
+      document.querySelectorAll('[data-i18n-html]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n-html');
+        if (dict[key]) el.innerHTML = dict[key];
+      });
+      // Update active lang button
+      document.querySelectorAll('.settings-lang-btn').forEach(function(btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+      });
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('lang', currentLang);
+      applyLang(currentLang);
+    }
+
+    function toggleSettings() {
+      var dropdown = document.getElementById('settingsDropdown');
+      dropdown.classList.toggle('active');
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      var settings = document.querySelector('.nav-settings');
+      var dropdown = document.getElementById('settingsDropdown');
+      if (settings && dropdown && !settings.contains(e.target)) {
+        dropdown.classList.remove('active');
+      }
+    });
+
+    // Apply saved language on load
+    applyLang(currentLang);
   </script>
 </body>
 </html>
