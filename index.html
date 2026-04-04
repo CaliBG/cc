@@ -341,15 +341,14 @@
       font-weight: 100;
       width: 100%;
       color: var(--text-primary);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      line-height: 0.85;
+      text-align: center;
+      white-space: nowrap;
+      line-height: 0.75;
     }
 
     .text-pressure-line {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       white-space: nowrap;
     }
 
@@ -520,12 +519,13 @@
     }
 
     .section-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 4px;
-      text-transform: uppercase;
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 6px;
       color: var(--accent);
       margin-bottom: 20px;
+      font-style: italic;
+      font-family: 'Playfair Display', serif;
     }
 
     .section-title {
@@ -690,6 +690,30 @@
       transform: scale(1.05);
     }
 
+    .project-thumb::after {
+      content: '→';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0);
+      color: #fff;
+      font-size: 32px;
+      font-weight: 300;
+      letter-spacing: 2px;
+      opacity: 0;
+      transition: all 0.4s var(--transition);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .project-card:hover .project-thumb::after {
+      opacity: 1;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(2px);
+    }
+
     .project-gradient {
       width: 100%;
       height: 100%;
@@ -733,19 +757,6 @@
       color: var(--text-secondary);
       line-height: 1.6;
     }
-
-    .project-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 20px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--accent);
-      transition: gap 0.3s var(--transition);
-    }
-
-    .project-link:hover { gap: 14px; }
 
     /* ============================================
        SERVICES
@@ -1478,7 +1489,6 @@
       <li><a href="#services" data-hover>服务</a></li>
       <li><a href="#testimonials" data-hover>评价</a></li>
       <li><a href="#contact" data-hover>联系</a></li>
-      <li><a href="#" data-hover onclick="openCard(event)">名片</a></li>
     </ul>
     <button class="theme-toggle" id="themeToggle" data-hover onclick="toggleTheme()" title="切换主题">
       <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -1509,10 +1519,6 @@
       </div>
     </div>
 
-    <div class="hero-scroll">
-      <div class="scroll-line"></div>
-      向下滚动
-    </div>
   </section>
 
   <!-- Marquee -->
@@ -1541,10 +1547,10 @@
       </div>
       <div class="about-text">
         <div class="section-header">
-          <div class="section-label reveal">关于 YZS</div>
-          <h2 class="section-title reveal reveal-delay-1">
-            感知仍在<br><span class="serif">意义归零</span>
-          </h2>
+          <div class="section-label reveal">关于</div>
+          <div class="text-pressure-container reveal reveal-delay-1" id="textPressureAbout" style="margin-bottom:16px;">
+            <h2 class="text-pressure-title" id="textPressureAboutTitle"></h2>
+          </div>
         </div>
         <p class="reveal reveal-delay-2">
           我们生活在一个"过度感知"的时代。情绪被算法放大，色彩被符号化，连"真实"都被包装成消费品。YZS 不提供答案，只提供空白。
@@ -1573,10 +1579,10 @@
   <!-- Work Section -->
   <section class="section" id="work">
     <div class="section-header" style="max-width:1400px;margin:0 auto 80px;">
-      <div class="section-label reveal">作品留痕</div>
-      <h2 class="section-title reveal reveal-delay-1">
-        拒绝标签<br>只留 <span class="serif">思考的痕迹</span>
-      </h2>
+      <div class="section-label reveal">作品</div>
+      <div class="text-pressure-container reveal reveal-delay-1" id="textPressureWorks" style="margin-bottom:16px;">
+        <h2 class="text-pressure-title" id="textPressureWorksTitle"></h2>
+      </div>
     </div>
     <div class="projects-grid">
       <!-- Featured Project: #01 43+1 -->
@@ -1594,7 +1600,6 @@
           </div>
           <h3 class="project-title">#01 43+1 — 力量与平衡</h3>
           <p class="project-desc">捕捉"力量被凝固"的瞬间。榔头本应是主导的工具，但在这里，它被定格在钉子的世界中——失去了攻击性，反而被钉子们支撑着、包围着。一个关于行动与克制之间悬停的身体叙事。</p>
-          <a href="#" class="project-link" data-hover onclick="openWork01(event)">查看详情 <span>→</span></a>
         </div>
       </div>
 
@@ -1613,7 +1618,6 @@
           </div>
           <h3 class="project-title">#02 皮囊记忆 / Memory of the Flesh</h3>
           <p class="project-desc">镜面被框入洁白的边界中，观者既成为观看者，也成为被观看者——一份关于"身体记忆"的存在证据。</p>
-          <a href="#" class="project-link" data-hover onclick="openWork02(event)">查看详情 <span>→</span></a>
         </div>
       </div>
 
@@ -1632,7 +1636,6 @@
           </div>
           <h3 class="project-title">#03 痛</h3>
           <p class="project-desc">以"皮囊"为核心意象，隐喻当代个体在社交滤镜与社会规训下被捆束、塑形的状态。</p>
-          <a href="#" class="project-link" data-hover onclick="openWork03(event)">查看详情 <span>→</span></a>
         </div>
       </div>
 
@@ -1651,7 +1654,6 @@
           </div>
           <h3 class="project-title">#04 深海呼吸</h3>
           <p class="project-desc">当社会压力如深海般无声蔓延，服饰表面流动的呼吸鳃结构将焦虑转化为可视的起伏波纹。</p>
-          <a href="#" class="project-link" data-hover onclick="openWork04(event)">查看详情 <span>→</span></a>
         </div>
       </div>
 
@@ -1670,7 +1672,6 @@
           </div>
           <h3 class="project-title">#05 拓印-流动的痕</h3>
           <p class="project-desc">以"沙"为媒介，将无形的时间感知转化为可观察与触摸的流动痕迹，距离即介入，观众即参与者。</p>
-          <a href="#" class="project-link" data-hover onclick="openWork05(event)">查看详情 <span>→</span></a>
         </div>
       </div>
     </div>
@@ -1679,10 +1680,10 @@
   <!-- Services Section -->
   <section class="section" id="services">
     <div class="section-header" style="max-width:1400px;margin:0 auto 80px;">
-      <div class="section-label reveal">我们探索</div>
-      <h2 class="section-title reveal reveal-delay-1">
-        在边界处 <span class="serif">创造</span>
-      </h2>
+      <div class="section-label reveal">服务</div>
+      <div class="text-pressure-container reveal reveal-delay-1" id="textPressureServices" style="margin-bottom:16px;">
+        <h2 class="text-pressure-title" id="textPressureServicesTitle"></h2>
+      </div>
     </div>
     <div class="services-list">
       <a href="scc-brand.pdf" target="_blank" class="service-item reveal" style="text-decoration:none;color:inherit;cursor:pointer;">
@@ -1727,10 +1728,10 @@
   <!-- Testimonials Section -->
   <section class="section" id="testimonials">
     <div class="section-header" style="max-width:1400px;margin:0 auto 80px;">
-      <div class="section-label reveal">客户评价</div>
-      <h2 class="section-title reveal reveal-delay-1">
-        他们如此 <span class="serif">评价我</span>
-      </h2>
+      <div class="section-label reveal">评价</div>
+      <div class="text-pressure-container reveal reveal-delay-1" id="textPressureTestimonials" style="margin-bottom:16px;">
+        <h2 class="text-pressure-title" id="textPressureTestimonialsTitle"></h2>
+      </div>
     </div>
     <div class="testimonial-grid">
       <div class="testimonial-card reveal">
@@ -1792,8 +1793,8 @@
   <!-- Contact Section -->
   <section class="section" id="contact">
     <div class="contact">
-      <div class="section-label reveal">开始对话</div>
-      <div class="text-pressure-contact reveal reveal-delay-1" id="textPressureContact">
+      <div class="section-label reveal">联系</div>
+      <div class="text-pressure-container reveal reveal-delay-1" id="textPressureContact" style="margin-bottom:16px;">
         <h2 class="text-pressure-title" id="textPressureContactTitle"></h2>
       </div>
       <p class="contact-sub reveal reveal-delay-2">
@@ -2154,6 +2155,8 @@
     <div class="modal-card" onclick="event.stopPropagation()" style="max-width:600px;max-height:90vh;overflow-y:auto;">
       <img src="resume.jpg" alt="杨子硕简历" style="width:100%;height:auto;display:block;border-radius:var(--radius-sm);">
     </div>
+
+    
   </div>
 
   <!-- Footer -->
@@ -2367,46 +2370,44 @@
       }
 
       // Create a TextPressure instance
-      function createInstance(containerId, titleId, text) {
+      function createInstance(containerId, titleId, text, minFontSize, perLineSize) {
         const container = document.getElementById(containerId);
         const title = document.getElementById(titleId);
         if (!container || !title) return;
+        minFontSize = minFontSize || 24;
 
         const lines = text.split('\n');
         const spans = [];
-        // Find the longest line for font sizing
-        const longestLine = lines.reduce((a, b) => a.length > b.length ? a : b);
+        const lineDivs = [];
 
-        lines.forEach((line, li) => {
+        lines.forEach(function(line) {
           const lineDiv = document.createElement('div');
           lineDiv.className = 'text-pressure-line';
-          line.split('').forEach(char => {
+          line.split('').forEach(function(char) {
             const span = document.createElement('span');
             span.textContent = char;
             span.dataset.char = char;
             span.style.display = 'inline-block';
-            if (char === ' ') span.style.width = '0.3em';
             lineDiv.appendChild(span);
             spans.push(span);
           });
           title.appendChild(lineDiv);
+          lineDivs.push({ el: lineDiv, len: line.length });
         });
 
-        // Sizing — fit text edge-to-edge
         function setSize() {
           const cw = container.getBoundingClientRect().width;
-          // Start with an estimate, then measure and adjust to fill width
-          let fs = cw / longestLine.length * 2;
-          title.style.fontSize = fs + 'px';
-          // Find the longest rendered line and scale to fit
-          var lineEls = title.querySelectorAll('.text-pressure-line');
-          var maxLineW = 0;
-          lineEls.forEach(function(el) {
-            var w = el.scrollWidth;
-            if (w > maxLineW) maxLineW = w;
-          });
-          if (maxLineW > 0) {
-            fs = fs * (cw / maxLineW) * 0.55;
+          if (perLineSize) {
+            // Each line gets its own font size to fill width
+            lineDivs.forEach(function(line) {
+              var fs = cw / (line.len / 2);
+              fs = Math.max(fs, minFontSize);
+              line.el.style.fontSize = fs + 'px';
+            });
+          } else {
+            const longestLine = lines.reduce(function(a, b) { return a.length > b.length ? a : b; });
+            var fs = cw / (longestLine.length / 2);
+            fs = Math.max(fs, minFontSize);
             title.style.fontSize = fs + 'px';
           }
         }
@@ -2418,8 +2419,12 @@
 
       // Init both instances
       const instances = [
-        createInstance('textPressureContainer', 'textPressureTitle', "Welcome to\nCali-Yang's personal\nportfolio website"),
-        createInstance('textPressureContact', 'textPressureContactTitle', "LEAVE A TRACE")
+        createInstance('textPressureContainer', 'textPressureTitle', "Hello!", 24),
+        createInstance('textPressureAbout', 'textPressureAboutTitle', "ABOUT", 24),
+        createInstance('textPressureWorks', 'textPressureWorksTitle', "WORKS", 24),
+        createInstance('textPressureServices', 'textPressureServicesTitle', "SERVICES", 24),
+        createInstance('textPressureTestimonials', 'textPressureTestimonialsTitle', "TESTIMONIALS", 24),
+        createInstance('textPressureContact', 'textPressureContactTitle', "CONTACT", 24)
       ].filter(Boolean);
 
       // Wait for variable font to fully load before calculating size
@@ -2429,14 +2434,14 @@
 
       // Single shared animation loop
       function animate() {
-        instances.forEach(inst => {
+        instances.forEach(function(inst) {
           inst.mouse.x += (globalCursor.x - inst.mouse.x) / 15;
           inst.mouse.y += (globalCursor.y - inst.mouse.y) / 15;
 
           const titleRect = inst.title.getBoundingClientRect();
           const maxDist = titleRect.width / 2;
 
-          inst.spans.forEach(span => {
+          inst.spans.forEach(function(span) {
             const r = span.getBoundingClientRect();
             const center = { x: r.x + r.width / 2, y: r.y + r.height / 2 };
             const d = dist(inst.mouse, center);
