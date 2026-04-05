@@ -415,7 +415,7 @@
       50% { opacity: 0.3; }
     }
 
-    /* TextPressure hero title */
+    /* TextPressure hero & section titles */
     .text-pressure-container {
       width: 100%;
       height: auto;
@@ -736,91 +736,35 @@
     .projects-grid {
       max-width: 1400px;
       margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
     }
 
     .project-card {
-      position: relative;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      transition: all 0.6s var(--transition);
-      group: project;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      padding: 56px 0;
+      border-bottom: 1px solid var(--border);
+      transition: all 0.4s var(--transition);
+      cursor: pointer;
     }
+
+    .project-card:first-child { border-top: 1px solid var(--border); }
 
     .project-card:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-4px);
+      padding-left: 24px;
     }
-
-    .project-card:nth-child(1) { grid-column: 1 / -1; }
-
-    .project-thumb {
-      aspect-ratio: 16/9;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .project-card:nth-child(1) .project-thumb { aspect-ratio: 21/9; }
-
-    .project-thumb-inner {
-      width: 100%;
-      height: 100%;
-      transition: transform 0.8s var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .project-card:hover .project-thumb-inner {
-      transform: scale(1.05);
-    }
-
-    .project-thumb::after {
-      content: '→';
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,0);
-      color: #fff;
-      font-size: 32px;
-      font-weight: 300;
-      letter-spacing: 2px;
-      opacity: 0;
-      transition: all 0.4s var(--transition);
-      z-index: 2;
-      pointer-events: none;
-    }
-
-    .project-card:hover .project-thumb::after {
-      opacity: 1;
-      background: rgba(0,0,0,0.3);
-      backdrop-filter: blur(2px);
-    }
-
-    .project-gradient {
-      width: 100%;
-      height: 100%;
-    }
-
-    .project-gradient-1 { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
-    .project-gradient-2 { background: linear-gradient(135deg, #2d1b69 0%, #11998e 100%); }
-    .project-gradient-3 { background: linear-gradient(135deg, #1a0000 0%, #8b0000 50%, #ff4500 100%); }
-    .project-gradient-4 { background: linear-gradient(135deg, #0d1117 0%, #238636 50%, #1f6feb 100%); }
 
     .project-info {
-      padding: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
     .project-meta {
       display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     .project-tag {
@@ -835,16 +779,60 @@
     }
 
     .project-title {
-      font-size: 24px;
+      font-size: clamp(24px, 2.5vw, 36px);
       font-weight: 700;
       letter-spacing: -0.5px;
-      margin-bottom: 8px;
+      transition: color 0.3s;
     }
+
+    .project-card:hover .project-title { color: var(--accent); }
 
     .project-desc {
       font-size: 14px;
       color: var(--text-secondary);
-      line-height: 1.6;
+      line-height: 1.7;
+      max-width: 480px;
+    }
+
+    .project-thumb {
+      aspect-ratio: 16/10;
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+      position: relative;
+    }
+
+    .project-thumb-inner {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.8s var(--transition);
+    }
+
+    .project-card:hover .project-thumb-inner {
+      transform: scale(1.03);
+    }
+
+    .project-thumb::after {
+      content: '→';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0);
+      color: #fff;
+      font-size: 28px;
+      font-weight: 300;
+      opacity: 0;
+      transition: all 0.4s var(--transition);
+      z-index: 2;
+      pointer-events: none;
+      border-radius: var(--radius-lg);
+    }
+
+    .project-card:hover .project-thumb::after {
+      opacity: 1;
+      background: rgba(0,0,0,0.25);
+      backdrop-filter: blur(2px);
     }
 
     /* ============================================
@@ -1505,34 +1493,27 @@
     .footer-links {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 0;
       flex-wrap: wrap;
       justify-content: center;
+      font-size: 12px;
     }
 
     .footer-links a {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--border);
-      border-radius: 50%;
       color: var(--text-muted);
       text-decoration: none;
-      transition: all 0.3s var(--transition);
+      transition: color 0.3s var(--transition);
+      padding: 0 12px;
+      border-right: 1px solid var(--border);
+      line-height: 1;
+    }
+
+    .footer-links a:last-child {
+      border-right: none;
     }
 
     .footer-links a:hover {
-      border-color: var(--accent);
-      background: var(--accent-dim);
       color: var(--text);
-      transform: translateY(-2px);
-    }
-
-    .footer-links a svg {
-      width: 16px;
-      height: 16px;
     }
 
     .footer-bottom {
@@ -1575,8 +1556,7 @@
       .hero { padding: 0 32px; }
       .section { padding: 120px 32px; }
       .about { grid-template-columns: 1fr; gap: 64px; }
-      .projects-grid { grid-template-columns: 1fr; }
-      .project-card:nth-child(1) { grid-column: 1; }
+      .project-card { grid-template-columns: 1fr; gap: 24px; }
       .testimonial-grid { grid-template-columns: 1fr; }
       .service-item { grid-template-columns: 40px 1fr auto; gap: 24px; }
     }
@@ -1713,13 +1693,8 @@
       </div>
     </div>
     <div class="projects-grid">
-      <!-- Featured Project: #01 43+1 -->
-      <div class="project-card reveal" onclick="openWork01(event)" style="cursor:pointer;">
-        <div class="project-thumb">
-          <div class="project-thumb-inner">
-            <img src="work01.jpg" alt="#01 43+1 — 力量与平衡" style="width:100%;height:100%;object-fit:cover;">
-          </div>
-        </div>
+      <!-- #01 43+1 -->
+      <div class="project-card reveal" onclick="openWork01(event)">
         <div class="project-info">
           <div class="project-meta">
             <span class="project-tag">立体装置</span>
@@ -1729,15 +1704,15 @@
           <h3 class="project-title" data-i18n="w1_title">#01 43+1 — 力量与平衡</h3>
           <p class="project-desc" data-i18n="w1_desc">捕捉"力量被凝固"的瞬间。榔头本应是主导的工具，但在这里，它被定格在钉子的世界中——失去了攻击性，反而被钉子们支撑着、包围着。一个关于行动与克制之间悬停的身体叙事。</p>
         </div>
-      </div>
-
-      <!-- Project 2: #02 皮囊记忆 -->
-      <div class="project-card reveal reveal-delay-1" onclick="openWork02(event)" style="cursor:pointer;">
         <div class="project-thumb">
           <div class="project-thumb-inner">
-            <img src="work02.jpg" alt="#02 皮囊记忆 Memory of the Flesh" style="width:100%;height:100%;object-fit:cover;">
+            <img src="work01.jpg" alt="#01 43+1" style="width:100%;height:100%;object-fit:cover;">
           </div>
         </div>
+      </div>
+
+      <!-- #02 皮囊记忆 -->
+      <div class="project-card reveal" onclick="openWork02(event)">
         <div class="project-info">
           <div class="project-meta">
             <span class="project-tag">镜面装置</span>
@@ -1747,15 +1722,15 @@
           <h3 class="project-title" data-i18n="w2_title">#02 皮囊记忆 / Memory of the Flesh</h3>
           <p class="project-desc" data-i18n="w2_desc">镜面被框入洁白的边界中，观者既成为观看者，也成为被观看者——一份关于"身体记忆"的存在证据。</p>
         </div>
-      </div>
-
-      <!-- Project 3: #03 痛 -->
-      <div class="project-card reveal reveal-delay-2" onclick="openWork03(event)" style="cursor:pointer;">
         <div class="project-thumb">
           <div class="project-thumb-inner">
-            <img src="work03.jpg" alt="#03 痛" style="width:100%;height:100%;object-fit:cover;">
+            <img src="work02.jpg" alt="#02 皮囊记忆" style="width:100%;height:100%;object-fit:cover;">
           </div>
         </div>
+      </div>
+
+      <!-- #03 痛 -->
+      <div class="project-card reveal" onclick="openWork03(event)">
         <div class="project-info">
           <div class="project-meta">
             <span class="project-tag">综合材料</span>
@@ -1765,15 +1740,15 @@
           <h3 class="project-title" data-i18n="w3_title">#03 痛</h3>
           <p class="project-desc" data-i18n="w3_desc">以"皮囊"为核心意象，隐喻当代个体在社交滤镜与社会规训下被捆束、塑形的状态。</p>
         </div>
-      </div>
-
-      <!-- Project 4: #04 深海呼吸 -->
-      <div class="project-card reveal reveal-delay-3" onclick="openWork04(event)" style="cursor:pointer;">
         <div class="project-thumb">
           <div class="project-thumb-inner">
-            <img src="work04.jpg" alt="#04 深海呼吸 — 智能可穿戴" style="width:100%;height:100%;object-fit:cover;">
+            <img src="work03.jpg" alt="#03 痛" style="width:100%;height:100%;object-fit:cover;">
           </div>
         </div>
+      </div>
+
+      <!-- #04 深海呼吸 -->
+      <div class="project-card reveal" onclick="openWork04(event)">
         <div class="project-info">
           <div class="project-meta">
             <span class="project-tag">智能穿戴</span>
@@ -1783,15 +1758,15 @@
           <h3 class="project-title" data-i18n="w4_title">#04 深海呼吸</h3>
           <p class="project-desc" data-i18n="w4_desc">当社会压力如深海般无声蔓延，服饰表面流动的呼吸鳃结构将焦虑转化为可视的起伏波纹。</p>
         </div>
-      </div>
-
-      <!-- Project 5: #05 拓印-流动的痕 -->
-      <div class="project-card reveal reveal-delay-1" onclick="openWork05(event)" style="cursor:pointer;">
         <div class="project-thumb">
           <div class="project-thumb-inner">
-            <img src="work05.jpg" alt="#05 拓印-流动的痕 — 交互装置" style="width:100%;height:100%;object-fit:cover;">
+            <img src="work04.jpg" alt="#04 深海呼吸" style="width:100%;height:100%;object-fit:cover;">
           </div>
         </div>
+      </div>
+
+      <!-- #05 拓印-流动的痕 -->
+      <div class="project-card reveal" onclick="openWork05(event)">
         <div class="project-info">
           <div class="project-meta">
             <span class="project-tag">交互装置</span>
@@ -1801,15 +1776,15 @@
           <h3 class="project-title" data-i18n="w5_title">#05 拓印-流动的痕</h3>
           <p class="project-desc" data-i18n="w5_desc">以"沙"为媒介，将无形的时间感知转化为可观察与触摸的流动痕迹，距离即介入，观众即参与者。</p>
         </div>
-      </div>
-
-      <!-- Project 6: #06 YZS® 周边系列 -->
-      <div class="project-card reveal reveal-delay-2" onclick="openWork06(event)" style="cursor:pointer;">
         <div class="project-thumb">
           <div class="project-thumb-inner">
-            <img src="work06.jpg" alt="#06 YZS® 周边系列" style="width:100%;height:100%;object-fit:cover;">
+            <img src="work05.jpg" alt="#05 拓印-流动的痕" style="width:100%;height:100%;object-fit:cover;">
           </div>
         </div>
+      </div>
+
+      <!-- #06 YZS® 周边系列 -->
+      <div class="project-card reveal" onclick="openWork06(event)">
         <div class="project-info">
           <div class="project-meta">
             <span class="project-tag">周边设计</span>
@@ -1818,6 +1793,11 @@
           </div>
           <h3 class="project-title" data-i18n="w6_title">#06 YZS® 周边系列</h3>
           <p class="project-desc" data-i18n="w6_desc">把设计从屏幕带回现实，让每一件周边成为日常生活中的"可触摸表达"——克制、直接，但不失锋芒。</p>
+        </div>
+        <div class="project-thumb">
+          <div class="project-thumb-inner">
+            <img src="work06.jpg" alt="#06 YZS® 周边系列" style="width:100%;height:100%;object-fit:cover;">
+          </div>
         </div>
       </div>
     </div>
@@ -1876,13 +1856,14 @@
         <h3 style="font-size:18px;font-weight:600;line-height:1.5;color:var(--text);" data-i18n="comp1_title">第八届粤港澳大湾区学校设计作品展暨第十届广东省高校设计作品学院奖双年展</h3>
         <p style="font-size:14px;color:var(--text-muted);line-height:1.6;" data-i18n="comp1_desc">作品征集阶段</p>
       </div>
-      <div class="comp-card reveal reveal-delay-1" style="padding:40px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);transition:all 0.4s var(--transition);display:flex;flex-direction:column;gap:16px;">
+      <div class="comp-card reveal reveal-delay-1" style="padding:40px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);transition:all 0.4s var(--transition);display:flex;flex-direction:column;gap:16px;cursor:pointer;" onclick="openCompPlatinum(event)">
         <div style="display:flex;align-items:center;gap:12px;">
           <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:var(--text-muted);color:#fff;font-size:18px;font-weight:700;flex-shrink:0;">待</span>
           <span style="font-size:13px;color:var(--text-muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;" data-i18n="comp_status_pending">结果待公布</span>
         </div>
         <h3 style="font-size:18px;font-weight:600;line-height:1.5;color:var(--text);" data-i18n="comp2_title">第26届白金创意国际大学生平面设计大赛</h3>
         <p style="font-size:14px;color:var(--text-muted);line-height:1.6;" data-i18n="comp2_desc">结果尚未公布</p>
+        <span style="font-size:12px;color:var(--accent);margin-top:4px;">点击查看参赛证明 →</span>
       </div>
     </div>
     <style>
@@ -2365,29 +2346,34 @@
     
   </div>
 
+  <!-- Platinum Competition Modal -->
+  <div class="work-modal-overlay" id="compPlatinumModal">
+    <button class="work-modal-close" onclick="closeCompPlatinum()">✕</button>
+    <div class="work-detail">
+      <div class="work-detail-header">
+        <h2 class="work-detail-title" data-i18n="comp2_title">第26届白金创意国际大学生平面设计大赛</h2>
+        <div class="work-detail-meta">
+          <span class="project-tag">平面设计</span>
+          <span class="project-tag">2026.01</span>
+          <span class="project-tag" data-i18n="comp_status_pending">结果待公布</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:24px;margin-top:48px;">
+        <img src="platinum-homepage.png" alt="白金创意大赛主页" style="width:100%;border-radius:12px;border:1px solid var(--border);">
+        <img src="platinum-myworks.png" alt="参赛作品列表" style="width:100%;border-radius:12px;border:1px solid var(--border);">
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="footer">
     <div class="footer-links">
-      <!-- 小红书 -->
-      <a href="https://www.xiaohongshu.com/user/profile/60e45d75000000002002f229?xsec_token=YBVMNXmJezIr5KqiwXTQm4UvQ6SGNVd9RA0ET9lp-wI8Y=&xsec_source=app_share&xhsshare=CopyLink&shareRedId=ODZHNDhJOz42NzUyOTgwNjgzOTlKNzhC&apptime=1769496056&share_id=252ce6729b3448ea810663e75eaecb66" target="_blank" title="小红书" style="font-size:13px;font-weight:700;">书</a>
-      <!-- 抖音 -->
-      <a href="https://www.douyin.com/user/MS4wLjABAAAAwZDZH1-khE631mUgvp1U0ZsJM7w-yoLCMUymkTEPzxiA1Y5peo-hNZLApZ4LORoi" target="_blank" title="抖音">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
-      </a>
-      <!-- Instagram -->
-      <a href="https://www.instagram.com/caliyang0693?igsh=dm15eTJ3MWYxN2F0&utm_source=qr" target="_blank" title="Instagram">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
-      </a>
-      <!-- Bilibili -->
-      <a href="https://space.bilibili.com/3690996065897028" target="_blank" title="Bilibili">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="6" width="20" height="14" rx="3"/><path d="M6 6l3-4"/><path d="M18 6l-3-4"/><circle cx="9" cy="13" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="13" r="1" fill="currentColor" stroke="none"/></svg>
-      </a>
-      <!-- YouTube -->
-      <a href="https://www.youtube.com/@yzs-cali-yang" target="_blank" title="YouTube">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="4"/><polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none"/></svg>
-      </a>
-      <!-- 网易云音乐 -->
-      <a href="https://163cn.tv/4zAP1hK" target="_blank" title="网易云音乐" style="font-size:16px;">🎵</a>
+      <a href="https://www.xiaohongshu.com/user/profile/60e45d75000000002002f229?xsec_token=YBVMNXmJezIr5KqiwXTQm4UvQ6SGNVd9RA0ET9lp-wI8Y=&xsec_source=app_share&xhsshare=CopyLink&shareRedId=ODZHNDhJOz42NzUyOTgwNjgzOTlKNzhC&apptime=1769496056&share_id=252ce6729b3448ea810663e75eaecb66" target="_blank">小红书</a>
+      <a href="https://www.douyin.com/user/MS4wLjABAAAAwZDZH1-khE631mUgvp1U0ZsJM7w-yoLCMUymkTEPzxiA1Y5peo-hNZLApZ4LORoi" target="_blank">抖音</a>
+      <a href="https://www.instagram.com/caliyang0693?igsh=dm15eTJ3MWYxN2F0&utm_source=qr" target="_blank">Instagram</a>
+      <a href="https://space.bilibili.com/3690996065897028" target="_blank">Bilibili</a>
+      <a href="https://www.youtube.com/@yzs-cali-yang" target="_blank">YouTube</a>
+      <a href="https://163cn.tv/4zAP1hK" target="_blank">网易云音乐</a>
     </div>
     <div class="footer-bottom">
       <div>© 2026 YZS — Yet Zero Sense. 杨子硕</div>
@@ -2664,7 +2650,7 @@
 
       // Init both instances
       const instances = [
-        createInstance('textPressureContainer', 'textPressureTitle', "Hello!", 24),
+        createInstance('textPressureContainer', 'textPressureTitle', "YZS", 48),
         createInstance('textPressureAbout', 'textPressureAboutTitle', "ABOUT", 24),
         createInstance('textPressureWorks', 'textPressureWorksTitle', "WORKS", 24),
         createInstance('textPressureServices', 'textPressureServicesTitle', "SERVICES", 24),
@@ -2843,6 +2829,23 @@
     initStack('work03Stack');
     initStack('work04Stack');
     initStack('work06Stack');
+
+    // ============================================
+    // PLATINUM COMPETITION MODAL
+    // ============================================
+    const compPlatinumModal = document.getElementById('compPlatinumModal');
+
+    function openCompPlatinum(e) {
+      e.preventDefault();
+      compPlatinumModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      compPlatinumModal.scrollTop = 0;
+    }
+
+    function closeCompPlatinum() {
+      compPlatinumModal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
 
     function openWork01(e) {
       e.preventDefault();
