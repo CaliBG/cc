@@ -599,12 +599,12 @@
        SECTION COMMON
        ============================================ */
     .section {
-      padding: 160px 48px;
+      padding: 200px 48px;
       position: relative;
     }
 
     .section-header {
-      margin-bottom: 80px;
+      margin-bottom: 100px;
     }
 
     .section-label {
@@ -612,7 +612,7 @@
       font-weight: 400;
       letter-spacing: 6px;
       color: var(--accent);
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       font-style: italic;
       font-family: 'Playfair Display', serif;
     }
@@ -636,7 +636,7 @@
     .about {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 120px;
+      gap: 140px;
       align-items: center;
       max-width: 1400px;
       margin: 0 auto;
@@ -701,9 +701,9 @@
 
     .about-text p {
       font-size: 17px;
-      line-height: 1.8;
+      line-height: 1.9;
       color: var(--text-secondary);
-      margin-bottom: 24px;
+      margin-bottom: 28px;
       font-weight: 300;
     }
 
@@ -738,7 +738,7 @@
       margin: 0 auto;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 32px;
+      gap: 48px;
     }
 
     .project-card {
@@ -814,7 +814,7 @@
     .project-gradient-4 { background: linear-gradient(135deg, #0d1117 0%, #238636 50%, #1f6feb 100%); }
 
     .project-info {
-      padding: 32px;
+      padding: 36px;
     }
 
     .project-meta {
@@ -860,7 +860,7 @@
       grid-template-columns: 60px 1fr auto;
       gap: 48px;
       align-items: center;
-      padding: 48px 0;
+      padding: 56px 0;
       border-bottom: 1px solid var(--border);
       transition: all 0.4s var(--transition);
       cursor: default;
@@ -908,11 +908,11 @@
       margin: 0 auto;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
+      gap: 32px;
     }
 
     .testimonial-card {
-      padding: 40px;
+      padding: 44px;
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
@@ -943,7 +943,7 @@
       line-height: 1.8;
       color: var(--text-secondary);
       font-weight: 300;
-      margin-bottom: 32px;
+      margin-bottom: 36px;
     }
 
     .testimonial-author {
@@ -988,7 +988,7 @@
       font-weight: 800;
       letter-spacing: -3px;
       line-height: 1;
-      margin-bottom: 32px;
+      margin-bottom: 40px;
     }
 
     .contact-title .serif {
@@ -1579,6 +1579,7 @@
       <li><a href="#about" data-hover data-i18n="nav_about">关于</a></li>
       <li><a href="#work" data-hover data-i18n="nav_work">作品</a></li>
       <li><a href="#services" data-hover data-i18n="nav_services">服务</a></li>
+      <li><a href="#competitions" data-hover data-i18n="nav_competitions">赛事</a></li>
       <li><a href="#testimonials" data-hover data-i18n="nav_testimonials">评价</a></li>
       <li><a href="#contact" data-hover data-i18n="nav_contact">联系</a></li>
     </ul>
@@ -1668,7 +1669,7 @@
 
   <!-- Work Section -->
   <section class="section" id="work">
-    <div class="section-header" style="max-width:1400px;margin:0 auto 80px;">
+    <div class="section-header" style="max-width:1400px;margin:0 auto 100px;">
       <div class="section-label reveal" data-i18n="label_works">作品</div>
       <div class="text-pressure-container reveal reveal-delay-1" id="textPressureWorks" style="margin-bottom:16px;">
         <h2 class="text-pressure-title" id="textPressureWorksTitle"></h2>
@@ -1787,7 +1788,7 @@
 
   <!-- Services Section -->
   <section class="section" id="services">
-    <div class="section-header" style="max-width:1400px;margin:0 auto 80px;">
+    <div class="section-header" style="max-width:1400px;margin:0 auto 100px;">
       <div class="section-label reveal" data-i18n="label_services">服务</div>
       <div class="text-pressure-container reveal reveal-delay-1" id="textPressureServices" style="margin-bottom:16px;">
         <h2 class="text-pressure-title" id="textPressureServicesTitle"></h2>
@@ -1807,9 +1808,54 @@
     </div>
   </section>
 
+  <!-- Competitions Section -->
+  <section class="section" id="competitions">
+    <div class="section-header" style="max-width:1400px;margin:0 auto 100px;">
+      <div class="section-label reveal" data-i18n="label_competitions">赛事</div>
+      <div class="text-pressure-container reveal reveal-delay-1" id="textPressureCompetitions" style="margin-bottom:16px;">
+        <h2 class="text-pressure-title" id="textPressureCompetitionsTitle"></h2>
+      </div>
+    </div>
+    <div class="competitions-marquee">
+      <div class="marquee-section">
+        <div class="marquee-track">
+          <div class="marquee-item">COMPETITIONS <span class="sep"></span></div>
+          <div class="marquee-item">AWARDS <span class="sep"></span></div>
+          <div class="marquee-item">EXHIBITIONS <span class="sep"></span></div>
+          <div class="marquee-item">HONORS <span class="sep"></span></div>
+          <div class="marquee-item">COMPETITIONS <span class="sep"></span></div>
+          <div class="marquee-item">AWARDS <span class="sep"></span></div>
+          <div class="marquee-item">EXHIBITIONS <span class="sep"></span></div>
+          <div class="marquee-item">HONORS <span class="sep"></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="competitions-grid" style="max-width:1400px;margin:48px auto 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:32px;padding:0 32px;">
+      <div class="comp-card reveal" style="padding:40px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);transition:all 0.4s var(--transition);display:flex;flex-direction:column;gap:16px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;font-size:18px;font-weight:700;flex-shrink:0;">参</span>
+          <span style="font-size:13px;color:var(--accent);font-weight:600;letter-spacing:1px;text-transform:uppercase;" data-i18n="comp_status_participated">已参与</span>
+        </div>
+        <h3 style="font-size:18px;font-weight:600;line-height:1.5;color:var(--text);" data-i18n="comp1_title">第八届粤港澳大湾区学校设计作品展暨第十届广东省高校设计作品学院奖双年展</h3>
+        <p style="font-size:14px;color:var(--text-muted);line-height:1.6;" data-i18n="comp1_desc">作品征集阶段</p>
+      </div>
+      <div class="comp-card reveal reveal-delay-1" style="padding:40px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);transition:all 0.4s var(--transition);display:flex;flex-direction:column;gap:16px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:var(--text-muted);color:#fff;font-size:18px;font-weight:700;flex-shrink:0;">待</span>
+          <span style="font-size:13px;color:var(--text-muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;" data-i18n="comp_status_pending">结果待公布</span>
+        </div>
+        <h3 style="font-size:18px;font-weight:600;line-height:1.5;color:var(--text);" data-i18n="comp2_title">第26届白金创意国际大学生平面设计大赛</h3>
+        <p style="font-size:14px;color:var(--text-muted);line-height:1.6;" data-i18n="comp2_desc">结果尚未公布</p>
+      </div>
+    </div>
+    <style>
+      .comp-card:hover { border-color: var(--border-hover) !important; transform: translateY(-4px); }
+    </style>
+  </section>
+
   <!-- Testimonials Section -->
   <section class="section" id="testimonials">
-    <div class="section-header" style="max-width:1400px;margin:0 auto 80px;">
+    <div class="section-header" style="max-width:1400px;margin:0 auto 100px;">
       <div class="section-label reveal" data-i18n="label_testimonials">评价</div>
       <div class="text-pressure-container reveal reveal-delay-1" id="textPressureTestimonials" style="margin-bottom:16px;">
         <h2 class="text-pressure-title" id="textPressureTestimonialsTitle"></h2>
@@ -1824,12 +1870,12 @@
           <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
         </div>
-        <p class="testimonial-text" data-i18n="t1_text">"子硕对设计细节的把控力令人叹服。他不仅仅是在做设计，更是在讲述一个品牌的故事。最终成果远超我们的预期。"</p>
+        <p class="testimonial-text" data-i18n="t1_text">"子硕对设计细节的把控力令人叹服。从最初的品牌调研到视觉语言的构建，他展现出了超越同龄人的洞察力与执行力。他不仅仅是在做设计，更是在讲述一个品牌的故事——每一处色彩、每一个字距、每一根线条都经过深思熟虑。整个合作过程高效且愉快，他总能精准理解我们的诉求，并给出令人惊喜的解决方案。最终成果远超我们的预期，强烈推荐。"</p>
         <div class="testimonial-author">
-          <img class="testimonial-avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="李明">
+          <span class="testimonial-avatar" style="display:inline-flex;align-items:center;justify-content:center;font-size:26px;background:#f0f0f0;">🧑‍💼</span>
           <div>
             <div class="testimonial-name" data-i18n="t1_name">李明</div>
-            <div class="testimonial-role" data-i18n="t1_role">NOVA 银行 · CEO</div>
+            <div class="testimonial-role" data-i18n="t1_role">某设计公司</div>
           </div>
         </div>
       </div>
@@ -2586,6 +2632,7 @@
         createInstance('textPressureAbout', 'textPressureAboutTitle', "ABOUT", 24),
         createInstance('textPressureWorks', 'textPressureWorksTitle', "WORKS", 24),
         createInstance('textPressureServices', 'textPressureServicesTitle', "SERVICES", 24),
+        createInstance('textPressureCompetitions', 'textPressureCompetitionsTitle', "COMPETITIONS", 24),
         createInstance('textPressureTestimonials', 'textPressureTestimonialsTitle', "TESTIMONIALS", 24),
         createInstance('textPressureContact', 'textPressureContactTitle', "CONTACT", 24)
       ].filter(Boolean);
@@ -2908,10 +2955,11 @@
 
     var i18n = {
       zh: {
-        nav_about: '关于', nav_work: '作品', nav_services: '服务', nav_testimonials: '评价', nav_contact: '联系',
+        nav_about: '关于', nav_work: '作品', nav_services: '服务', nav_competitions: '赛事', nav_testimonials: '评价', nav_contact: '联系',
         hero_sub: '我们拒绝多余的修辞，只谈存在本身。YZS 是年轻灵魂的留白区——一个探索"无我"与"存在"边界的青年视觉品牌。',
         hero_cta1: '探索作品 <span class="arrow">→</span>', hero_cta2: '开始对话',
-        label_about: '关于', label_works: '作品', label_services: '服务', label_testimonials: '评价', label_contact: '联系',
+        label_about: '关于', label_works: '作品', label_services: '服务', label_competitions: '赛事', label_testimonials: '评价', label_contact: '联系',
+        comp_placeholder: '赛事内容即将更新，敬请期待。',
         about_p1: '我们生活在一个"过度感知"的时代。情绪被算法放大，色彩被符号化，连"真实"都被包装成消费品。YZS 不提供答案，只提供空白。',
         about_p2: '我们设计物，也设计"无物"。让生活回到"零感"——那个一切重新开始的地方。我是杨子硕，一名热爱设计与视觉的美术生，喜欢用细腻的线条表达思考。我相信艺术的力量不在于高冷的展览，而在于生活被放大的温度。',
         stat_projects: '项目完成', stat_clients: '国内客户', stat_awards: '设计奖项',
@@ -2922,7 +2970,7 @@
         w5_title: '#05 拓印-流动的痕', w5_desc: '以"沙"为媒介，将无形的时间感知转化为可观察与触摸的流动痕迹，距离即介入，观众即参与者。',
         w6_title: '#06 YZS® 周边系列', w6_desc: '把设计从屏幕带回现实，让每一件周边成为日常生活中的"可触摸表达"——克制、直接，但不失锋芒。',
         svc_brand: '品牌视觉搭建', svc_social: '社媒视觉链接',
-        t1_text: '"子硕对设计细节的把控力令人叹服。他不仅仅是在做设计，更是在讲述一个品牌的故事。最终成果远超我们的预期。"', t1_name: '李明', t1_role: 'NOVA 银行 · CEO',
+        t1_text: '"子硕对设计细节的把控力令人叹服。从最初的品牌调研到视觉语言的构建，他展现出了超越同龄人的洞察力与执行力。他不仅仅是在做设计，更是在讲述一个品牌的故事——每一处色彩、每一个字距、每一根线条都经过深思熟虑。整个合作过程高效且愉快，他总能精准理解我们的诉求，并给出令人惊喜的解决方案。最终成果远超我们的预期，强烈推荐。"', t1_name: '李明', t1_role: '某设计公司',
         t2_text: '"子硕身上有一种很少见的组合：美术生的感知力，加上对技术工具毫不畏惧的探索欲。他对品牌视觉的理解不只是做好看的东西，而是能从哲学层面思考\'为什么要这样做\'。对 AIGC 和 vibe coding 的探索也不是浅尝辄止，而是真正融入了自己的设计工作流。他总是同时在推进好几件事——品牌设计、网站搭建、自媒体运营——每一件都不敷衍，从不等别人推着走，永远自己找方向。本科阶段就能独立完成从品牌定位到视觉落地的全流程，自驱力极强，未来可期。"', t2_name: '刘彦君', t2_role: '华南筑真科技',
         t3_text: '"从思路到落地，每一个环节，子硕都能比较稳定的跟进，并且能够给到一些启发性的建设意见，很期待他未来能创造出更有张力的作品。"', t3_role: 'Hidweek 主教',
         btn_card: '查看我的名片', btn_resume: '查看我的简历',
@@ -2952,10 +3000,11 @@
         wd6_material: '多元材质（织物、金属、纸品、印刷品）', wd6_type: '品牌周边 / 实物设计'
       },
       en: {
-        nav_about: 'About', nav_work: 'Works', nav_services: 'Services', nav_testimonials: 'Testimonials', nav_contact: 'Contact',
+        nav_about: 'About', nav_work: 'Works', nav_services: 'Services', nav_competitions: 'Competitions', nav_testimonials: 'Testimonials', nav_contact: 'Contact',
         hero_sub: 'We reject unnecessary rhetoric and speak only of existence itself. YZS is a blank canvas for young souls — a youth visual brand exploring the boundary between "selflessness" and "being".',
         hero_cta1: 'Explore Works <span class="arrow">→</span>', hero_cta2: 'Get in Touch',
-        label_about: 'About', label_works: 'Works', label_services: 'Services', label_testimonials: 'Testimonials', label_contact: 'Contact',
+        label_about: 'About', label_works: 'Works', label_services: 'Services', label_competitions: 'Competitions', label_testimonials: 'Testimonials', label_contact: 'Contact',
+        comp_placeholder: 'Competition entries coming soon. Stay tuned.',
         about_p1: 'We live in an era of "over-perception". Emotions are amplified by algorithms, colors are symbolized, and even "authenticity" is packaged as a commodity. YZS offers no answers — only blank space.',
         about_p2: 'We design objects, and we design "nothingness". Bringing life back to "zero sense" — the place where everything begins anew. I\'m Yang Zishuo, an art student passionate about design and visual expression, who loves to articulate thoughts through delicate lines. I believe the power of art lies not in elitist exhibitions, but in the amplified warmth of everyday life.',
         stat_projects: 'Projects', stat_clients: 'Clients', stat_awards: 'Awards',
@@ -2966,7 +3015,7 @@
         w5_title: '#05 Imprint — Flowing Traces', w5_desc: 'Using "sand" as a medium, transforming invisible time perception into observable, touchable flowing traces. Distance means engagement; the audience becomes the participant.',
         w6_title: '#06 YZS® Merch Series', w6_desc: 'Bringing design from screen to reality, making every piece of merch a "touchable expression" in daily life — restrained, direct, yet sharp.',
         svc_brand: 'Brand Visual Identity', svc_social: 'Social Media Links',
-        t1_text: '"Zishuo\'s control over design details is impressive. He\'s not just designing — he\'s telling a brand\'s story. The final result far exceeded our expectations."', t1_name: 'Li Ming', t1_role: 'NOVA Bank · CEO',
+        t1_text: '"Zishuo\'s control over design details is truly impressive. From initial brand research to building a cohesive visual language, he demonstrated insight and execution far beyond his years. He\'s not just designing — he\'s telling a brand\'s story, where every color choice, every letter spacing, and every line is thoughtfully considered. The entire collaboration was efficient and enjoyable; he always understood our needs precisely and delivered solutions that genuinely surprised us. The final result far exceeded our expectations. Highly recommended."', t1_name: 'Li Ming', t1_role: 'A Design Company',
         t2_text: '"Zishuo has a rare combination: the perceptiveness of an art student, plus a fearless curiosity for technical tools. His understanding of brand visuals goes beyond making things look good — he thinks philosophically about \'why do it this way\'. His exploration of AIGC and vibe coding isn\'t superficial but truly integrated into his design workflow. He\'s always pushing multiple things forward — brand design, website building, social media — none half-hearted, never waiting to be told what to do. Completing the full pipeline from brand positioning to visual execution independently as an undergraduate shows exceptional self-drive."', t2_name: 'Liu Yanjun', t2_role: 'South China Zhuzhen Tech',
         t3_text: '"From concept to execution, Zishuo follows through steadily at every stage and offers inspiring suggestions. I look forward to seeing him create even more powerful works in the future."', t3_role: 'Hidweek Bishop',
         btn_card: 'View My Card', btn_resume: 'View My Resume',
@@ -2996,10 +3045,11 @@
         wd6_material: 'Mixed materials (fabric, metal, paper, prints)', wd6_type: 'Brand merchandise / Physical design'
       },
       ja: {
-        nav_about: '紹介', nav_work: '作品', nav_services: 'サービス', nav_testimonials: '評価', nav_contact: '連絡',
+        nav_about: '紹介', nav_work: '作品', nav_services: 'サービス', nav_competitions: 'コンペ', nav_testimonials: '評価', nav_contact: '連絡',
         hero_sub: '余分な修辞を拒否し、存在そのものだけを語る。YZS は若い魂のための余白——「無我」と「存在」の境界を探求する青年ビジュアルブランド。',
         hero_cta1: '作品を見る <span class="arrow">→</span>', hero_cta2: '対話を始める',
-        label_about: '紹介', label_works: '作品', label_services: 'サービス', label_testimonials: '評価', label_contact: '連絡',
+        label_about: '紹介', label_works: '作品', label_services: 'サービス', label_competitions: 'コンペティション', label_testimonials: '評価', label_contact: '連絡',
+        comp_placeholder: 'コンペティション情報は近日公開予定です。',
         about_p1: '私たちは「過剰感知」の時代に生きている。感情はアルゴリズムに増幅され、色は記号化され、「本物」さえも商品として包装される。YZS は答えを提供しない——ただ空白を提供する。',
         about_p2: '私たちはモノをデザインし、「無」もデザインする。生活を「ゼロ感覚」に戻す——すべてが再び始まる場所へ。私は楊子碩、デザインとビジュアルを愛する美術学生。繊細な線で思考を表現することが好きです。芸術の力は高尚な展覧会にあるのではなく、日常の温もりを増幅させることにあると信じています。',
         stat_projects: 'プロジェクト', stat_clients: 'クライアント', stat_awards: '受賞歴',
@@ -3010,7 +3060,7 @@
         w5_title: '#05 拓印——流れる痕跡', w5_desc: '「砂」を媒介として、目に見えない時間の知覚を観察可能で触れることのできる流動する痕跡に変換する。距離は介入であり、観客は参加者となる。',
         w6_title: '#06 YZS® グッズシリーズ', w6_desc: 'デザインをスクリーンから現実へ。すべてのグッズを日常生活の中の「触れる表現」に——抑制的で、直接的で、しかし鋭さを失わない。',
         svc_brand: 'ブランドビジュアル構築', svc_social: 'SNSリンク',
-        t1_text: '「子碩のデザインディテールへのこだわりは驚嘆に値する。彼はただデザインしているのではなく、ブランドの物語を語っている。最終成果は我々の期待をはるかに超えた。」', t1_name: '李明', t1_role: 'NOVA銀行 · CEO',
+        t1_text: '「子碩のデザインディテールへのこだわりは驚嘆に値する。ブランドリサーチからビジュアル言語の構築まで、同世代を超える洞察力と実行力を見せてくれた。彼はただデザインしているのではなく、ブランドの物語を語っているのだ——色彩の一つひとつ、字間の一つひとつ、線の一本一本に深い思慮が込められている。協業全体が効率的で心地よく、我々のニーズを的確に汲み取り、驚きのあるソリューションを提供してくれた。最終成果は我々の期待をはるかに超えた。強くお薦めする。」', t1_name: '李明', t1_role: 'とあるデザイン会社',
         t2_text: '「子碩には珍しい組み合わせがある：美術学生の感性と、技術ツールへの恐れ知らずの探究心。ブランドビジュアルへの理解は見た目を良くすることに留まらず、「なぜこうするのか」を哲学的に考えられる。AIGCやvibe codingの探求も表面的ではなく、自身のデザインワークフローに真に統合している。常に複数のことを同時に推進し——ブランドデザイン、ウェブ構築、SNS運営——どれも手を抜かず、指示を待たず、常に自ら方向を見つける。学部段階でブランドポジショニングからビジュアル実装まで一貫して独立完成できる、自己駆動力が極めて強い、将来有望。」', t2_name: '劉彦君', t2_role: '華南筑真科技',
         t3_text: '「構想から実装まで、あらゆる段階で子碩は安定してフォローし、示唆に富む建設的な意見を出せる。彼が将来さらに張力のある作品を生み出すことを楽しみにしている。」', t3_role: 'Hidweek 司教',
         btn_card: '名刺を見る', btn_resume: '履歴書を見る',
