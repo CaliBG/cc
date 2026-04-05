@@ -1597,7 +1597,23 @@
       .about-stats { grid-template-columns: repeat(3, 1fr); gap: 16px; }
       .stat .stat-number { font-size: 28px; }
       .footer { padding: 16px 16px 20px; }
-      .footer-links a { font-size: 11px; padding: 0 7px; }
+      .footer-links {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0;
+        padding: 0;
+      }
+      .footer-links a {
+        font-size: 11px;
+        padding: 10px 0;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        justify-content: center;
+      }
+      .footer-links a:first-child { padding-left: 0; }
+      .footer-links a:nth-child(3n+1) { justify-content: flex-start; }
+      .footer-links a:nth-child(3n+3) { justify-content: flex-end; }
+      .footer-links a:nth-last-child(-n+3) { border-bottom: none; }
       .footer-links a svg { width: 10px; height: 10px; }
       .cursor { display: none; }
       .hero-sub { font-size: 13px; margin-bottom: 32px; }
