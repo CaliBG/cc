@@ -946,6 +946,77 @@
     }
 
     /* ============================================
+       COMPETITIONS LIST
+       ============================================ */
+    .competitions-list {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .comp-item {
+      display: grid;
+      grid-template-columns: 60px 1fr auto;
+      gap: 48px;
+      align-items: center;
+      padding: 56px 0;
+      border-bottom: 1px solid var(--border);
+      transition: all 0.4s var(--transition);
+      cursor: default;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .comp-item:first-child { border-top: 1px solid var(--border); }
+
+    .comp-item:hover { padding-left: 24px; }
+
+    .comp-num {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .comp-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .comp-name {
+      font-size: clamp(20px, 2.5vw, 32px);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.4;
+      transition: color 0.3s;
+    }
+
+    .comp-status {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+    }
+
+    .comp-item:hover .comp-name { color: var(--accent); }
+
+    .comp-arrow {
+      font-size: 24px;
+      color: var(--text-muted);
+      transition: all 0.4s var(--transition);
+      transform: rotate(-45deg);
+    }
+
+    .comp-item:hover .comp-arrow {
+      color: var(--accent);
+      transform: rotate(0deg);
+    }
+
+    @media (max-width: 768px) {
+      .comp-item { grid-template-columns: 40px 1fr auto; gap: 24px; }
+    }
+
+    /* ============================================
        TESTIMONIALS
        ============================================ */
     .testimonial-grid {
@@ -1946,28 +2017,24 @@
         </div>
       </div>
     </div>
-    <div class="competitions-grid" style="max-width:1400px;margin:48px auto 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:32px;padding:0 32px;">
-      <div class="comp-card reveal" style="padding:40px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);transition:all 0.4s var(--transition);display:flex;flex-direction:column;gap:16px;">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;font-size:18px;font-weight:700;flex-shrink:0;">参</span>
-          <span style="font-size:13px;color:var(--accent);font-weight:600;letter-spacing:1px;text-transform:uppercase;" data-i18n="comp_status_participated">已参与</span>
+    <div class="competitions-list">
+      <a class="comp-item reveal" onclick="openCompGBA(event)" style="cursor:pointer;">
+        <span class="comp-num">01</span>
+        <div class="comp-info">
+          <span class="comp-name" data-i18n="comp1_title">第八届粤港澳大湾区学校设计作品展暨第十届广东省高校设计作品学院奖双年展</span>
+          <span class="comp-status" style="color:var(--accent);" data-i18n="comp_status_participated">已参与</span>
         </div>
-        <h3 style="font-size:18px;font-weight:600;line-height:1.5;color:var(--text);" data-i18n="comp1_title">第八届粤港澳大湾区学校设计作品展暨第十届广东省高校设计作品学院奖双年展</h3>
-        <p style="font-size:14px;color:var(--text-muted);line-height:1.6;" data-i18n="comp1_desc">作品征集阶段</p>
-      </div>
-      <div class="comp-card reveal reveal-delay-1" style="padding:40px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);transition:all 0.4s var(--transition);display:flex;flex-direction:column;gap:16px;cursor:pointer;" onclick="openCompPlatinum(event)">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:var(--text-muted);color:#fff;font-size:18px;font-weight:700;flex-shrink:0;">待</span>
-          <span style="font-size:13px;color:var(--text-muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;" data-i18n="comp_status_pending">结果待公布</span>
+        <span class="comp-arrow">↗</span>
+      </a>
+      <a class="comp-item reveal reveal-delay-1" onclick="openCompPlatinum(event)" style="cursor:pointer;">
+        <span class="comp-num">02</span>
+        <div class="comp-info">
+          <span class="comp-name" data-i18n="comp2_title">第26届白金创意国际大学生平面设计大赛</span>
+          <span class="comp-status" data-i18n="comp_status_pending">结果待公布</span>
         </div>
-        <h3 style="font-size:18px;font-weight:600;line-height:1.5;color:var(--text);" data-i18n="comp2_title">第26届白金创意国际大学生平面设计大赛</h3>
-        <p style="font-size:14px;color:var(--text-muted);line-height:1.6;" data-i18n="comp2_desc">结果尚未公布</p>
-        <span style="font-size:12px;color:var(--accent);margin-top:4px;">点击查看参赛证明 →</span>
-      </div>
+        <span class="comp-arrow">↗</span>
+      </a>
     </div>
-    <style>
-      .comp-card:hover { border-color: var(--border-hover) !important; transform: translateY(-4px); }
-    </style>
   </section>
 
   <!-- Testimonials Section -->
@@ -2445,6 +2512,24 @@
     
   </div>
 
+  <!-- GBA Competition Modal -->
+  <div class="work-modal-overlay" id="compGBAModal">
+    <button class="work-modal-close" onclick="closeCompGBA()">✕</button>
+    <div class="work-detail">
+      <div class="work-detail-header">
+        <h2 class="work-detail-title" data-i18n="comp1_title">第八届粤港澳大湾区学校设计作品展暨第十届广东省高校设计作品学院奖双年展</h2>
+        <div class="work-detail-meta">
+          <span class="project-tag">设计作品展</span>
+          <span class="project-tag">2026</span>
+          <span class="project-tag" data-i18n="comp_status_participated">已参与</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:24px;margin-top:48px;">
+        <img src="97.JPG" alt="粤港澳大湾区设计作品展参赛证明" style="width:100%;border-radius:12px;border:1px solid var(--border);">
+      </div>
+    </div>
+  </div>
+
   <!-- Platinum Competition Modal -->
   <div class="work-modal-overlay" id="compPlatinumModal">
     <button class="work-modal-close" onclick="closeCompPlatinum()">✕</button>
@@ -2737,24 +2822,37 @@
     // COUNTER ANIMATION
     // ============================================
     const stats = document.querySelectorAll('.stat-number');
+    // Store original values and set initial display to 0
+    stats.forEach(stat => {
+      stat.dataset.target = stat.textContent;
+      const suffix = stat.textContent.replace(/[0-9]/g, '');
+      stat.textContent = '0' + suffix;
+    });
+
     const statsObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const target = entry.target;
-          const text = target.textContent;
+          const text = target.dataset.target;
           const num = parseInt(text);
           if (isNaN(num)) return;
           const suffix = text.replace(/[0-9]/g, '');
           let current = 0;
-          const step = Math.ceil(num / 40);
-          const interval = setInterval(() => {
-            current += step;
-            if (current >= num) {
-              current = num;
-              clearInterval(interval);
-            }
+          const duration = 2000;
+          const startTime = performance.now();
+
+          function animate(now) {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            // Ease out cubic
+            const eased = 1 - Math.pow(1 - progress, 3);
+            current = Math.round(eased * num);
             target.textContent = current + suffix;
-          }, 30);
+            if (progress < 1) {
+              requestAnimationFrame(animate);
+            }
+          }
+          requestAnimationFrame(animate);
           statsObserver.unobserve(target);
         }
       });
@@ -3098,6 +3196,23 @@
     initStack('work03Stack');
     initStack('work04Stack');
     initStack('work06Stack');
+
+    // ============================================
+    // GBA COMPETITION MODAL
+    // ============================================
+    const compGBAModal = document.getElementById('compGBAModal');
+
+    function openCompGBA(e) {
+      e.preventDefault();
+      compGBAModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      compGBAModal.scrollTop = 0;
+    }
+
+    function closeCompGBA() {
+      compGBAModal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
 
     // ============================================
     // PLATINUM COMPETITION MODAL
