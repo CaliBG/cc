@@ -1479,33 +1479,51 @@
        FOOTER
        ============================================ */
     .footer {
-      padding: 48px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 24px;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 16px 22px 20px;
       font-size: 12px;
       color: var(--text-muted);
-      letter-spacing: 0.5px;
+      letter-spacing: 0.1px;
+      line-height: 1.5;
+    }
+
+    .footer-top {
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+    }
+
+    .footer-top p {
+      margin: 0 0 10px;
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--text-muted);
     }
 
     .footer-links {
       display: flex;
       align-items: center;
-      gap: 0;
       flex-wrap: wrap;
-      justify-content: center;
-      font-size: 12px;
+      gap: 0;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
     }
 
     .footer-links a {
       color: var(--text-muted);
       text-decoration: none;
-      transition: color 0.3s var(--transition);
-      padding: 0 12px;
-      border-right: 1px solid var(--border);
+      font-size: 12px;
       line-height: 1;
+      padding: 0 10px;
+      border-right: 1px solid var(--border);
+      transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .footer-links a:first-child {
+      padding-left: 0;
     }
 
     .footer-links a:last-child {
@@ -1514,13 +1532,21 @@
 
     .footer-links a:hover {
       color: var(--text);
+      text-decoration: underline;
+    }
+
+    .footer-links a svg {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
     }
 
     .footer-bottom {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      width: 100%;
+      padding-top: 10px;
+      font-size: 12px;
     }
 
     /* ============================================
@@ -1570,10 +1596,9 @@
       .text-pressure-contact { height: auto; }
       .about-stats { grid-template-columns: repeat(3, 1fr); gap: 16px; }
       .stat .stat-number { font-size: 28px; }
-      .footer { gap: 20px; text-align: center; }
-      .footer-links { gap: 0; }
-      .footer-links a { padding: 4px 10px; font-size: 11px; }
-      .footer-bottom { flex-direction: column; gap: 8px; }
+      .footer { padding: 16px 16px 20px; }
+      .footer-links a { font-size: 11px; padding: 0 7px; }
+      .footer-links a svg { width: 10px; height: 10px; }
       .cursor { display: none; }
       .hero-sub { font-size: 13px; margin-bottom: 32px; }
       .btn-primary, .btn-outline { font-size: 12px; padding: 12px 24px; }
@@ -1942,7 +1967,7 @@
   <section class="section" id="contact">
     <div class="contact">
       <div class="section-label reveal" data-i18n="label_contact">联系</div>
-      <div class="text-pressure-container reveal reveal-delay-1" id="textPressureContact" style="margin-bottom:16px;">
+      <div class="text-pressure-container reveal reveal-delay-1" id="textPressureContact" style="margin-bottom:64px;">
         <h2 class="text-pressure-title" id="textPressureContactTitle"></h2>
       </div>
       <p class="contact-sub reveal reveal-delay-2" data-i18n="contact_sub">
@@ -2369,17 +2394,19 @@
 
   <!-- Footer -->
   <footer class="footer">
+    <div class="footer-top">
+      <p data-i18n="footer_slogan">感知归零，一切重新开始</p>
+    </div>
     <div class="footer-links">
-      <a href="https://www.xiaohongshu.com/user/profile/60e45d75000000002002f229?xsec_token=YBVMNXmJezIr5KqiwXTQm4UvQ6SGNVd9RA0ET9lp-wI8Y=&xsec_source=app_share&xhsshare=CopyLink&shareRedId=ODZHNDhJOz42NzUyOTgwNjgzOTlKNzhC&apptime=1769496056&share_id=252ce6729b3448ea810663e75eaecb66" target="_blank">小红书</a>
-      <a href="https://www.douyin.com/user/MS4wLjABAAAAwZDZH1-khE631mUgvp1U0ZsJM7w-yoLCMUymkTEPzxiA1Y5peo-hNZLApZ4LORoi" target="_blank">抖音</a>
-      <a href="https://www.instagram.com/caliyang0693?igsh=dm15eTJ3MWYxN2F0&utm_source=qr" target="_blank">Instagram</a>
-      <a href="https://space.bilibili.com/3690996065897028" target="_blank">Bilibili</a>
-      <a href="https://www.youtube.com/@yzs-cali-yang" target="_blank">YouTube</a>
-      <a href="https://163cn.tv/4zAP1hK" target="_blank">网易云音乐</a>
+      <a href="https://www.xiaohongshu.com/user/profile/60e45d75000000002002f229?xsec_token=YBVMNXmJezIr5KqiwXTQm4UvQ6SGNVd9RA0ET9lp-wI8Y=&xsec_source=app_share&xhsshare=CopyLink&shareRedId=ODZHNDhJOz42NzUyOTgwNjgzOTlKNzhC&apptime=1769496056&share_id=252ce6729b3448ea810663e75eaecb66" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>小红书</a>
+      <a href="https://www.douyin.com/user/MS4wLjABAAAAwZDZH1-khE631mUgvp1U0ZsJM7w-yoLCMUymkTEPzxiA1Y5peo-hNZLApZ4LORoi" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>抖音</a>
+      <a href="https://www.instagram.com/caliyang0693?igsh=dm15eTJ3MWYxN2F0&utm_source=qr" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>Instagram</a>
+      <a href="https://space.bilibili.com/3690996065897028" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="6" width="20" height="14" rx="3"/><path d="M6 6l3-4"/><path d="M18 6l-3-4"/><circle cx="9" cy="13" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="13" r="1" fill="currentColor" stroke="none"/></svg>Bilibili</a>
+      <a href="https://www.youtube.com/@yzs-cali-yang" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="4"/><polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none"/></svg>YouTube</a>
+      <a href="https://163cn.tv/4zAP1hK" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 12a4 4 0 0 1 8 0"/><path d="M6 12a6 6 0 0 1 12 0"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>网易云音乐</a>
     </div>
     <div class="footer-bottom">
-      <div>© 2026 YZS — Yet Zero Sense. 杨子硕</div>
-      <span data-i18n="footer_slogan">感知归零，一切重新开始</span>
+      <span>Copyright © 2026 YZS — Yet Zero Sense. 杨子硕</span>
     </div>
   </footer>
 
