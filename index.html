@@ -3075,9 +3075,14 @@
           overlay.innerHTML =
             '<div style="display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;padding:0 32px;width:100%;max-width:360px;">' +
               '<img src="logo-white.png" alt="YZS" style="height:60px;width:auto;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;" id="gyroLogo">' +
-              '<div id="gyroTitle" style="font-size:22px;font-weight:700;letter-spacing:2px;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;"></div>' +
-              '<div id="gyroSub" style="font-size:13px;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;color:rgba(255,255,255,0.5);"></div>' +
-              '<div id="gyroProgress" style="width:100%;margin-top:32px;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;">' +
+              '<div id="gyroGyroHint" style="opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;display:flex;flex-direction:column;align-items:center;gap:12px;">' +
+                '<div style="width:56px;height:56px;border:2px solid rgba(255,255,255,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:pulse 2s ease-in-out infinite;">' +
+                  '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>' +
+                '</div>' +
+                '<div style="font-size:16px;font-weight:600;letter-spacing:1px;">轻触屏幕以启用体感交互</div>' +
+                '<div style="font-size:11px;color:rgba(255,255,255,0.3);">Touch to enable gyroscope</div>' +
+              '</div>' +
+              '<div id="gyroProgress" style="width:100%;margin-top:16px;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;">' +
                 '<div style="width:100%;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;">' +
                   '<div id="gyroProgressBar" style="width:0%;height:100%;background:rgba(200,255,0,0.8);border-radius:3px;transition:width 0.3s ease;"></div>' +
                 '</div>' +
@@ -3096,53 +3101,31 @@
             }, delay);
           }
 
-          // Sequenced fade-up
+          // Show logo immediately, then gyro hint right after
           fadeUp(document.getElementById('gyroLogo'), 300);
-          setTimeout(function() {
-            var t = document.getElementById('gyroTitle');
-            t.textContent = '欢迎访问YZS个人网站';
-            fadeUp(t, 0);
-          }, 700);
-          setTimeout(function() {
-            var s = document.getElementById('gyroSub');
-            s.textContent = 'Welcome to YZS Personal Website';
-            fadeUp(s, 0);
-          }, 1100);
-          fadeUp(document.getElementById('gyroProgress'), 1500);
+          fadeUp(document.getElementById('gyroGyroHint'), 800);
+          fadeUp(document.getElementById('gyroProgress'), 1200);
 
-          // Request gyroscope permission on user tap (iOS requires user gesture)
+          // Request gyroscope permission on first touch (iOS requires user gesture)
           var gyroRequested = false;
           function requestGyro() {
             if (gyroRequested) return;
             gyroRequested = true;
             DeviceOrientationEvent.requestPermission().then(function(state) {
               if (state === 'granted') enableGyro();
-              var hint = document.getElementById('gyroHint');
-              if (hint) { hint.style.opacity = '0'; }
             }).catch(function() {
               enableGyro();
-              var hint = document.getElementById('gyroHint');
-              if (hint) { hint.style.opacity = '0'; }
             });
+            // Fade out the hint after tapping
+            var hint = document.getElementById('gyroGyroHint');
+            if (hint) {
+              hint.style.opacity = '0';
+              hint.style.transform = 'translateY(-10px)';
+              setTimeout(function() { hint.style.display = 'none'; }, 600);
+            }
           }
           overlay.addEventListener('click', requestGyro);
           overlay.addEventListener('touchend', requestGyro);
-
-          // Show tap hint after progress appears
-          setTimeout(function() {
-            var progressEl = document.getElementById('gyroProgress');
-            if (progressEl && !gyroRequested) {
-              var hint = document.createElement('div');
-              hint.id = 'gyroHint';
-              hint.style.cssText = 'font-size:12px;color:rgba(255,255,255,0.4);margin-top:16px;opacity:0;transform:translateY(10px);transition:opacity 0.6s ease,transform 0.6s ease;';
-              hint.textContent = '轻触屏幕以启用体感交互';
-              progressEl.parentNode.appendChild(hint);
-              setTimeout(function() {
-                hint.style.opacity = '1';
-                hint.style.transform = 'translateY(0)';
-              }, 100);
-            }
-          }, 2000);
 
           // Track page load progress
           var progressBar = document.getElementById('gyroProgressBar');
