@@ -59,8 +59,6 @@
     }
 
     [data-theme="light"] .noise { opacity: 0.015; }
-    [data-theme="light"] .cursor { border-color: #066cf4; }
-    [data-theme="light"] .cursor.hover { background: rgba(6, 108, 244, 0.1); }
     [data-theme="light"] .work-detail-num { -webkit-text-stroke-color: rgba(0, 0, 0, 0.08); }
     [data-theme="light"] .modal-overlay { background: rgba(255, 255, 255, 0.9); }
     [data-theme="light"] .modal-close { background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.1); color: #333; }
@@ -85,7 +83,6 @@
       color: var(--text-primary);
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
-      cursor: default;
     }
 
     ::selection {
@@ -100,23 +97,32 @@
     /* ============================================
        CUSTOM CURSOR
        ============================================ */
-    .cursor {
-      width: 20px;
-      height: 20px;
-      border: 1.5px solid var(--accent);
-      border-radius: 50%;
+    .text-cursor-container {
       position: fixed;
+      inset: 0;
       pointer-events: none;
       z-index: 10000;
-      transition: transform 0.15s var(--transition), opacity 0.15s;
-      transform: translate(-50%, -50%);
-      mix-blend-mode: difference;
+      overflow: hidden;
     }
 
-    .cursor.hover {
-      transform: translate(-50%, -50%) scale(2.5);
-      background: var(--accent-glow);
-      border-color: transparent;
+    .text-cursor-item {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--accent);
+      font-family: var(--font-sans);
+      pointer-events: none;
+      user-select: none;
+      will-change: transform, opacity;
+      transition: opacity 0.5s ease-out;
+    }
+
+    .text-cursor-item.fading {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
     }
 
     /* ============================================
@@ -452,7 +458,6 @@
       font-family: var(--font-sans);
       font-size: clamp(48px, 10vw, 128px);
       font-weight: 800;
-      font-style: italic;
       letter-spacing: -0.02em;
       line-height: 1.1;
       color: var(--text-primary);
@@ -468,7 +473,7 @@
     .hero-split-title .split-char {
       display: inline-block;
       will-change: transform, opacity;
-      padding: 0 1px;
+      transform: skewX(-8deg);
     }
 
     .mobile-br { display: block; }
@@ -1745,7 +1750,7 @@
       .footer-links a:nth-child(3n+3) { justify-content: flex-end; }
       .footer-links a:nth-last-child(-n+3) { border-bottom: none; }
       .footer-links a svg { width: 10px; height: 10px; }
-      .cursor { display: none; }
+      .text-cursor-container { display: none; }
       .hero-split-title { font-size: clamp(36px, 12vw, 80px); margin-bottom: 32px; }
       .mobile-br { display: block; }
       .hero-sub { font-size: 13px; margin-bottom: 32px; }
@@ -1754,8 +1759,8 @@
   </style>
 </head>
 <body>
-  <!-- Custom Cursor -->
-  <div class="cursor" id="cursor"></div>
+  <!-- Text Cursor Trail -->
+  <div class="text-cursor-container" id="textCursorContainer"></div>
 
   <!-- Noise Overlay -->
   <div class="noise"></div>
@@ -2606,14 +2611,15 @@
       });
 
       // Hide chars initially
-      gsap.set(charSpans, { opacity: 0, y: 40 });
+      gsap.set(charSpans, { opacity: 0, y: 40, skewX: -8 });
 
       function run() {
         gsap.fromTo(charSpans,
-          { opacity: 0, y: 40 },
+          { opacity: 0, y: 40, skewX: -8 },
           {
             opacity: 1,
             y: 0,
+            skewX: -8,
             duration: 1.25,
             ease: 'power3.out',
             stagger: 0.05,
@@ -2640,7 +2646,7 @@
           if (entry.isIntersecting && mobileGyroReady) {
             run();
           } else if (!entry.isIntersecting) {
-            gsap.set(charSpans, { opacity: 0, y: 40 });
+            gsap.set(charSpans, { opacity: 0, y: 40, skewX: -8 });
           }
         });
       }, { threshold: 0.1 });
@@ -2759,29 +2765,100 @@
   <!-- JavaScript -->
   <script>
     // ============================================
-    // CUSTOM CURSOR
+    // TEXT CURSOR TRAIL
     // ============================================
-    const cursor = document.getElementById('cursor');
-    let cursorX = 0, cursorY = 0, currentX = 0, currentY = 0;
+    (function initTextCursor() {
+      var container = document.getElementById('textCursorContainer');
+      if (!container) return;
 
-    document.addEventListener('mousemove', (e) => {
-      cursorX = e.clientX;
-      cursorY = e.clientY;
-    });
+      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      if (isMobile) { container.style.display = 'none'; return; }
 
-    function animateCursor() {
-      currentX += (cursorX - currentX) * 0.12;
-      currentY += (cursorY - currentY) * 0.12;
-      cursor.style.left = currentX + 'px';
-      cursor.style.top = currentY + 'px';
-      requestAnimationFrame(animateCursor);
-    }
-    animateCursor();
+      var text = 'YZS';
+      var spacing = 100;
+      var maxPoints = 5;
+      var exitDuration = 500;
+      var removalInterval = 30;
+      var trail = [];
+      var lastX = null, lastY = null;
+      var lastMoveTime = Date.now();
 
-    document.querySelectorAll('[data-hover]').forEach(el => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-    });
+      document.addEventListener('mousemove', function(e) {
+        var mx = e.clientX;
+        var my = e.clientY;
+
+        if (lastX === null) {
+          lastX = mx; lastY = my;
+          spawnItem(mx, my, 0);
+          return;
+        }
+
+        var dx = mx - lastX;
+        var dy = my - lastY;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist >= spacing) {
+          var angle = Math.atan2(dy, dx) * 180 / Math.PI;
+          var steps = Math.floor(dist / spacing);
+          for (var i = 1; i <= steps; i++) {
+            var t = (spacing * i) / dist;
+            spawnItem(lastX + dx * t, lastY + dy * t, angle);
+          }
+          lastX = lastX + dx * (steps * spacing / dist);
+          lastY = lastY + dy * (steps * spacing / dist);
+        }
+
+        lastMoveTime = Date.now();
+      });
+
+      function spawnItem(x, y, angle) {
+        var el = document.createElement('div');
+        el.className = 'text-cursor-item';
+        el.textContent = text;
+
+        var rx = Math.random() * 10 - 5;
+        var ry = Math.random() * 10 - 5;
+        var rr = Math.random() * 10 - 5;
+
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        el.style.transform = 'translate(-50%,-50%) rotate(' + angle + 'deg)';
+        el.style.opacity = '1';
+        container.appendChild(el);
+
+        trail.push(el);
+        if (trail.length > maxPoints) {
+          fadeOut(trail.shift());
+        }
+
+        // Random float animation
+        var startTime = Date.now();
+        function floatAnim() {
+          if (!el.parentNode) return;
+          var t = (Date.now() - startTime) / 1000;
+          var fx = Math.sin(t * Math.PI) * rx;
+          var fy = Math.sin(t * Math.PI) * ry;
+          var fr = Math.sin(t * Math.PI) * rr;
+          el.style.transform = 'translate(calc(-50% + ' + fx + 'px), calc(-50% + ' + fy + 'px)) rotate(' + (angle + fr) + 'deg)';
+          requestAnimationFrame(floatAnim);
+        }
+        floatAnim();
+      }
+
+      function fadeOut(el) {
+        el.classList.add('fading');
+        setTimeout(function() {
+          if (el.parentNode) el.parentNode.removeChild(el);
+        }, exitDuration);
+      }
+
+      // Remove trail items when mouse stops
+      setInterval(function() {
+        if (Date.now() - lastMoveTime > 100 && trail.length > 0) {
+          fadeOut(trail.shift());
+        }
+      }, removalInterval);
+    })();
 
     // ============================================
     // NAVBAR SCROLL
@@ -2903,76 +2980,172 @@
 
         function enableGyro() {
           window.addEventListener('deviceorientation', handleOrientation);
-          var overlay = document.getElementById('gyroOverlay');
-          if (overlay) {
-            overlay.style.opacity = '0';
-            setTimeout(function() { overlay.remove(); }, 600);
-          }
         }
 
         if (typeof DeviceOrientationEvent.requestPermission === 'function') {
           var overlay = document.createElement('div');
           overlay.id = 'gyroOverlay';
           overlay.style.cssText = 'position:fixed;inset:0;z-index:10001;display:flex;align-items:center;' +
-            'justify-content:center;background:rgba(0,0,0,0.5);backdrop-filter:blur(28px);' +
-            '-webkit-backdrop-filter:blur(28px);color:#fff;cursor:pointer;' +
+            'justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(28px);' +
+            '-webkit-backdrop-filter:blur(28px);color:#fff;' +
             'transition:opacity 0.8s ease;opacity:1;';
 
           overlay.innerHTML =
-            '<div style="display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;padding:0 32px;">' +
-              '<img src="logo-white.png" alt="YZS" style="height:60px;width:auto;opacity:0;transition:opacity 0.8s ease;" id="gyroLogo">' +
-              '<div id="gyroWelcome">' +
-                '<div id="gyroTitle" style="font-size:22px;font-weight:700;letter-spacing:2px;margin-bottom:6px;overflow:hidden;"></div>' +
-                '<div id="gyroSub" style="font-size:13px;opacity:0.5;overflow:hidden;"></div>' +
-              '</div>' +
-              '<div id="gyroTapHint" style="margin-top:16px;">' +
-                '<div style="width:48px;height:48px;border:2px solid rgba(255,255,255,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;animation:pulse 2s ease-in-out infinite;opacity:0;transition:opacity 0.8s ease;" id="gyroIcon">' +
-                  '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>' +
+            '<div style="display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;padding:0 32px;width:100%;max-width:360px;">' +
+              '<img src="logo-white.png" alt="YZS" style="height:60px;width:auto;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;" id="gyroLogo">' +
+              '<div id="gyroTitle" style="font-size:22px;font-weight:700;letter-spacing:2px;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;"></div>' +
+              '<div id="gyroSub" style="font-size:13px;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;color:rgba(255,255,255,0.5);"></div>' +
+              '<div id="gyroProgress" style="width:100%;margin-top:32px;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;">' +
+                '<div style="width:100%;height:2px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;">' +
+                  '<div id="gyroProgressBar" style="width:0%;height:100%;background:rgba(200,255,0,0.8);border-radius:2px;transition:width 0.3s ease;"></div>' +
                 '</div>' +
-                '<div id="gyroHintText" style="font-size:16px;font-weight:600;letter-spacing:1px;overflow:hidden;"></div>' +
+                '<div id="gyroProgressText" style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:12px;letter-spacing:1px;">网页加载中，精彩即将呈现</div>' +
               '</div>' +
             '</div>';
 
           document.body.appendChild(overlay);
 
-          // Line slide-up animation helper
-          function lineAnimate(el, text, delay) {
-            el.style.cssText += 'opacity:0;transform:translateY(100%);transition:opacity 0.4s ease,transform 0.4s ease;';
-            el.textContent = text;
+          // Fade-up animation helper
+          function fadeUp(el, delay) {
             setTimeout(function() {
               el.style.opacity = '1';
               el.style.transform = 'translateY(0)';
             }, delay);
           }
 
-          // Sequenced animation
+          // Sequenced fade-up
+          fadeUp(document.getElementById('gyroLogo'), 300);
           setTimeout(function() {
-            document.getElementById('gyroLogo').style.opacity = '1';
-          }, 300);
+            var t = document.getElementById('gyroTitle');
+            t.textContent = '欢迎访问YZS个人网站';
+            fadeUp(t, 0);
+          }, 700);
           setTimeout(function() {
-            lineAnimate(document.getElementById('gyroTitle'), '欢迎访问YZS个人网站', 0);
-          }, 800);
-          setTimeout(function() {
-            lineAnimate(document.getElementById('gyroSub'), 'Welcome to YZS Personal Website', 0);
-          }, 1200);
-          setTimeout(function() {
-            document.getElementById('gyroIcon').style.opacity = '1';
-            lineAnimate(document.getElementById('gyroHintText'), '轻触屏幕以启用体感交互', 0);
-          }, 1600);
+            var s = document.getElementById('gyroSub');
+            s.textContent = 'Welcome to YZS Personal Website';
+            fadeUp(s, 0);
+          }, 1100);
+          fadeUp(document.getElementById('gyroProgress'), 1500);
 
-          overlay.addEventListener('click', function() {
+          // Request gyroscope permission immediately via first touch
+          var gyroRequested = false;
+          overlay.addEventListener('touchstart', function() {
+            if (gyroRequested) return;
+            gyroRequested = true;
             DeviceOrientationEvent.requestPermission().then(function(state) {
               if (state === 'granted') enableGyro();
             }).catch(function() { enableGyro(); });
-            // Trigger hero text animation after overlay dismissed
-            setTimeout(function() {
-              if (window._startHeroSplitText) window._startHeroSplitText();
-            }, 600);
           }, { once: true });
+
+          // Track page load progress
+          var progressBar = document.getElementById('gyroProgressBar');
+          var progressText = document.getElementById('gyroProgressText');
+          var fakeProgress = 0;
+          var loadComplete = false;
+
+          // Simulate progress while loading
+          var progressInterval = setInterval(function() {
+            if (loadComplete) return;
+            // Slow down as it approaches 90%
+            var remaining = 90 - fakeProgress;
+            fakeProgress += remaining * 0.08;
+            progressBar.style.width = Math.min(fakeProgress, 90) + '%';
+          }, 100);
+
+          function finishLoading() {
+            if (loadComplete) return;
+            loadComplete = true;
+            clearInterval(progressInterval);
+
+            // Animate to 100%
+            progressBar.style.width = '100%';
+            progressText.textContent = '加载完成';
+
+            // Auto dismiss overlay
+            setTimeout(function() {
+              // If gyro not yet requested, try requesting
+              if (!gyroRequested) {
+                gyroRequested = true;
+                DeviceOrientationEvent.requestPermission().then(function(state) {
+                  if (state === 'granted') enableGyro();
+                }).catch(function() { enableGyro(); });
+              }
+
+              overlay.style.opacity = '0';
+              setTimeout(function() {
+                overlay.remove();
+                if (window._startHeroSplitText) window._startHeroSplitText();
+              }, 800);
+            }, 600);
+          }
+
+          // Listen for actual page load
+          if (document.readyState === 'complete') {
+            setTimeout(finishLoading, 1800);
+          } else {
+            window.addEventListener('load', function() {
+              // Ensure minimum display time of 1.8s
+              setTimeout(finishLoading, 800);
+            });
+          }
+
         } else {
+          // Android: no permission needed, show simple loading overlay
+          var overlay = document.createElement('div');
+          overlay.id = 'gyroOverlay';
+          overlay.style.cssText = 'position:fixed;inset:0;z-index:10001;display:flex;align-items:center;' +
+            'justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(28px);' +
+            '-webkit-backdrop-filter:blur(28px);color:#fff;' +
+            'transition:opacity 0.8s ease;opacity:1;';
+
+          overlay.innerHTML =
+            '<div style="display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;padding:0 32px;width:100%;max-width:360px;">' +
+              '<img src="logo-white.png" alt="YZS" style="height:60px;width:auto;">' +
+              '<div style="font-size:22px;font-weight:700;letter-spacing:2px;">欢迎访问YZS个人网站</div>' +
+              '<div style="width:100%;margin-top:16px;">' +
+                '<div style="width:100%;height:2px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;">' +
+                  '<div id="gyroProgressBarAnd" style="width:0%;height:100%;background:rgba(200,255,0,0.8);border-radius:2px;transition:width 0.3s ease;"></div>' +
+                '</div>' +
+                '<div id="gyroProgressTextAnd" style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:12px;letter-spacing:1px;">网页加载中，精彩即将呈现</div>' +
+              '</div>' +
+            '</div>';
+
+          document.body.appendChild(overlay);
           enableGyro();
-          // No overlay on Android, trigger text animation directly
-          if (window._startHeroSplitText) window._startHeroSplitText();
+
+          var barAnd = document.getElementById('gyroProgressBarAnd');
+          var textAnd = document.getElementById('gyroProgressTextAnd');
+          var fakeAnd = 0;
+          var doneAnd = false;
+
+          var intAnd = setInterval(function() {
+            if (doneAnd) return;
+            fakeAnd += (90 - fakeAnd) * 0.08;
+            barAnd.style.width = Math.min(fakeAnd, 90) + '%';
+          }, 100);
+
+          function finishAnd() {
+            if (doneAnd) return;
+            doneAnd = true;
+            clearInterval(intAnd);
+            barAnd.style.width = '100%';
+            textAnd.textContent = '加载完成';
+            setTimeout(function() {
+              overlay.style.opacity = '0';
+              setTimeout(function() {
+                overlay.remove();
+                if (window._startHeroSplitText) window._startHeroSplitText();
+              }, 800);
+            }, 600);
+          }
+
+          if (document.readyState === 'complete') {
+            setTimeout(finishAnd, 1800);
+          } else {
+            window.addEventListener('load', function() {
+              setTimeout(finishAnd, 800);
+            });
+          }
         }
       }
 
