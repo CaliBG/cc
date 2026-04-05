@@ -2816,30 +2816,15 @@
         updateRows();
       });
 
-      // Mobile: gyroscope
+      // Mobile: gyroscope (permission handled by overlay, just listen for events)
       var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
       if (isMobile && typeof DeviceOrientationEvent !== 'undefined') {
-        function handleGridGyro(e) {
+        window.addEventListener('deviceorientation', function(e) {
           if (e.gamma === null) return;
           var gamma = Math.max(-45, Math.min(45, e.gamma || 0));
           motionX = window.innerWidth * ((gamma + 45) / 90);
           updateRows();
-        }
-
-        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-          // iOS: attach after user gesture (reuse existing gyro overlay tap)
-          document.addEventListener('touchstart', function onFirstTouch() {
-            DeviceOrientationEvent.requestPermission().then(function(state) {
-              if (state === 'granted') {
-                window.addEventListener('deviceorientation', handleGridGyro);
-              }
-            }).catch(function() {});
-            document.removeEventListener('touchstart', onFirstTouch);
-          }, { once: true });
-        } else {
-          // Android: no permission needed
-          window.addEventListener('deviceorientation', handleGridGyro);
-        }
+        });
       }
     })();
   </script>
@@ -3125,7 +3110,6 @@
               setTimeout(function() { hint.style.display = 'none'; }, 600);
             }
           }
-          overlay.addEventListener('touchstart', requestGyro, { passive: true });
           overlay.addEventListener('click', requestGyro);
 
           // Track page load progress
