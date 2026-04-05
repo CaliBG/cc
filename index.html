@@ -3050,16 +3050,22 @@
         }
 
         // Expose globally so onclick attribute can call it
+        var gyroGranted = false;
         window._requestGyroPermission = function() {
           DeviceOrientationEvent.requestPermission().then(function(state) {
             if (state === 'granted') {
               enableGyro();
+              gyroGranted = true;
               var btn = document.getElementById('gyroBtn');
               if (btn) {
                 btn.style.opacity = '0';
                 btn.style.transform = 'translateY(-10px)';
                 btn.disabled = true;
                 setTimeout(function() { btn.style.display = 'none'; }, 600);
+              }
+              // If page already loaded, dismiss overlay now
+              if (window._gyroPageLoaded) {
+                window._dismissGyroOverlay();
               }
             }
           }).catch(function(err) {
@@ -3127,16 +3133,10 @@
             progressBar.style.width = Math.min(fakeProgress, 90) + '%';
           }, 100);
 
-          function finishLoading() {
-            if (loadComplete) return;
-            loadComplete = true;
-            clearInterval(progressInterval);
-
-            // Animate to 100%
+          // Dismiss overlay function (called when both loaded + gyro granted)
+          window._dismissGyroOverlay = function() {
             progressBar.style.width = '100%';
             progressText.textContent = '加载完成';
-
-            // Auto dismiss overlay
             setTimeout(function() {
               overlay.style.opacity = '0';
               setTimeout(function() {
@@ -3144,6 +3144,22 @@
                 if (window._startHeroSplitText) window._startHeroSplitText();
               }, 800);
             }, 600);
+          };
+
+          function finishLoading() {
+            if (loadComplete) return;
+            loadComplete = true;
+            clearInterval(progressInterval);
+
+            // Animate to 100%
+            progressBar.style.width = '100%';
+            progressText.textContent = gyroGranted ? '加载完成' : '请先启用体感交互';
+            window._gyroPageLoaded = true;
+
+            // Only dismiss if gyro already granted
+            if (gyroGranted) {
+              window._dismissGyroOverlay();
+            }
           }
 
           // Listen for actual page load
