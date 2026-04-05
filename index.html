@@ -450,14 +450,15 @@
     /* SplitText hero title */
     .hero-split-title {
       font-family: var(--font-sans);
-      font-size: clamp(36px, 8vw, 96px);
+      font-size: clamp(48px, 10vw, 128px);
       font-weight: 800;
+      font-style: italic;
       letter-spacing: -0.02em;
       line-height: 1.1;
       color: var(--text-primary);
       margin-bottom: 48px;
       text-align: center;
-      overflow: hidden;
+      overflow: visible;
       display: inline-block;
       white-space: normal;
       word-wrap: break-word;
@@ -467,9 +468,10 @@
     .hero-split-title .split-char {
       display: inline-block;
       will-change: transform, opacity;
+      padding: 0 1px;
     }
 
-    .mobile-br { display: none; }
+    .mobile-br { display: block; }
 
     /* TextPressure section titles */
     .text-pressure-container {
@@ -1744,7 +1746,7 @@
       .footer-links a:nth-last-child(-n+3) { border-bottom: none; }
       .footer-links a svg { width: 10px; height: 10px; }
       .cursor { display: none; }
-      .hero-split-title { font-size: clamp(28px, 10vw, 64px); margin-bottom: 32px; }
+      .hero-split-title { font-size: clamp(36px, 12vw, 80px); margin-bottom: 32px; }
       .mobile-br { display: block; }
       .hero-sub { font-size: 13px; margin-bottom: 32px; }
       .btn-primary, .btn-outline { font-size: 12px; padding: 12px 24px; }
@@ -1800,7 +1802,7 @@
     </div>
 
     <div class="hero-content">
-      <h1 class="hero-split-title split-parent" id="heroSplitTitle">Welcome to<br class="mobile-br"> My Website</h1>
+      <h1 class="hero-split-title split-parent" id="heroSplitTitle">Welcome to<br class="mobile-br">My Website</h1>
       <p class="hero-sub" data-i18n="hero_sub">
         我们拒绝多余的修辞，只谈存在本身。YZS 是年轻灵魂的留白区——一个探索"无我"与"存在"边界的青年视觉品牌。
       </p>
@@ -2607,35 +2609,48 @@
       gsap.set(charSpans, { opacity: 0, y: 40 });
 
       function run() {
-        gsap.to(charSpans, {
-          opacity: 1,
-          y: 0,
-          duration: 1.25,
-          ease: 'power3.out',
-          stagger: 0.05,
-          willChange: 'transform, opacity',
-          force3D: true
-        });
+        gsap.fromTo(charSpans,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1.25,
+            ease: 'power3.out',
+            stagger: 0.05,
+            willChange: 'transform, opacity',
+            force3D: true
+          }
+        );
       }
 
       var isMobileSplit = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      var mobileGyroReady = !isMobileSplit; // Desktop is always ready
 
       if (isMobileSplit) {
-        // On mobile, wait for gyro overlay to be dismissed
         window._startHeroSplitText = function() {
-          if (document.fonts.status === 'loaded') {
-            run();
-          } else {
-            document.fonts.ready.then(run);
-          }
-        };
-      } else {
-        // On desktop, run immediately
-        if (document.fonts.status === 'loaded') {
+          mobileGyroReady = true;
           run();
-        } else {
-          document.fonts.ready.then(run);
-        }
+        };
+      }
+
+      // Replay animation every time hero enters viewport
+      var heroSection = el.closest('.hero');
+      var heroObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && mobileGyroReady) {
+            run();
+          } else if (!entry.isIntersecting) {
+            gsap.set(charSpans, { opacity: 0, y: 40 });
+          }
+        });
+      }, { threshold: 0.1 });
+
+      if (document.fonts.status === 'loaded') {
+        heroObserver.observe(heroSection || el);
+      } else {
+        document.fonts.ready.then(function() {
+          heroObserver.observe(heroSection || el);
+        });
       }
     })();
 
@@ -2920,20 +2935,14 @@
 
           document.body.appendChild(overlay);
 
-          // SplitText animation helper
-          function splitTextAnimate(el, text, delay, charDelay) {
-            el.innerHTML = '';
-            text.split('').forEach(function(char, i) {
-              var span = document.createElement('span');
-              span.textContent = char;
-              span.style.cssText = 'display:inline-block;opacity:0;transform:translateY(30px);transition:opacity 0.5s ease,transform 0.5s ease;';
-              if (char === ' ') span.style.width = '0.3em';
-              el.appendChild(span);
-              setTimeout(function() {
-                span.style.opacity = '1';
-                span.style.transform = 'translateY(0)';
-              }, delay + i * charDelay);
-            });
+          // Line slide-up animation helper
+          function lineAnimate(el, text, delay) {
+            el.style.cssText += 'opacity:0;transform:translateY(100%);transition:opacity 0.4s ease,transform 0.4s ease;';
+            el.textContent = text;
+            setTimeout(function() {
+              el.style.opacity = '1';
+              el.style.transform = 'translateY(0)';
+            }, delay);
           }
 
           // Sequenced animation
@@ -2941,15 +2950,15 @@
             document.getElementById('gyroLogo').style.opacity = '1';
           }, 300);
           setTimeout(function() {
-            splitTextAnimate(document.getElementById('gyroTitle'), '欢迎访问YZS个人网站', 0, 60);
+            lineAnimate(document.getElementById('gyroTitle'), '欢迎访问YZS个人网站', 0);
+          }, 800);
+          setTimeout(function() {
+            lineAnimate(document.getElementById('gyroSub'), 'Welcome to YZS Personal Website', 0);
           }, 1200);
           setTimeout(function() {
-            splitTextAnimate(document.getElementById('gyroSub'), 'Welcome to YZS Personal Website', 0, 30);
-          }, 1800);
-          setTimeout(function() {
             document.getElementById('gyroIcon').style.opacity = '1';
-            splitTextAnimate(document.getElementById('gyroHintText'), '轻触屏幕以启用体感交互', 0, 50);
-          }, 2800);
+            lineAnimate(document.getElementById('gyroHintText'), '轻触屏幕以启用体感交互', 0);
+          }, 1600);
 
           overlay.addEventListener('click', function() {
             DeviceOrientationEvent.requestPermission().then(function(state) {
