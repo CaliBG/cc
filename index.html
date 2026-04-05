@@ -2518,9 +2518,10 @@
         }
       });
 
-      function run() {
-        gsap.set(charSpans, { opacity: 0, y: 40 });
+      // Hide chars initially
+      gsap.set(charSpans, { opacity: 0, y: 40 });
 
+      function run() {
         gsap.to(charSpans, {
           opacity: 1,
           y: 0,
@@ -2528,19 +2529,28 @@
           ease: 'power3.out',
           stagger: 0.05,
           willChange: 'transform, opacity',
-          force3D: true,
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 90%',
-            once: true
-          }
+          force3D: true
         });
       }
 
-      if (document.fonts.status === 'loaded') {
-        run();
+      var isMobileSplit = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+      if (isMobileSplit) {
+        // On mobile, wait for gyro overlay to be dismissed
+        window._startHeroSplitText = function() {
+          if (document.fonts.status === 'loaded') {
+            run();
+          } else {
+            document.fonts.ready.then(run);
+          }
+        };
       } else {
-        document.fonts.ready.then(run);
+        // On desktop, run immediately
+        if (document.fonts.status === 'loaded') {
+          run();
+        } else {
+          document.fonts.ready.then(run);
+        }
       }
     })();
 
@@ -2581,7 +2591,7 @@
             img.className = 'grid-motion-item-img';
             img.src = content;
             img.alt = '';
-            img.loading = 'lazy';
+            img.loading = 'eager';
             img.decoding = 'async';
             inner.appendChild(img);
           }
@@ -2847,9 +2857,15 @@
             DeviceOrientationEvent.requestPermission().then(function(state) {
               if (state === 'granted') enableGyro();
             }).catch(function() { enableGyro(); });
+            // Trigger hero text animation after overlay dismissed
+            setTimeout(function() {
+              if (window._startHeroSplitText) window._startHeroSplitText();
+            }, 600);
           }, { once: true });
         } else {
           enableGyro();
+          // No overlay on Android, trigger text animation directly
+          if (window._startHeroSplitText) window._startHeroSplitText();
         }
       }
 
