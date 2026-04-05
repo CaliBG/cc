@@ -469,6 +469,8 @@
       will-change: transform, opacity;
     }
 
+    .mobile-br { display: none; }
+
     /* TextPressure section titles */
     .text-pressure-container {
       width: 100%;
@@ -1672,6 +1674,7 @@
       .footer-links a svg { width: 10px; height: 10px; }
       .cursor { display: none; }
       .hero-split-title { font-size: clamp(28px, 10vw, 64px); margin-bottom: 32px; }
+      .mobile-br { display: block; }
       .hero-sub { font-size: 13px; margin-bottom: 32px; }
       .btn-primary, .btn-outline { font-size: 12px; padding: 12px 24px; }
     }
@@ -1726,7 +1729,7 @@
     </div>
 
     <div class="hero-content">
-      <h1 class="hero-split-title split-parent" id="heroSplitTitle">Welcome to My Website</h1>
+      <h1 class="hero-split-title split-parent" id="heroSplitTitle">Welcome to<br class="mobile-br"> My Website</h1>
       <p class="hero-sub" data-i18n="hero_sub">
         我们拒绝多余的修辞，只谈存在本身。YZS 是年轻灵魂的留白区——一个探索"无我"与"存在"边界的青年视觉品牌。
       </p>
@@ -2490,20 +2493,30 @@
       if (!el) return;
 
       var text = el.textContent.trim();
-      el.textContent = '';
       el.setAttribute('aria-label', text);
 
-      // Manually split into char spans (replaces paid SplitText plugin)
+      // Preserve <br> elements, split text nodes into char spans
       var charSpans = [];
-      for (var i = 0; i < text.length; i++) {
-        var span = document.createElement('span');
-        span.className = 'split-char';
-        span.textContent = text[i];
-        if (text[i] === ' ') span.style.width = '0.3em';
-        span.setAttribute('aria-hidden', 'true');
-        el.appendChild(span);
-        charSpans.push(span);
-      }
+      var nodes = Array.prototype.slice.call(el.childNodes);
+      el.innerHTML = '';
+      nodes.forEach(function(node) {
+        if (node.nodeType === 1 && node.tagName === 'BR') {
+          el.appendChild(node.cloneNode());
+          return;
+        }
+        if (node.nodeType === 3) {
+          var chars = node.textContent;
+          for (var i = 0; i < chars.length; i++) {
+            var span = document.createElement('span');
+            span.className = 'split-char';
+            span.textContent = chars[i];
+            if (chars[i] === ' ') span.style.width = '0.3em';
+            span.setAttribute('aria-hidden', 'true');
+            el.appendChild(span);
+            charSpans.push(span);
+          }
+        }
+      });
 
       function run() {
         gsap.set(charSpans, { opacity: 0, y: 40 });
@@ -2583,11 +2596,12 @@
 
       var maxMoveAmount = 300;
       var inertiaFactors = [0.6, 0.4, 0.3, 0.2];
+      var motionX = window.innerWidth / 2;
 
-      window.addEventListener('mousemove', function(e) {
+      function updateRows() {
         for (var i = 0; i < rowEls.length; i++) {
           var direction = i % 2 === 0 ? 1 : -1;
-          var moveAmount = ((e.clientX / window.innerWidth) * maxMoveAmount - maxMoveAmount / 2) * direction;
+          var moveAmount = ((motionX / window.innerWidth) * maxMoveAmount - maxMoveAmount / 2) * direction;
 
           gsap.to(rowEls[i], {
             x: moveAmount,
@@ -2596,7 +2610,39 @@
             overwrite: 'auto'
           });
         }
+      }
+
+      // Desktop: mouse
+      window.addEventListener('mousemove', function(e) {
+        motionX = e.clientX;
+        updateRows();
       });
+
+      // Mobile: gyroscope
+      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      if (isMobile && typeof DeviceOrientationEvent !== 'undefined') {
+        function handleGridGyro(e) {
+          if (e.gamma === null) return;
+          var gamma = Math.max(-45, Math.min(45, e.gamma || 0));
+          motionX = window.innerWidth * ((gamma + 45) / 90);
+          updateRows();
+        }
+
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+          // iOS: attach after user gesture (reuse existing gyro overlay tap)
+          document.addEventListener('touchstart', function onFirstTouch() {
+            DeviceOrientationEvent.requestPermission().then(function(state) {
+              if (state === 'granted') {
+                window.addEventListener('deviceorientation', handleGridGyro);
+              }
+            }).catch(function() {});
+            document.removeEventListener('touchstart', onFirstTouch);
+          }, { once: true });
+        } else {
+          // Android: no permission needed
+          window.addEventListener('deviceorientation', handleGridGyro);
+        }
+      }
     })();
   </script>
 
