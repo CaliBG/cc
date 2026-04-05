@@ -1571,6 +1571,8 @@
       .about-stats { grid-template-columns: repeat(3, 1fr); gap: 16px; }
       .stat .stat-number { font-size: 28px; }
       .footer { gap: 20px; text-align: center; }
+      .footer-links { gap: 0; }
+      .footer-links a { padding: 4px 10px; font-size: 11px; }
       .footer-bottom { flex-direction: column; gap: 8px; }
       .cursor { display: none; }
       .hero-sub { font-size: 13px; margin-bottom: 32px; }
@@ -2507,10 +2509,10 @@
       if (isMobile && typeof DeviceOrientationEvent !== 'undefined') {
         function handleOrientation(e) {
           if (e.gamma === null) return;
-          const gamma = Math.max(-45, Math.min(45, e.gamma || 0));
-          const beta = Math.max(-45, Math.min(45, (e.beta || 0) - 45));
-          globalCursor.x = window.innerWidth * ((gamma + 45) / 90);
-          globalCursor.y = window.innerHeight * ((beta + 45) / 90);
+          const gamma = Math.max(-90, Math.min(90, e.gamma || 0));
+          const beta = Math.max(-90, Math.min(90, (e.beta || 0) - 45));
+          globalCursor.x = window.innerWidth * ((gamma + 90) / 180);
+          globalCursor.y = window.innerHeight * ((beta + 90) / 180);
         }
 
         function enableGyro() {
