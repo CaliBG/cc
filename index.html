@@ -59,8 +59,6 @@
     }
 
     [data-theme="light"] .noise { opacity: 0.015; }
-    [data-theme="light"] .hero-orb-1 { background: #066cf4; }
-    [data-theme="light"] .hero-orb-2 { background: #ff6b6b; }
     [data-theme="light"] .cursor { border-color: #066cf4; }
     [data-theme="light"] .cursor.hover { background: rgba(6, 108, 244, 0.1); }
     [data-theme="light"] .work-detail-num { -webkit-text-stroke-color: rgba(0, 0, 0, 0.08); }
@@ -334,44 +332,78 @@
       overflow: hidden;
     }
 
-    .hero-bg-grid {
+    /* GridMotion background */
+    .grid-motion-bg {
       position: absolute;
       inset: 0;
-      background-image:
-        linear-gradient(var(--border) 1px, transparent 1px),
-        linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size: 80px 80px;
-      mask-image: radial-gradient(ellipse at 50% 50%, black 20%, transparent 70%);
-      -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 20%, transparent 70%);
+      overflow: hidden;
+      z-index: 0;
     }
 
-    .hero-orb {
+    .grid-motion-bg::after {
+      content: '';
       position: absolute;
-      width: 600px;
-      height: 600px;
-      border-radius: 50%;
-      filter: blur(120px);
-      opacity: 0.12;
-      animation: float 20s ease-in-out infinite;
+      inset: 0;
+      background: radial-gradient(circle, var(--bg-primary) 0%, transparent 100%);
+      z-index: 1;
+      pointer-events: none;
     }
 
-    .hero-orb-1 {
-      background: var(--accent);
-      top: -200px;
-      right: -100px;
+    .grid-motion-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-20deg) scale(2);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: max-content;
     }
 
-    .hero-orb-2 {
-      background: #ff6b6b;
-      bottom: -200px;
-      left: -100px;
-      animation-delay: -10s;
+    .grid-motion-row {
+      display: flex;
+      gap: 16px;
+      will-change: transform;
     }
 
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(30px, -30px) scale(1.05); }
-      66% { transform: translate(-20px, 20px) scale(0.95); }
+    .grid-motion-item {
+      width: 250px;
+      height: 170px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .grid-motion-item-inner {
+      width: 100%;
+      height: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .grid-motion-item-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .grid-motion-item-content {
+      padding: 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .grid-motion-item { width: 160px; height: 110px; }
+      .grid-motion-container { gap: 12px; transform: translate(-50%, -50%) rotate(-20deg) scale(1.6); }
+      .grid-motion-row { gap: 10px; }
     }
 
     .hero-content {
@@ -415,7 +447,29 @@
       50% { opacity: 0.3; }
     }
 
-    /* TextPressure hero & section titles */
+    /* SplitText hero title */
+    .hero-split-title {
+      font-family: var(--font-sans);
+      font-size: clamp(36px, 8vw, 96px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--text-primary);
+      margin-bottom: 48px;
+      text-align: center;
+      overflow: hidden;
+      display: inline-block;
+      white-space: normal;
+      word-wrap: break-word;
+      will-change: transform, opacity;
+    }
+
+    .hero-split-title .split-char {
+      display: inline-block;
+      will-change: transform, opacity;
+    }
+
+    /* TextPressure section titles */
     .text-pressure-container {
       width: 100%;
       height: auto;
@@ -444,6 +498,7 @@
     .text-pressure-title span {
       display: inline-block;
     }
+
 
     @keyframes fadeIn {
       to { opacity: 1; }
@@ -1616,9 +1671,9 @@
       .footer-links a:nth-last-child(-n+3) { border-bottom: none; }
       .footer-links a svg { width: 10px; height: 10px; }
       .cursor { display: none; }
+      .hero-split-title { font-size: clamp(28px, 10vw, 64px); margin-bottom: 32px; }
       .hero-sub { font-size: 13px; margin-bottom: 32px; }
       .btn-primary, .btn-outline { font-size: 12px; padding: 12px 24px; }
-      .text-pressure-container { margin-bottom: 48px; }
     }
   </style>
 </head>
@@ -1666,14 +1721,12 @@
 
   <!-- Hero Section -->
   <section class="hero">
-    <div class="hero-bg-grid"></div>
-    <div class="hero-orb hero-orb-1"></div>
-    <div class="hero-orb hero-orb-2"></div>
+    <div class="grid-motion-bg" id="gridMotionBg">
+      <div class="grid-motion-container" id="gridMotionContainer"></div>
+    </div>
 
     <div class="hero-content">
-      <div class="text-pressure-container" id="textPressureContainer">
-        <h1 class="text-pressure-title" id="textPressureTitle"></h1>
-      </div>
+      <h1 class="hero-split-title split-parent" id="heroSplitTitle">Welcome to My Website</h1>
       <p class="hero-sub" data-i18n="hero_sub">
         我们拒绝多余的修辞，只谈存在本身。YZS 是年轻灵魂的留白区——一个探索"无我"与"存在"边界的青年视觉品牌。
       </p>
@@ -2426,6 +2479,127 @@
     </div>
   </footer>
 
+  <!-- GSAP SplitText Effect -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    (function initHeroSplitText() {
+      var el = document.getElementById('heroSplitTitle');
+      if (!el) return;
+
+      var text = el.textContent.trim();
+      el.textContent = '';
+      el.setAttribute('aria-label', text);
+
+      // Manually split into char spans (replaces paid SplitText plugin)
+      var charSpans = [];
+      for (var i = 0; i < text.length; i++) {
+        var span = document.createElement('span');
+        span.className = 'split-char';
+        span.textContent = text[i];
+        if (text[i] === ' ') span.style.width = '0.3em';
+        span.setAttribute('aria-hidden', 'true');
+        el.appendChild(span);
+        charSpans.push(span);
+      }
+
+      function run() {
+        gsap.set(charSpans, { opacity: 0, y: 40 });
+
+        gsap.to(charSpans, {
+          opacity: 1,
+          y: 0,
+          duration: 1.25,
+          ease: 'power3.out',
+          stagger: 0.05,
+          willChange: 'transform, opacity',
+          force3D: true,
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 90%',
+            once: true
+          }
+        });
+      }
+
+      if (document.fonts.status === 'loaded') {
+        run();
+      } else {
+        document.fonts.ready.then(run);
+      }
+    })();
+
+    // ============================================
+    // GRID MOTION BACKGROUND
+    // ============================================
+    (function initGridMotion() {
+      var container = document.getElementById('gridMotionContainer');
+      if (!container) return;
+
+      var ROWS = 4;
+      var COLS = 5;
+
+      var items = [
+        'work01.jpg', 'IMG_1792.jpeg', 'work03.jpg', 'IMG_2602.jpeg', 'work06.jpg',
+        'IMG_0899.jpg', 'work02.jpg', 'IMG_1851.jpeg', 'work04.jpg', 'IMG_2686.jpeg',
+        'work05.jpg', 'IMG_0790.jpeg', 'work06-2.jpg', 'IMG_1795.jpeg', 'work01-2.jpg',
+        'IMG_2633.jpeg', 'work03-2.jpg', 'IMG_0899.jpg', 'work06-3.jpg', 'work02-2.jpg'
+      ];
+
+      // Build grid rows
+      var rowEls = [];
+      for (var r = 0; r < ROWS; r++) {
+        var row = document.createElement('div');
+        row.className = 'grid-motion-row';
+
+        for (var c = 0; c < COLS; c++) {
+          var idx = r * COLS + c;
+          var item = document.createElement('div');
+          item.className = 'grid-motion-item';
+
+          var inner = document.createElement('div');
+          inner.className = 'grid-motion-item-inner';
+
+          var content = items[idx];
+          if (typeof content === 'string' && content.length > 0) {
+            var img = document.createElement('img');
+            img.className = 'grid-motion-item-img';
+            img.src = content;
+            img.alt = '';
+            img.loading = 'lazy';
+            img.decoding = 'async';
+            inner.appendChild(img);
+          }
+
+          item.appendChild(inner);
+          row.appendChild(item);
+        }
+
+        container.appendChild(row);
+        rowEls.push(row);
+      }
+
+      var maxMoveAmount = 300;
+      var inertiaFactors = [0.6, 0.4, 0.3, 0.2];
+
+      window.addEventListener('mousemove', function(e) {
+        for (var i = 0; i < rowEls.length; i++) {
+          var direction = i % 2 === 0 ? 1 : -1;
+          var moveAmount = ((e.clientX / window.innerWidth) * maxMoveAmount - maxMoveAmount / 2) * direction;
+
+          gsap.to(rowEls[i], {
+            x: moveAmount,
+            duration: 0.8 + inertiaFactors[i % inertiaFactors.length],
+            ease: 'power3.out',
+            overwrite: 'auto'
+          });
+        }
+      });
+    })();
+  </script>
+
   <!-- JavaScript -->
   <script>
     // ============================================
@@ -2695,7 +2869,6 @@
 
       // Init both instances
       const instances = [
-        createInstance('textPressureContainer', 'textPressureTitle', "YZS", 48),
         createInstance('textPressureAbout', 'textPressureAboutTitle', "ABOUT", 24),
         createInstance('textPressureWorks', 'textPressureWorksTitle', "WORKS", 24),
         createInstance('textPressureServices', 'textPressureServicesTitle', "SERVICES", 24),
@@ -2737,17 +2910,6 @@
       }
       animate();
     })();
-
-    // ============================================
-    // PARALLAX HERO ORBS
-    // ============================================
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      document.querySelectorAll('.hero-orb').forEach((orb, i) => {
-        const speed = i === 0 ? 0.3 : 0.2;
-        orb.style.transform = `translateY(${scrollY * speed}px)`;
-      });
-    });
 
     // ============================================
     // CARD MODAL
