@@ -3049,21 +3049,39 @@
           window.addEventListener('deviceorientation', handleOrientation);
         }
 
+        // Expose globally so onclick attribute can call it
+        window._requestGyroPermission = function() {
+          DeviceOrientationEvent.requestPermission().then(function(state) {
+            if (state === 'granted') {
+              enableGyro();
+              var btn = document.getElementById('gyroBtn');
+              if (btn) {
+                btn.style.opacity = '0';
+                btn.style.transform = 'translateY(-10px)';
+                btn.disabled = true;
+                setTimeout(function() { btn.style.display = 'none'; }, 600);
+              }
+            }
+          }).catch(function(err) {
+            console.log('Gyro permission error:', err);
+          });
+        };
+
         if (typeof DeviceOrientationEvent.requestPermission === 'function') {
           var overlay = document.createElement('div');
           overlay.id = 'gyroOverlay';
           overlay.style.cssText = 'position:fixed;inset:0;z-index:10001;display:flex;align-items:center;' +
             'justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(28px);' +
-            '-webkit-backdrop-filter:blur(28px);color:#fff;cursor:pointer;' +
-            '-webkit-tap-highlight-color:transparent;touch-action:manipulation;' +
+            '-webkit-backdrop-filter:blur(28px);color:#fff;' +
             'transition:opacity 0.8s ease;opacity:1;';
 
           overlay.innerHTML =
             '<div style="display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;padding:0 32px;width:100%;max-width:360px;">' +
               '<img src="logo-white.png" alt="YZS" style="height:60px;width:auto;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;" id="gyroLogo">' +
-              '<button id="gyroBtn" type="button" style="opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;' +
-                'display:flex;flex-direction:column;align-items:center;gap:12px;background:none;border:none;color:#fff;cursor:pointer;' +
-                '-webkit-tap-highlight-color:transparent;touch-action:manipulation;padding:16px;width:100%;">' +
+              '<button id="gyroBtn" type="button" onclick="window._requestGyroPermission()" style="opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;' +
+                'display:flex;flex-direction:column;align-items:center;gap:12px;background:none;border:none;color:#fff;' +
+                'font-family:inherit;cursor:pointer;-webkit-appearance:none;appearance:none;' +
+                'padding:20px;width:100%;border-radius:16px;background:rgba(255,255,255,0.08);">' +
                 '<div style="width:56px;height:56px;border:2px solid rgba(255,255,255,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:pulse 2s ease-in-out infinite;">' +
                   '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>' +
                 '</div>' +
@@ -3093,21 +3111,6 @@
           fadeUp(document.getElementById('gyroLogo'), 300);
           fadeUp(document.getElementById('gyroBtn'), 800);
           fadeUp(document.getElementById('gyroProgress'), 1200);
-
-          // Request gyroscope permission via button click (iOS requires user gesture on interactive element)
-          var gyroBtn = document.getElementById('gyroBtn');
-          gyroBtn.addEventListener('click', function() {
-            DeviceOrientationEvent.requestPermission().then(function(state) {
-              if (state === 'granted') enableGyro();
-            }).catch(function() {
-              enableGyro();
-            });
-            // Fade out the button after tapping
-            gyroBtn.style.opacity = '0';
-            gyroBtn.style.transform = 'translateY(-10px)';
-            gyroBtn.disabled = true;
-            setTimeout(function() { gyroBtn.style.display = 'none'; }, 600);
-          });
 
           // Track page load progress
           var progressBar = document.getElementById('gyroProgressBar');
