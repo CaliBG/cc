@@ -2629,21 +2629,18 @@
         );
       }
 
-      var isMobileSplit = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-      var mobileGyroReady = !isMobileSplit; // Desktop is always ready
+      var overlayReady = false;
 
-      if (isMobileSplit) {
-        window._startHeroSplitText = function() {
-          mobileGyroReady = true;
-          run();
-        };
-      }
+      window._startHeroSplitText = function() {
+        overlayReady = true;
+        run();
+      };
 
       // Replay animation every time hero enters viewport
       var heroSection = el.closest('.hero');
       var heroObserver = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
-          if (entry.isIntersecting && mobileGyroReady) {
+          if (entry.isIntersecting && overlayReady) {
             run();
           } else if (!entry.isIntersecting) {
             gsap.set(charSpans, { opacity: 0, y: 40, skewX: -8 });
@@ -2656,6 +2653,91 @@
       } else {
         document.fonts.ready.then(function() {
           heroObserver.observe(heroSection || el);
+        });
+      }
+    })();
+
+    // ============================================
+    // DESKTOP LOADING OVERLAY
+    // ============================================
+    (function initDesktopOverlay() {
+      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      if (isMobile) return;
+
+      var overlay = document.createElement('div');
+      overlay.id = 'desktopOverlay';
+      overlay.style.cssText = 'position:fixed;inset:0;z-index:10001;display:flex;align-items:center;' +
+        'justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(28px);' +
+        '-webkit-backdrop-filter:blur(28px);color:#fff;transition:opacity 0.8s ease;opacity:1;';
+
+      overlay.innerHTML =
+        '<div style="display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;padding:0 32px;width:100%;max-width:400px;">' +
+          '<img src="logo-white.png" alt="YZS" style="height:60px;width:auto;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;" id="deskLogo">' +
+          '<div id="deskTitle" style="font-size:24px;font-weight:700;letter-spacing:2px;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;"></div>' +
+          '<div id="deskSub" style="font-size:13px;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;color:rgba(255,255,255,0.5);"></div>' +
+          '<div id="deskProgress" style="width:100%;margin-top:32px;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;">' +
+            '<div style="width:100%;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;">' +
+              '<div id="deskProgressBar" style="width:0%;height:100%;background:rgba(200,255,0,0.8);border-radius:3px;transition:width 0.3s ease;"></div>' +
+            '</div>' +
+            '<div id="deskProgressText" style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:12px;letter-spacing:1px;">网页加载中，精彩即将呈现</div>' +
+            '<div style="font-size:10px;color:rgba(255,255,255,0.2);margin-top:8px;">科学上网加载更快</div>' +
+          '</div>' +
+        '</div>';
+
+      document.body.appendChild(overlay);
+
+      function fadeUp(el, delay) {
+        setTimeout(function() {
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        }, delay);
+      }
+
+      fadeUp(document.getElementById('deskLogo'), 300);
+      setTimeout(function() {
+        var t = document.getElementById('deskTitle');
+        t.textContent = '欢迎访问YZS个人网站';
+        fadeUp(t, 0);
+      }, 700);
+      setTimeout(function() {
+        var s = document.getElementById('deskSub');
+        s.textContent = 'Welcome to YZS Personal Website';
+        fadeUp(s, 0);
+      }, 1100);
+      fadeUp(document.getElementById('deskProgress'), 1500);
+
+      var bar = document.getElementById('deskProgressBar');
+      var txt = document.getElementById('deskProgressText');
+      var fakeProgress = 0;
+      var loadComplete = false;
+
+      var progressInterval = setInterval(function() {
+        if (loadComplete) return;
+        fakeProgress += (90 - fakeProgress) * 0.08;
+        bar.style.width = Math.min(fakeProgress, 90) + '%';
+      }, 100);
+
+      function finish() {
+        if (loadComplete) return;
+        loadComplete = true;
+        clearInterval(progressInterval);
+        bar.style.width = '100%';
+        txt.textContent = '加载完成';
+
+        setTimeout(function() {
+          overlay.style.opacity = '0';
+          setTimeout(function() {
+            overlay.remove();
+            if (window._startHeroSplitText) window._startHeroSplitText();
+          }, 800);
+        }, 600);
+      }
+
+      if (document.readyState === 'complete') {
+        setTimeout(finish, 1800);
+      } else {
+        window.addEventListener('load', function() {
+          setTimeout(finish, 800);
         });
       }
     })();
@@ -2996,10 +3078,11 @@
               '<div id="gyroTitle" style="font-size:22px;font-weight:700;letter-spacing:2px;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;"></div>' +
               '<div id="gyroSub" style="font-size:13px;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;color:rgba(255,255,255,0.5);"></div>' +
               '<div id="gyroProgress" style="width:100%;margin-top:32px;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;">' +
-                '<div style="width:100%;height:2px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;">' +
-                  '<div id="gyroProgressBar" style="width:0%;height:100%;background:rgba(200,255,0,0.8);border-radius:2px;transition:width 0.3s ease;"></div>' +
+                '<div style="width:100%;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;">' +
+                  '<div id="gyroProgressBar" style="width:0%;height:100%;background:rgba(200,255,0,0.8);border-radius:3px;transition:width 0.3s ease;"></div>' +
                 '</div>' +
                 '<div id="gyroProgressText" style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:12px;letter-spacing:1px;">网页加载中，精彩即将呈现</div>' +
+                '<div style="font-size:10px;color:rgba(255,255,255,0.2);margin-top:8px;">科学上网加载更快</div>' +
               '</div>' +
             '</div>';
 
@@ -3027,15 +3110,39 @@
           }, 1100);
           fadeUp(document.getElementById('gyroProgress'), 1500);
 
-          // Request gyroscope permission immediately via first touch
+          // Request gyroscope permission on user tap (iOS requires user gesture)
           var gyroRequested = false;
-          overlay.addEventListener('touchstart', function() {
+          function requestGyro() {
             if (gyroRequested) return;
             gyroRequested = true;
             DeviceOrientationEvent.requestPermission().then(function(state) {
               if (state === 'granted') enableGyro();
-            }).catch(function() { enableGyro(); });
-          }, { once: true });
+              var hint = document.getElementById('gyroHint');
+              if (hint) { hint.style.opacity = '0'; }
+            }).catch(function() {
+              enableGyro();
+              var hint = document.getElementById('gyroHint');
+              if (hint) { hint.style.opacity = '0'; }
+            });
+          }
+          overlay.addEventListener('click', requestGyro);
+          overlay.addEventListener('touchend', requestGyro);
+
+          // Show tap hint after progress appears
+          setTimeout(function() {
+            var progressEl = document.getElementById('gyroProgress');
+            if (progressEl && !gyroRequested) {
+              var hint = document.createElement('div');
+              hint.id = 'gyroHint';
+              hint.style.cssText = 'font-size:12px;color:rgba(255,255,255,0.4);margin-top:16px;opacity:0;transform:translateY(10px);transition:opacity 0.6s ease,transform 0.6s ease;';
+              hint.textContent = '轻触屏幕以启用体感交互';
+              progressEl.parentNode.appendChild(hint);
+              setTimeout(function() {
+                hint.style.opacity = '1';
+                hint.style.transform = 'translateY(0)';
+              }, 100);
+            }
+          }, 2000);
 
           // Track page load progress
           var progressBar = document.getElementById('gyroProgressBar');
@@ -3063,14 +3170,6 @@
 
             // Auto dismiss overlay
             setTimeout(function() {
-              // If gyro not yet requested, try requesting
-              if (!gyroRequested) {
-                gyroRequested = true;
-                DeviceOrientationEvent.requestPermission().then(function(state) {
-                  if (state === 'granted') enableGyro();
-                }).catch(function() { enableGyro(); });
-              }
-
               overlay.style.opacity = '0';
               setTimeout(function() {
                 overlay.remove();
@@ -3103,10 +3202,11 @@
               '<img src="logo-white.png" alt="YZS" style="height:60px;width:auto;">' +
               '<div style="font-size:22px;font-weight:700;letter-spacing:2px;">欢迎访问YZS个人网站</div>' +
               '<div style="width:100%;margin-top:16px;">' +
-                '<div style="width:100%;height:2px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;">' +
-                  '<div id="gyroProgressBarAnd" style="width:0%;height:100%;background:rgba(200,255,0,0.8);border-radius:2px;transition:width 0.3s ease;"></div>' +
+                '<div style="width:100%;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;">' +
+                  '<div id="gyroProgressBarAnd" style="width:0%;height:100%;background:rgba(200,255,0,0.8);border-radius:3px;transition:width 0.3s ease;"></div>' +
                 '</div>' +
                 '<div id="gyroProgressTextAnd" style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:12px;letter-spacing:1px;">网页加载中，精彩即将呈现</div>' +
+                '<div style="font-size:10px;color:rgba(255,255,255,0.2);margin-top:8px;">科学上网加载更快</div>' +
               '</div>' +
             '</div>';
 
