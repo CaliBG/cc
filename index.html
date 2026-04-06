@@ -95,37 +95,6 @@
     button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 
     /* ============================================
-       CUSTOM CURSOR
-       ============================================ */
-    .text-cursor-container {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 10000;
-      overflow: hidden;
-    }
-
-    .text-cursor-item {
-      position: absolute;
-      transform: translate(-50%, -50%);
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: var(--accent);
-      font-family: var(--font-sans);
-      pointer-events: none;
-      user-select: none;
-      will-change: transform, opacity;
-      transition: opacity 0.5s ease-out;
-    }
-
-    .text-cursor-item.fading {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(0);
-      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-    }
-
-    /* ============================================
        NOISE OVERLAY
        ============================================ */
     .noise {
@@ -1750,7 +1719,6 @@
       .footer-links a:nth-child(3n+3) { justify-content: flex-end; }
       .footer-links a:nth-last-child(-n+3) { border-bottom: none; }
       .footer-links a svg { width: 10px; height: 10px; }
-      .text-cursor-container { display: none; }
       .hero-split-title { font-size: clamp(36px, 12vw, 80px); margin-bottom: 32px; }
       .mobile-br { display: block; }
       .hero-sub { font-size: 13px; margin-bottom: 32px; }
@@ -1759,9 +1727,7 @@
   </style>
 </head>
 <body>
-  <!-- Text Cursor Trail -->
-  <div class="text-cursor-container" id="textCursorContainer"></div>
-
+  <canvas id="clickSparkCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:10001;"></canvas>
   <!-- Noise Overlay -->
   <div class="noise"></div>
 
@@ -2832,99 +2798,80 @@
   <!-- JavaScript -->
   <script>
     // ============================================
-    // TEXT CURSOR TRAIL
+    // CLICK SPARK
     // ============================================
-    (function initTextCursor() {
-      var container = document.getElementById('textCursorContainer');
-      if (!container) return;
+    (function() {
+      var canvas = document.getElementById('clickSparkCanvas');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      var sparks = [];
+      var sparkColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#fff';
+      var sparkCount = 8;
+      var sparkRadius = 20;
+      var sparkSize = 12;
+      var duration = 400;
+      var running = false;
 
-      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-      if (isMobile) { container.style.display = 'none'; return; }
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
 
-      var text = 'YZS';
-      var spacing = 100;
-      var maxPoints = 5;
-      var exitDuration = 500;
-      var removalInterval = 30;
-      var trail = [];
-      var lastX = null, lastY = null;
-      var lastMoveTime = Date.now();
-
-      document.addEventListener('mousemove', function(e) {
-        var mx = e.clientX;
-        var my = e.clientY;
-
-        if (lastX === null) {
-          lastX = mx; lastY = my;
-          spawnItem(mx, my, 0);
-          return;
-        }
-
-        var dx = mx - lastX;
-        var dy = my - lastY;
-        var dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist >= spacing) {
-          var angle = Math.atan2(dy, dx) * 180 / Math.PI;
-          var steps = Math.floor(dist / spacing);
-          for (var i = 1; i <= steps; i++) {
-            var t = (spacing * i) / dist;
-            spawnItem(lastX + dx * t, lastY + dy * t, angle);
-          }
-          lastX = lastX + dx * (steps * spacing / dist);
-          lastY = lastY + dy * (steps * spacing / dist);
-        }
-
-        lastMoveTime = Date.now();
+      // Update color on theme change
+      var observer = new MutationObserver(function() {
+        sparkColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#fff';
       });
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
 
-      function spawnItem(x, y, angle) {
-        var el = document.createElement('div');
-        el.className = 'text-cursor-item';
-        el.textContent = text;
+      function ease(t) { return t * (2 - t); }
 
-        var rx = Math.random() * 10 - 5;
-        var ry = Math.random() * 10 - 5;
-        var rr = Math.random() * 10 - 5;
-
-        el.style.left = x + 'px';
-        el.style.top = y + 'px';
-        el.style.transform = 'translate(-50%,-50%) rotate(' + angle + 'deg)';
-        el.style.opacity = '1';
-        container.appendChild(el);
-
-        trail.push(el);
-        if (trail.length > maxPoints) {
-          fadeOut(trail.shift());
+      function draw(timestamp) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        sparks = sparks.filter(function(s) {
+          var elapsed = timestamp - s.startTime;
+          if (elapsed >= duration) return false;
+          var progress = elapsed / duration;
+          var eased = ease(progress);
+          var dist = eased * sparkRadius;
+          var len = sparkSize * (1 - eased);
+          var x1 = s.x + dist * Math.cos(s.angle);
+          var y1 = s.y + dist * Math.sin(s.angle);
+          var x2 = s.x + (dist + len) * Math.cos(s.angle);
+          var y2 = s.y + (dist + len) * Math.sin(s.angle);
+          ctx.strokeStyle = sparkColor;
+          ctx.lineWidth = 2;
+          ctx.globalAlpha = 1 - eased;
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+          return true;
+        });
+        if (sparks.length > 0) {
+          requestAnimationFrame(draw);
+        } else {
+          running = false;
         }
-
-        // Random float animation
-        var startTime = Date.now();
-        function floatAnim() {
-          if (!el.parentNode) return;
-          var t = (Date.now() - startTime) / 1000;
-          var fx = Math.sin(t * Math.PI) * rx;
-          var fy = Math.sin(t * Math.PI) * ry;
-          var fr = Math.sin(t * Math.PI) * rr;
-          el.style.transform = 'translate(calc(-50% + ' + fx + 'px), calc(-50% + ' + fy + 'px)) rotate(' + (angle + fr) + 'deg)';
-          requestAnimationFrame(floatAnim);
-        }
-        floatAnim();
       }
 
-      function fadeOut(el) {
-        el.classList.add('fading');
-        setTimeout(function() {
-          if (el.parentNode) el.parentNode.removeChild(el);
-        }, exitDuration);
-      }
-
-      // Remove trail items when mouse stops
-      setInterval(function() {
-        if (Date.now() - lastMoveTime > 100 && trail.length > 0) {
-          fadeOut(trail.shift());
+      document.addEventListener('click', function(e) {
+        var now = performance.now();
+        for (var i = 0; i < sparkCount; i++) {
+          sparks.push({
+            x: e.clientX,
+            y: e.clientY,
+            angle: (2 * Math.PI * i) / sparkCount,
+            startTime: now
+          });
         }
-      }, removalInterval);
+        if (!running) {
+          running = true;
+          requestAnimationFrame(draw);
+        }
+      });
     })();
 
     // ============================================
@@ -3820,5 +3767,6 @@
     // Apply saved language on load
     applyLang(currentLang);
   </script>
+
 </body>
 </html>
