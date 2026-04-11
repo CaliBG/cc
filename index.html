@@ -2679,45 +2679,46 @@
       var bar = document.getElementById('deskProgressBar');
       var txt = document.getElementById('deskProgressText');
       var eta = document.getElementById('deskEta');
-      var fakeProgress = 0;
       var loadComplete = false;
       var startTime = performance.now();
 
-      // Estimate total load time based on page resources
-      var totalBytes = 0;
-      var loadedBytes = 0;
-      var entries = performance.getEntriesByType('resource');
-      entries.forEach(function(e) { if (e.transferSize) totalBytes += e.transferSize; loadedBytes += e.transferSize; });
+      // Track real image loading progress
+      var allImgs = document.querySelectorAll('img:not([loading="lazy"])');
+      var totalImgs = allImgs.length || 1;
+      var loadedImgs = 0;
+      allImgs.forEach(function(img) {
+        if (img.complete) { loadedImgs++; return; }
+        img.addEventListener('load', function() { loadedImgs++; });
+        img.addEventListener('error', function() { loadedImgs++; });
+      });
 
-      function updateEta() {
-        var elapsed = (performance.now() - startTime) / 1000;
-        if (fakeProgress > 5 && fakeProgress < 95) {
-          var estimatedTotal = elapsed / (fakeProgress / 100);
-          var remaining = Math.max(0, Math.ceil(estimatedTotal - elapsed));
-          if (remaining > 60) {
-            eta.textContent = '预计等待 ' + Math.ceil(remaining / 60) + ' 分 ' + (remaining % 60) + ' 秒';
-          } else if (remaining > 0) {
-            eta.textContent = '预计等待 ' + remaining + ' 秒';
-          } else {
-            eta.textContent = '即将完成...';
-          }
-        }
+      var displayProgress = 0;
+
+      function formatEta(seconds) {
+        if (seconds > 60) return '预计等待 ' + Math.ceil(seconds / 60) + ' 分 ' + (seconds % 60) + ' 秒';
+        if (seconds > 0) return '预计等待 ' + seconds + ' 秒';
+        return '即将完成...';
       }
 
       var progressInterval = setInterval(function() {
         if (loadComplete) return;
-        // Use real resource progress if available
-        var newEntries = performance.getEntriesByType('resource');
-        if (newEntries.length > entries.length) {
-          loadedBytes = 0;
-          newEntries.forEach(function(e) { if (e.transferSize) loadedBytes += e.transferSize; });
-          entries = newEntries;
+        var realProgress = (loadedImgs / totalImgs) * 90;
+        // Smoothly approach real progress
+        displayProgress += (realProgress - displayProgress) * 0.15;
+        displayProgress = Math.min(displayProgress, 90);
+        bar.style.width = displayProgress + '%';
+        txt.textContent = '网页加载中 ' + Math.round(displayProgress) + '%';
+
+        // ETA based on real load rate
+        var elapsed = (performance.now() - startTime) / 1000;
+        if (loadedImgs > 0 && loadedImgs < totalImgs) {
+          var timePerImg = elapsed / loadedImgs;
+          var remaining = Math.max(0, Math.ceil(timePerImg * (totalImgs - loadedImgs)));
+          eta.textContent = formatEta(remaining);
+        } else if (loadedImgs >= totalImgs) {
+          eta.textContent = '即将完成...';
         }
-        fakeProgress += (90 - fakeProgress) * 0.08;
-        bar.style.width = Math.min(fakeProgress, 90) + '%';
-        txt.textContent = '网页加载中 ' + Math.round(Math.min(fakeProgress, 90)) + '%';
-        updateEta();
-      }, 100);
+      }, 200);
 
       function finish() {
         if (loadComplete) return;
@@ -3107,35 +3108,42 @@
           var progressBar = document.getElementById('gyroProgressBar');
           var progressText = document.getElementById('gyroProgressText');
           var gyroEta = document.getElementById('gyroEta');
-          var fakeProgress = 0;
           var loadComplete = false;
           var gyroStartTime = performance.now();
+          var gyroDisplayProgress = 0;
 
-          function updateGyroEta() {
-            var elapsed = (performance.now() - gyroStartTime) / 1000;
-            if (fakeProgress > 5 && fakeProgress < 95) {
-              var estimatedTotal = elapsed / (fakeProgress / 100);
-              var remaining = Math.max(0, Math.ceil(estimatedTotal - elapsed));
-              if (remaining > 60) {
-                gyroEta.textContent = '预计等待 ' + Math.ceil(remaining / 60) + ' 分 ' + (remaining % 60) + ' 秒';
-              } else if (remaining > 0) {
-                gyroEta.textContent = '预计等待 ' + remaining + ' 秒';
-              } else {
-                gyroEta.textContent = '即将完成...';
-              }
-            }
+          var gyroAllImgs = document.querySelectorAll('img:not([loading="lazy"])');
+          var gyroTotalImgs = gyroAllImgs.length || 1;
+          var gyroLoadedImgs = 0;
+          gyroAllImgs.forEach(function(img) {
+            if (img.complete) { gyroLoadedImgs++; return; }
+            img.addEventListener('load', function() { gyroLoadedImgs++; });
+            img.addEventListener('error', function() { gyroLoadedImgs++; });
+          });
+
+          function gyroFormatEta(seconds) {
+            if (seconds > 60) return '预计等待 ' + Math.ceil(seconds / 60) + ' 分 ' + (seconds % 60) + ' 秒';
+            if (seconds > 0) return '预计等待 ' + seconds + ' 秒';
+            return '即将完成...';
           }
 
-          // Simulate progress while loading
           var progressInterval = setInterval(function() {
             if (loadComplete) return;
-            // Slow down as it approaches 90%
-            var remaining = 90 - fakeProgress;
-            fakeProgress += remaining * 0.08;
-            progressBar.style.width = Math.min(fakeProgress, 90) + '%';
-            progressText.textContent = '网页加载中 ' + Math.round(Math.min(fakeProgress, 90)) + '%';
-            updateGyroEta();
-          }, 100);
+            var realProgress = (gyroLoadedImgs / gyroTotalImgs) * 90;
+            gyroDisplayProgress += (realProgress - gyroDisplayProgress) * 0.15;
+            gyroDisplayProgress = Math.min(gyroDisplayProgress, 90);
+            progressBar.style.width = gyroDisplayProgress + '%';
+            progressText.textContent = '网页加载中 ' + Math.round(gyroDisplayProgress) + '%';
+
+            var elapsed = (performance.now() - gyroStartTime) / 1000;
+            if (gyroLoadedImgs > 0 && gyroLoadedImgs < gyroTotalImgs) {
+              var timePerImg = elapsed / gyroLoadedImgs;
+              var remaining = Math.max(0, Math.ceil(timePerImg * (gyroTotalImgs - gyroLoadedImgs)));
+              gyroEta.textContent = gyroFormatEta(remaining);
+            } else if (gyroLoadedImgs >= gyroTotalImgs) {
+              gyroEta.textContent = '即将完成...';
+            }
+          }, 200);
 
           // Dismiss overlay function (called when both loaded + gyro granted)
           window._dismissGyroOverlay = function() {
@@ -3206,32 +3214,42 @@
           var barAnd = document.getElementById('gyroProgressBarAnd');
           var textAnd = document.getElementById('gyroProgressTextAnd');
           var etaAnd = document.getElementById('gyroEtaAnd');
-          var fakeAnd = 0;
           var doneAnd = false;
           var andStartTime = performance.now();
+          var andDisplayProgress = 0;
 
-          function updateAndEta() {
-            var elapsed = (performance.now() - andStartTime) / 1000;
-            if (fakeAnd > 5 && fakeAnd < 95) {
-              var estimatedTotal = elapsed / (fakeAnd / 100);
-              var remaining = Math.max(0, Math.ceil(estimatedTotal - elapsed));
-              if (remaining > 60) {
-                etaAnd.textContent = '预计等待 ' + Math.ceil(remaining / 60) + ' 分 ' + (remaining % 60) + ' 秒';
-              } else if (remaining > 0) {
-                etaAnd.textContent = '预计等待 ' + remaining + ' 秒';
-              } else {
-                etaAnd.textContent = '即将完成...';
-              }
-            }
+          var andAllImgs = document.querySelectorAll('img:not([loading="lazy"])');
+          var andTotalImgs = andAllImgs.length || 1;
+          var andLoadedImgs = 0;
+          andAllImgs.forEach(function(img) {
+            if (img.complete) { andLoadedImgs++; return; }
+            img.addEventListener('load', function() { andLoadedImgs++; });
+            img.addEventListener('error', function() { andLoadedImgs++; });
+          });
+
+          function andFormatEta(seconds) {
+            if (seconds > 60) return '预计等待 ' + Math.ceil(seconds / 60) + ' 分 ' + (seconds % 60) + ' 秒';
+            if (seconds > 0) return '预计等待 ' + seconds + ' 秒';
+            return '即将完成...';
           }
 
           var intAnd = setInterval(function() {
             if (doneAnd) return;
-            fakeAnd += (90 - fakeAnd) * 0.08;
-            barAnd.style.width = Math.min(fakeAnd, 90) + '%';
-            textAnd.textContent = '网页加载中 ' + Math.round(Math.min(fakeAnd, 90)) + '%';
-            updateAndEta();
-          }, 100);
+            var realProgress = (andLoadedImgs / andTotalImgs) * 90;
+            andDisplayProgress += (realProgress - andDisplayProgress) * 0.15;
+            andDisplayProgress = Math.min(andDisplayProgress, 90);
+            barAnd.style.width = andDisplayProgress + '%';
+            textAnd.textContent = '网页加载中 ' + Math.round(andDisplayProgress) + '%';
+
+            var elapsed = (performance.now() - andStartTime) / 1000;
+            if (andLoadedImgs > 0 && andLoadedImgs < andTotalImgs) {
+              var timePerImg = elapsed / andLoadedImgs;
+              var remaining = Math.max(0, Math.ceil(timePerImg * (andTotalImgs - andLoadedImgs)));
+              etaAnd.textContent = andFormatEta(remaining);
+            } else if (andLoadedImgs >= andTotalImgs) {
+              etaAnd.textContent = '即将完成...';
+            }
+          }, 200);
 
           function finishAnd() {
             if (doneAnd) return;
