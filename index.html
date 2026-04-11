@@ -2769,10 +2769,8 @@
 
         // Poll performance API every tick for latest data
         var totalLoadedBytes = 0;
-        var resourceCount = 0;
         performance.getEntriesByType('resource').forEach(function(e) {
-          totalLoadedBytes += e.transferSize || e.encodedBodySize || 0;
-          resourceCount++;
+          totalLoadedBytes += e.decodedBodySize || e.encodedBodySize || e.transferSize || 0;
         });
 
         var realProgress = (loadedImgs / totalImgs) * 90;
@@ -2782,7 +2780,7 @@
         txt.textContent = '网页加载中 ' + Math.round(displayProgress) + '%';
 
         // Smooth byte counter animation
-        displayBytes += (totalLoadedBytes - displayBytes) * 0.3;
+        if (totalLoadedBytes > displayBytes) displayBytes += (totalLoadedBytes - displayBytes) * 0.3;
         eta.textContent = '已加载 ' + formatBytes(Math.round(displayBytes)) + ' · ' + loadedImgs + '/' + totalImgs + ' 个资源';
       }, 100);
 
@@ -3200,7 +3198,7 @@
             var totalLoadedBytes = 0;
             var resourceCount = 0;
             performance.getEntriesByType('resource').forEach(function(e) {
-              totalLoadedBytes += e.transferSize || e.encodedBodySize || 0;
+              totalLoadedBytes += e.decodedBodySize || e.encodedBodySize || e.transferSize || 0;
               resourceCount++;
             });
 
@@ -3307,7 +3305,7 @@
 
             var totalLoadedBytes = 0;
             performance.getEntriesByType('resource').forEach(function(e) {
-              totalLoadedBytes += e.transferSize || e.encodedBodySize || 0;
+              totalLoadedBytes += e.decodedBodySize || e.encodedBodySize || e.transferSize || 0;
             });
 
             var realProgress = (andLoadedImgs / andTotalImgs) * 90;
