@@ -1287,6 +1287,53 @@
     }
 
     /* ============================================
+       PDF LOADING OVERLAY
+       ============================================ */
+    .pdf-loading-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10005;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      color: #fff;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s var(--transition);
+    }
+    .pdf-loading-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .pdf-loading-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+      padding: 0 32px;
+      width: 100%;
+      max-width: 360px;
+    }
+    .pdf-loading-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .pdf-loading-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: rgba(200, 255, 0, 0.8);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    /* ============================================
        ARTWORK DETAIL MODAL
        ============================================ */
     .work-modal-overlay {
@@ -1958,11 +2005,11 @@
       </div>
     </div>
     <div class="services-list">
-      <a href="scc-brand.pdf" target="_blank" class="service-item reveal" style="text-decoration:none;color:inherit;cursor:pointer;">
+      <div class="service-item reveal" style="cursor:pointer;" onclick="loadPdf(event)">
         <span class="service-num">01</span>
         <span class="service-name" data-i18n="svc_brand">品牌视觉搭建</span>
         <span class="service-arrow">→</span>
-      </a>
+      </div>
       <div class="service-item reveal" style="cursor:pointer;" onclick="document.getElementById('socialModal').classList.add('active');document.body.style.overflow='hidden';">
         <span class="service-num">02</span>
         <span class="service-name" data-i18n="svc_social">社媒视觉链接</span>
@@ -2542,6 +2589,22 @@
       <span>Copyright © 2026 YZS — Yet Zero Sense. 杨子硕</span>
     </div>
   </footer>
+
+  <!-- PDF Loading Overlay -->
+  <div class="pdf-loading-overlay" id="pdfLoadingOverlay">
+    <div class="pdf-loading-inner">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(200,255,0,0.8)" stroke-width="1.5">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+      </svg>
+      <div id="pdfLoadingTitle" style="font-size:18px;font-weight:700;letter-spacing:1px;">正在加载 PDF</div>
+      <div class="pdf-loading-bar-track">
+        <div class="pdf-loading-bar-fill" id="pdfLoadingBar"></div>
+      </div>
+      <div id="pdfLoadingText" style="font-size:12px;color:rgba(255,255,255,0.4);letter-spacing:1px;font-variant-numeric:tabular-nums;">准备中...</div>
+      <div id="pdfLoadingEta" style="font-size:11px;color:rgba(200,255,0,0.6);letter-spacing:0.5px;font-variant-numeric:tabular-nums;"></div>
+      <button id="pdfLoadingCancel" onclick="cancelPdfLoad()" style="margin-top:8px;padding:8px 24px;border:1px solid rgba(255,255,255,0.2);border-radius:100px;background:none;color:rgba(255,255,255,0.5);font-size:12px;cursor:pointer;transition:all 0.3s;">取消</button>
+    </div>
+  </div>
 
   <!-- GSAP SplitText Effect -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
@@ -3420,6 +3483,93 @@
     }
 
     // ============================================
+    // PDF LOADING
+    // ============================================
+    var pdfAbortController = null;
+
+    function loadPdf(e) {
+      e.preventDefault();
+      var overlay = document.getElementById('pdfLoadingOverlay');
+      var bar = document.getElementById('pdfLoadingBar');
+      var text = document.getElementById('pdfLoadingText');
+      var etaEl = document.getElementById('pdfLoadingEta');
+
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      bar.style.width = '0%';
+      text.textContent = '准备中...';
+      etaEl.textContent = '';
+
+      pdfAbortController = new AbortController();
+      var startTime = performance.now();
+
+      fetch('scc-brand.pdf', { signal: pdfAbortController.signal })
+        .then(function(response) {
+          var contentLength = response.headers.get('Content-Length');
+          var total = contentLength ? parseInt(contentLength, 10) : 0;
+          var loaded = 0;
+          var reader = response.body.getReader();
+          var chunks = [];
+
+          function read() {
+            return reader.read().then(function(result) {
+              if (result.done) return new Blob(chunks, { type: 'application/pdf' });
+              chunks.push(result.value);
+              loaded += result.value.length;
+
+              if (total > 0) {
+                var pct = Math.round((loaded / total) * 100);
+                bar.style.width = pct + '%';
+                text.textContent = pct + '% · ' + (loaded / 1024 / 1024).toFixed(1) + ' / ' + (total / 1024 / 1024).toFixed(1) + ' MB';
+
+                var elapsed = (performance.now() - startTime) / 1000;
+                if (loaded > 0 && loaded < total) {
+                  var speed = loaded / elapsed;
+                  var remaining = Math.max(0, Math.ceil((total - loaded) / speed));
+                  etaEl.textContent = remaining > 0 ? '预计等待 ' + remaining + ' 秒' : '即将完成...';
+                }
+              } else {
+                text.textContent = '加载中 · ' + (loaded / 1024 / 1024).toFixed(1) + ' MB';
+              }
+
+              return read();
+            });
+          }
+
+          return read();
+        })
+        .then(function(blob) {
+          bar.style.width = '100%';
+          text.textContent = '加载完成';
+          etaEl.textContent = '';
+
+          var url = URL.createObjectURL(blob);
+          setTimeout(function() {
+            window.open(url, '_blank');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+          }, 500);
+        })
+        .catch(function(err) {
+          if (err.name === 'AbortError') return;
+          text.textContent = '加载失败，请重试';
+          etaEl.textContent = '';
+          bar.style.width = '0%';
+          setTimeout(function() {
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+          }, 2000);
+        });
+    }
+
+    function cancelPdfLoad() {
+      if (pdfAbortController) pdfAbortController.abort();
+      var overlay = document.getElementById('pdfLoadingOverlay');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // ============================================
     // SOCIAL LINKS MODAL
     // ============================================
     const socialModal = document.getElementById('socialModal');
@@ -3657,7 +3807,9 @@
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        if (work06Modal.classList.contains('active')) {
+        if (document.getElementById('pdfLoadingOverlay').classList.contains('active')) {
+          cancelPdfLoad();
+        } else if (work06Modal.classList.contains('active')) {
           closeWork06();
         } else if (work05Modal.classList.contains('active')) {
           closeWork05();
