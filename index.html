@@ -2745,7 +2745,27 @@
       var loadComplete = false;
       var startTime = performance.now();
 
-      // Track real image loading progress
+      // Track real resource loading via PerformanceObserver
+      var totalLoadedBytes = 0;
+      var resourceCount = 0;
+
+      // Count already loaded resources
+      performance.getEntriesByType('resource').forEach(function(e) {
+        if (e.transferSize) totalLoadedBytes += e.transferSize;
+        resourceCount++;
+      });
+
+      // Watch new resources as they load
+      if (typeof PerformanceObserver !== 'undefined') {
+        var perfObserver = new PerformanceObserver(function(list) {
+          list.getEntries().forEach(function(e) {
+            if (e.transferSize) totalLoadedBytes += e.transferSize;
+            resourceCount++;
+          });
+        });
+        perfObserver.observe({ entryTypes: ['resource'] });
+      }
+
       var allImgs = document.querySelectorAll('img:not([loading="lazy"])');
       var totalImgs = allImgs.length || 1;
       var loadedImgs = 0;
@@ -2757,30 +2777,22 @@
 
       var displayProgress = 0;
 
-      function formatEta(seconds) {
-        if (seconds > 60) return '预计等待 ' + Math.ceil(seconds / 60) + ' 分 ' + (seconds % 60) + ' 秒';
-        if (seconds > 0) return '预计等待 ' + seconds + ' 秒';
-        return '即将完成...';
+      function formatBytes(bytes) {
+        if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + ' MB';
+        if (bytes >= 1024) return (bytes / 1024).toFixed(0) + ' KB';
+        return bytes + ' B';
       }
 
       var progressInterval = setInterval(function() {
         if (loadComplete) return;
         var realProgress = (loadedImgs / totalImgs) * 90;
-        // Smoothly approach real progress
         displayProgress += (realProgress - displayProgress) * 0.15;
         displayProgress = Math.min(displayProgress, 90);
         bar.style.width = displayProgress + '%';
         txt.textContent = '网页加载中 ' + Math.round(displayProgress) + '%';
 
-        // ETA based on real load rate
-        var elapsed = (performance.now() - startTime) / 1000;
-        if (loadedImgs > 0 && loadedImgs < totalImgs) {
-          var timePerImg = elapsed / loadedImgs;
-          var remaining = Math.max(0, Math.ceil(timePerImg * (totalImgs - loadedImgs)));
-          eta.textContent = formatEta(remaining);
-        } else if (loadedImgs >= totalImgs) {
-          eta.textContent = '即将完成...';
-        }
+        // Show actual downloaded bytes
+        eta.textContent = '已加载 ' + formatBytes(totalLoadedBytes) + ' · ' + resourceCount + ' 个资源';
       }, 200);
 
       function finish() {
@@ -3172,8 +3184,23 @@
           var progressText = document.getElementById('gyroProgressText');
           var gyroEta = document.getElementById('gyroEta');
           var loadComplete = false;
-          var gyroStartTime = performance.now();
           var gyroDisplayProgress = 0;
+
+          var gyroTotalLoadedBytes = 0;
+          var gyroResourceCount = 0;
+          performance.getEntriesByType('resource').forEach(function(e) {
+            if (e.transferSize) gyroTotalLoadedBytes += e.transferSize;
+            gyroResourceCount++;
+          });
+          if (typeof PerformanceObserver !== 'undefined') {
+            var gyroPerfObs = new PerformanceObserver(function(list) {
+              list.getEntries().forEach(function(e) {
+                if (e.transferSize) gyroTotalLoadedBytes += e.transferSize;
+                gyroResourceCount++;
+              });
+            });
+            gyroPerfObs.observe({ entryTypes: ['resource'] });
+          }
 
           var gyroAllImgs = document.querySelectorAll('img:not([loading="lazy"])');
           var gyroTotalImgs = gyroAllImgs.length || 1;
@@ -3184,10 +3211,10 @@
             img.addEventListener('error', function() { gyroLoadedImgs++; });
           });
 
-          function gyroFormatEta(seconds) {
-            if (seconds > 60) return '预计等待 ' + Math.ceil(seconds / 60) + ' 分 ' + (seconds % 60) + ' 秒';
-            if (seconds > 0) return '预计等待 ' + seconds + ' 秒';
-            return '即将完成...';
+          function gyroFormatBytes(bytes) {
+            if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + ' MB';
+            if (bytes >= 1024) return (bytes / 1024).toFixed(0) + ' KB';
+            return bytes + ' B';
           }
 
           var progressInterval = setInterval(function() {
@@ -3196,16 +3223,9 @@
             gyroDisplayProgress += (realProgress - gyroDisplayProgress) * 0.15;
             gyroDisplayProgress = Math.min(gyroDisplayProgress, 90);
             progressBar.style.width = gyroDisplayProgress + '%';
-            progressText.textContent = '网页加载中 ' + Math.round(gyroDisplayProgress) + '%';
+            progressText.textContent = '\u7f51\u9875\u52a0\u8f7d\u4e2d ' + Math.round(gyroDisplayProgress) + '%';
 
-            var elapsed = (performance.now() - gyroStartTime) / 1000;
-            if (gyroLoadedImgs > 0 && gyroLoadedImgs < gyroTotalImgs) {
-              var timePerImg = elapsed / gyroLoadedImgs;
-              var remaining = Math.max(0, Math.ceil(timePerImg * (gyroTotalImgs - gyroLoadedImgs)));
-              gyroEta.textContent = gyroFormatEta(remaining);
-            } else if (gyroLoadedImgs >= gyroTotalImgs) {
-              gyroEta.textContent = '即将完成...';
-            }
+            gyroEta.textContent = '\u5df2\u52a0\u8f7d ' + gyroFormatBytes(gyroTotalLoadedBytes) + ' \u00b7 ' + gyroResourceCount + ' \u4e2a\u8d44\u6e90';
           }, 200);
 
           // Dismiss overlay function (called when both loaded + gyro granted)
@@ -3278,8 +3298,23 @@
           var textAnd = document.getElementById('gyroProgressTextAnd');
           var etaAnd = document.getElementById('gyroEtaAnd');
           var doneAnd = false;
-          var andStartTime = performance.now();
           var andDisplayProgress = 0;
+
+          var andTotalLoadedBytes = 0;
+          var andResourceCount = 0;
+          performance.getEntriesByType('resource').forEach(function(e) {
+            if (e.transferSize) andTotalLoadedBytes += e.transferSize;
+            andResourceCount++;
+          });
+          if (typeof PerformanceObserver !== 'undefined') {
+            var andPerfObs = new PerformanceObserver(function(list) {
+              list.getEntries().forEach(function(e) {
+                if (e.transferSize) andTotalLoadedBytes += e.transferSize;
+                andResourceCount++;
+              });
+            });
+            andPerfObs.observe({ entryTypes: ['resource'] });
+          }
 
           var andAllImgs = document.querySelectorAll('img:not([loading="lazy"])');
           var andTotalImgs = andAllImgs.length || 1;
@@ -3290,10 +3325,10 @@
             img.addEventListener('error', function() { andLoadedImgs++; });
           });
 
-          function andFormatEta(seconds) {
-            if (seconds > 60) return '预计等待 ' + Math.ceil(seconds / 60) + ' 分 ' + (seconds % 60) + ' 秒';
-            if (seconds > 0) return '预计等待 ' + seconds + ' 秒';
-            return '即将完成...';
+          function andFormatBytes(bytes) {
+            if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + ' MB';
+            if (bytes >= 1024) return (bytes / 1024).toFixed(0) + ' KB';
+            return bytes + ' B';
           }
 
           var intAnd = setInterval(function() {
@@ -3302,16 +3337,9 @@
             andDisplayProgress += (realProgress - andDisplayProgress) * 0.15;
             andDisplayProgress = Math.min(andDisplayProgress, 90);
             barAnd.style.width = andDisplayProgress + '%';
-            textAnd.textContent = '网页加载中 ' + Math.round(andDisplayProgress) + '%';
+            textAnd.textContent = '\u7f51\u9875\u52a0\u8f7d\u4e2d ' + Math.round(andDisplayProgress) + '%';
 
-            var elapsed = (performance.now() - andStartTime) / 1000;
-            if (andLoadedImgs > 0 && andLoadedImgs < andTotalImgs) {
-              var timePerImg = elapsed / andLoadedImgs;
-              var remaining = Math.max(0, Math.ceil(timePerImg * (andTotalImgs - andLoadedImgs)));
-              etaAnd.textContent = andFormatEta(remaining);
-            } else if (andLoadedImgs >= andTotalImgs) {
-              etaAnd.textContent = '即将完成...';
-            }
+            etaAnd.textContent = '\u5df2\u52a0\u8f7d ' + andFormatBytes(andTotalLoadedBytes) + ' \u00b7 ' + andResourceCount + ' \u4e2a\u8d44\u6e90';
           }, 200);
 
           function finishAnd() {
