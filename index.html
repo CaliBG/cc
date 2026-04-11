@@ -2745,27 +2745,7 @@
       var loadComplete = false;
       var startTime = performance.now();
 
-      // Track real resource loading via PerformanceObserver
-      var totalLoadedBytes = 0;
-      var resourceCount = 0;
-
-      // Count already loaded resources
-      performance.getEntriesByType('resource').forEach(function(e) {
-        if (e.transferSize) totalLoadedBytes += e.transferSize;
-        resourceCount++;
-      });
-
-      // Watch new resources as they load
-      if (typeof PerformanceObserver !== 'undefined') {
-        var perfObserver = new PerformanceObserver(function(list) {
-          list.getEntries().forEach(function(e) {
-            if (e.transferSize) totalLoadedBytes += e.transferSize;
-            resourceCount++;
-          });
-        });
-        perfObserver.observe({ entryTypes: ['resource'] });
-      }
-
+      // Track real image loading
       var allImgs = document.querySelectorAll('img:not([loading="lazy"])');
       var totalImgs = allImgs.length || 1;
       var loadedImgs = 0;
@@ -2776,6 +2756,7 @@
       });
 
       var displayProgress = 0;
+      var displayBytes = 0;
 
       function formatBytes(bytes) {
         if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + ' MB';
@@ -2785,15 +2766,25 @@
 
       var progressInterval = setInterval(function() {
         if (loadComplete) return;
+
+        // Poll performance API every tick for latest data
+        var totalLoadedBytes = 0;
+        var resourceCount = 0;
+        performance.getEntriesByType('resource').forEach(function(e) {
+          totalLoadedBytes += e.transferSize || e.encodedBodySize || 0;
+          resourceCount++;
+        });
+
         var realProgress = (loadedImgs / totalImgs) * 90;
         displayProgress += (realProgress - displayProgress) * 0.15;
         displayProgress = Math.min(displayProgress, 90);
         bar.style.width = displayProgress + '%';
         txt.textContent = '网页加载中 ' + Math.round(displayProgress) + '%';
 
-        // Show actual downloaded bytes
-        eta.textContent = '已加载 ' + formatBytes(totalLoadedBytes) + ' · ' + resourceCount + ' 个资源';
-      }, 200);
+        // Smooth byte counter animation
+        displayBytes += (totalLoadedBytes - displayBytes) * 0.3;
+        eta.textContent = '已加载 ' + formatBytes(Math.round(displayBytes)) + ' · ' + loadedImgs + '/' + totalImgs + ' 个资源';
+      }, 100);
 
       function finish() {
         if (loadComplete) return;
@@ -3179,28 +3170,14 @@
           fadeUp(document.getElementById('gyroBtn'), 800);
           fadeUp(document.getElementById('gyroProgress'), 1200);
 
+
           // Track page load progress
           var progressBar = document.getElementById('gyroProgressBar');
           var progressText = document.getElementById('gyroProgressText');
           var gyroEta = document.getElementById('gyroEta');
           var loadComplete = false;
           var gyroDisplayProgress = 0;
-
-          var gyroTotalLoadedBytes = 0;
-          var gyroResourceCount = 0;
-          performance.getEntriesByType('resource').forEach(function(e) {
-            if (e.transferSize) gyroTotalLoadedBytes += e.transferSize;
-            gyroResourceCount++;
-          });
-          if (typeof PerformanceObserver !== 'undefined') {
-            var gyroPerfObs = new PerformanceObserver(function(list) {
-              list.getEntries().forEach(function(e) {
-                if (e.transferSize) gyroTotalLoadedBytes += e.transferSize;
-                gyroResourceCount++;
-              });
-            });
-            gyroPerfObs.observe({ entryTypes: ['resource'] });
-          }
+          var gyroDisplayBytes = 0;
 
           var gyroAllImgs = document.querySelectorAll('img:not([loading="lazy"])');
           var gyroTotalImgs = gyroAllImgs.length || 1;
@@ -3219,14 +3196,23 @@
 
           var progressInterval = setInterval(function() {
             if (loadComplete) return;
+
+            var totalLoadedBytes = 0;
+            var resourceCount = 0;
+            performance.getEntriesByType('resource').forEach(function(e) {
+              totalLoadedBytes += e.transferSize || e.encodedBodySize || 0;
+              resourceCount++;
+            });
+
             var realProgress = (gyroLoadedImgs / gyroTotalImgs) * 90;
             gyroDisplayProgress += (realProgress - gyroDisplayProgress) * 0.15;
             gyroDisplayProgress = Math.min(gyroDisplayProgress, 90);
             progressBar.style.width = gyroDisplayProgress + '%';
             progressText.textContent = '\u7f51\u9875\u52a0\u8f7d\u4e2d ' + Math.round(gyroDisplayProgress) + '%';
 
-            gyroEta.textContent = '\u5df2\u52a0\u8f7d ' + gyroFormatBytes(gyroTotalLoadedBytes) + ' \u00b7 ' + gyroResourceCount + ' \u4e2a\u8d44\u6e90';
-          }, 200);
+            gyroDisplayBytes += (totalLoadedBytes - gyroDisplayBytes) * 0.3;
+            gyroEta.textContent = '\u5df2\u52a0\u8f7d ' + gyroFormatBytes(Math.round(gyroDisplayBytes)) + ' \u00b7 ' + gyroLoadedImgs + '/' + gyroTotalImgs + ' \u4e2a\u8d44\u6e90';
+          }, 100);
 
           // Dismiss overlay function (called when both loaded + gyro granted)
           window._dismissGyroOverlay = function() {
@@ -3299,22 +3285,7 @@
           var etaAnd = document.getElementById('gyroEtaAnd');
           var doneAnd = false;
           var andDisplayProgress = 0;
-
-          var andTotalLoadedBytes = 0;
-          var andResourceCount = 0;
-          performance.getEntriesByType('resource').forEach(function(e) {
-            if (e.transferSize) andTotalLoadedBytes += e.transferSize;
-            andResourceCount++;
-          });
-          if (typeof PerformanceObserver !== 'undefined') {
-            var andPerfObs = new PerformanceObserver(function(list) {
-              list.getEntries().forEach(function(e) {
-                if (e.transferSize) andTotalLoadedBytes += e.transferSize;
-                andResourceCount++;
-              });
-            });
-            andPerfObs.observe({ entryTypes: ['resource'] });
-          }
+          var andDisplayBytes = 0;
 
           var andAllImgs = document.querySelectorAll('img:not([loading="lazy"])');
           var andTotalImgs = andAllImgs.length || 1;
@@ -3333,14 +3304,21 @@
 
           var intAnd = setInterval(function() {
             if (doneAnd) return;
+
+            var totalLoadedBytes = 0;
+            performance.getEntriesByType('resource').forEach(function(e) {
+              totalLoadedBytes += e.transferSize || e.encodedBodySize || 0;
+            });
+
             var realProgress = (andLoadedImgs / andTotalImgs) * 90;
             andDisplayProgress += (realProgress - andDisplayProgress) * 0.15;
             andDisplayProgress = Math.min(andDisplayProgress, 90);
             barAnd.style.width = andDisplayProgress + '%';
             textAnd.textContent = '\u7f51\u9875\u52a0\u8f7d\u4e2d ' + Math.round(andDisplayProgress) + '%';
 
-            etaAnd.textContent = '\u5df2\u52a0\u8f7d ' + andFormatBytes(andTotalLoadedBytes) + ' \u00b7 ' + andResourceCount + ' \u4e2a\u8d44\u6e90';
-          }, 200);
+            andDisplayBytes += (totalLoadedBytes - andDisplayBytes) * 0.3;
+            etaAnd.textContent = '\u5df2\u52a0\u8f7d ' + andFormatBytes(Math.round(andDisplayBytes)) + ' \u00b7 ' + andLoadedImgs + '/' + andTotalImgs + ' \u4e2a\u8d44\u6e90';
+          }, 100);
 
           function finishAnd() {
             if (doneAnd) return;
