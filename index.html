@@ -1473,6 +1473,13 @@
       display: block;
     }
 
+    .work-detail-image video {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+
     /* Stack Gallery */
     .stack-container {
       position: relative;
@@ -1993,6 +2000,26 @@
           </div>
         </div>
       </div>
+
+      <!-- #07 安静指数 -->
+      <div class="project-card reveal" onclick="openWork07(event)">
+        <div class="project-info">
+          <div class="project-meta">
+            <span class="project-tag">系统设计</span>
+            <span class="project-tag">行为可视化</span>
+            <span class="project-tag">环境协同</span>
+          </div>
+          <h3 class="project-title" data-i18n="w7_title">#07 安静指数 / Quiet Index</h3>
+          <p class="project-desc" data-i18n="w7_desc">在高校宿舍这一典型的多人共享空间中，项目通过电子显示屏与环境传感器，将不可见的噪音与作息状态转化为可理解的“安静指数”，以非指向性的方式缓解夜间共享环境中的隐性压力。</p>
+        </div>
+        <div class="project-thumb">
+          <div class="project-thumb-inner">
+            <video autoplay muted loop playsinline preload="metadata" aria-label="#07 安静指数" style="width:100%;height:100%;object-fit:cover;">
+              <source src="work07.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -2490,6 +2517,59 @@
             <div class="work-detail-info-item">
               <div class="info-label" data-i18n="wd_number">编号</div>
               <div class="info-value">#06 of Series</div>
+            </div>
+            <div class="work-detail-info-item">
+              <div class="info-label" data-i18n="wd_creator">创作者</div>
+              <div class="info-value">杨子硕 Cali-Yang</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Work 07 Detail Modal -->
+  <div class="work-modal-overlay" id="work07Modal">
+    <button class="work-modal-close" onclick="closeWork07()">✕</button>
+    <div class="work-detail">
+      <div class="work-detail-header">
+        <div class="work-detail-num">#07</div>
+        <h2 class="work-detail-title" data-i18n-html="wd7_title">安静指数 — <span class="serif">Quiet Index</span></h2>
+        <div class="work-detail-meta">
+          <span class="project-tag">系统设计</span>
+          <span class="project-tag">行为可视化</span>
+          <span class="project-tag">环境协同</span>
+        </div>
+      </div>
+      <div class="work-detail-body">
+        <div class="work-detail-image">
+          <video autoplay muted loop playsinline controls preload="metadata" aria-label="#07 安静指数">
+            <source src="work07.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="work-detail-text">
+          <div class="work-detail-label" data-i18n="wd_concept">创作理念</div>
+          <div class="work-detail-quote" data-i18n-html="wd7_quote">
+            让噪音被看见，<br>让作息被理解，<br>让共享空间学会柔性自调节
+          </div>
+          <div class="work-detail-desc" data-i18n-html="wd7_desc">
+            <p>在高校宿舍这一典型的多人共享空间中，个体作息差异与生活习惯冲突，常常转化为隐性的环境压力，尤其在夜间，噪音问题对睡眠质量的影响尤为显著。然而，由于缺乏客观标准与有效沟通机制，个体之间往往在“忍耐”与“冲突”之间反复摇摆。</p>
+            <p>本项目提出了一套基于行为可视化的宿舍环境协同系统，通过电子显示屏与环境传感器，将原本不可见的噪音与作息状态转化为可理解的“安静指数”，并在夜间自动进入监测模式，实现对宿舍环境的实时反馈。同时，系统采用非指向性的提示方式，避免将问题归因于个体，从而降低人际压力。</p>
+            <p>在参与机制上，项目引入“去APP依赖”的分层设计，即使在部分用户不接入系统的情况下，仍可通过公共屏幕实现基础的信息传达与行为引导。该方案尝试在个体自由与群体秩序之间建立一种柔性的平衡机制，使共享空间具备自我调节的能力。</p>
+          </div>
+          <div class="work-detail-divider"></div>
+          <div class="work-detail-info-grid">
+            <div class="work-detail-info-item">
+              <div class="info-label" data-i18n="wd_material">材料</div>
+              <div class="info-value" data-i18n="wd7_material">电子显示屏、环境传感器、状态反馈界面</div>
+            </div>
+            <div class="work-detail-info-item">
+              <div class="info-label" data-i18n="wd_type">类型</div>
+              <div class="info-value" data-i18n="wd7_type">宿舍环境协同系统 / 行为可视化</div>
+            </div>
+            <div class="work-detail-info-item">
+              <div class="info-label" data-i18n="wd_number">编号</div>
+              <div class="info-value">#07 of Series</div>
             </div>
             <div class="work-detail-info-item">
               <div class="info-label" data-i18n="wd_creator">创作者</div>
@@ -3809,10 +3889,29 @@
       document.body.style.overflow = '';
     }
 
+    // ============================================
+    // WORK 07 DETAIL MODAL
+    // ============================================
+    const work07Modal = document.getElementById('work07Modal');
+
+    function openWork07(e) {
+      e.preventDefault();
+      work07Modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      work07Modal.scrollTop = 0;
+    }
+
+    function closeWork07() {
+      work07Modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         if (document.getElementById('pdfLoadingOverlay').classList.contains('active')) {
           cancelPdfLoad();
+        } else if (work07Modal.classList.contains('active')) {
+          closeWork07();
         } else if (work06Modal.classList.contains('active')) {
           closeWork06();
         } else if (work05Modal.classList.contains('active')) {
@@ -3858,6 +3957,7 @@
         w4_title: '#04 深海呼吸', w4_desc: '当社会压力如深海般无声蔓延，服饰表面流动的呼吸鳃结构将焦虑转化为可视的起伏波纹。',
         w5_title: '#05 拓印-流动的痕', w5_desc: '以"沙"为媒介，将无形的时间感知转化为可观察与触摸的流动痕迹，距离即介入，观众即参与者。',
         w6_title: '#06 YZS® 周边系列', w6_desc: '把设计从屏幕带回现实，让每一件周边成为日常生活中的"可触摸表达"——克制、直接，但不失锋芒。',
+        w7_title: '#07 安静指数 / Quiet Index', w7_desc: '在高校宿舍这一典型的多人共享空间中，项目通过电子显示屏与环境传感器，将不可见的噪音与作息状态转化为可理解的“安静指数”，以非指向性的方式缓解夜间共享环境中的隐性压力。',
         svc_brand: '品牌视觉搭建', svc_social: '社媒视觉链接',
         t1_text: '"子硕对设计细节的把控力令人叹服。从最初的品牌调研到视觉语言的构建，他展现出了超越同龄人的洞察力与执行力。他不仅仅是在做设计，更是在讲述一个品牌的故事——每一处色彩、每一个字距、每一根线条都经过深思熟虑。整个合作过程高效且愉快，他总能精准理解我们的诉求，并给出令人惊喜的解决方案。最终成果远超我们的预期，强烈推荐。"', t1_name: '李明', t1_role: '某设计公司',
         t2_text: '"子硕身上有一种很少见的组合：美术生的感知力，加上对技术工具毫不畏惧的探索欲。他对品牌视觉的理解不只是做好看的东西，而是能从哲学层面思考\'为什么要这样做\'。对 AIGC 和 vibe coding 的探索也不是浅尝辄止，而是真正融入了自己的设计工作流。他总是同时在推进好几件事——品牌设计、网站搭建、自媒体运营——每一件都不敷衍，从不等别人推着走，永远自己找方向。本科阶段就能独立完成从品牌定位到视觉落地的全流程，自驱力极强，未来可期。"', t2_name: '刘彦君', t2_role: '华南筑真科技',
@@ -3866,7 +3966,7 @@
         contact_sub: '如果你也在思考"存在"与"无"的边界，或者只是想聊聊——空白本身就是一种回应。',
         footer_slogan: '感知归零，一切重新开始',
         settings_theme: '切换主题', settings_lang: '语言',
-        wd1_title: '43+1 — <span class="serif">力量与平衡</span>', wd2_title: '皮囊记忆 / <span class="serif">Memory of the Flesh</span>', wd3_title: '痛 — <span class="serif">被规训的皮囊</span>', wd4_title: '深海呼吸 — <span class="serif">压力代谢仪式</span>', wd5_title: '拓印-流动的痕', wd6_title: 'YZS® 周边系列 — <span class="serif">可触摸的态度</span>',
+        wd1_title: '43+1 — <span class="serif">力量与平衡</span>', wd2_title: '皮囊记忆 / <span class="serif">Memory of the Flesh</span>', wd3_title: '痛 — <span class="serif">被规训的皮囊</span>', wd4_title: '深海呼吸 — <span class="serif">压力代谢仪式</span>', wd5_title: '拓印-流动的痕', wd6_title: 'YZS® 周边系列 — <span class="serif">可触摸的态度</span>', wd7_title: '安静指数 — <span class="serif">Quiet Index</span>',
         wd_concept: '创作理念', wd_material: '材料', wd_date: '日期', wd_number: '编号', wd_creator: '创作者', wd_type: '类型', wd_team: '团队', wd_inspiration: '灵感',
         wd1_quote: '行动与克制之间的悬停——<br>那是力量被凝固的瞬间',
         wd1_desc: '<p>作品《#01 43+1》的灵感来自于一个关于"力量与平衡"的身体瞬间。它捕捉了一只手高高举起榔头、即将敲下的一刻，我感受到身体内部的张力——那是一种在行动与克制之间的悬停。</p><p>我想捕捉这种"力量被凝固"的瞬间，于是选择用榔头与钉子来构建这个立体结构。榔头本应是主导的工具，但在这里，它却被定格在钉子的世界中——它失去了攻击性，反而被钉子们支撑着、包围着。</p>',
@@ -3886,7 +3986,10 @@
         wd6_title: 'YZS® 周边系列 — <span class="serif">可触摸的态度</span>',
         wd6_quote: '好的设计不应该只存在于作品集或屏幕里，<br>而应该被携带、被使用、被消耗，<br>甚至被时间留下痕迹',
         wd6_desc: '<p>YZS 不只是一个名字，它更像是一种正在被创造的态度。我们把设计从屏幕带回现实，让每一件周边成为你日常生活中的"可触摸表达"。从简约的视觉符号，到细节里的材质选择，YZS 周边延续了一贯的设计逻辑——克制、直接，但不失锋芒。</p><p>它不追求喧哗的存在感，而是在被使用的每一个瞬间，悄然建立连接。我们相信，好的设计不应该只存在于作品集或屏幕里，而应该被携带、被使用、被消耗，甚至被时间留下痕迹。YZS 周边，是设计进入现实的第一步。</p>',
-        wd6_material: '多元材质（织物、金属、纸品、印刷品）', wd6_type: '品牌周边 / 实物设计'
+        wd6_material: '多元材质（织物、金属、纸品、印刷品）', wd6_type: '品牌周边 / 实物设计',
+        wd7_quote: '让噪音被看见，<br>让作息被理解，<br>让共享空间学会柔性自调节',
+        wd7_desc: '<p>在高校宿舍这一典型的多人共享空间中，个体作息差异与生活习惯冲突，常常转化为隐性的环境压力，尤其在夜间，噪音问题对睡眠质量的影响尤为显著。然而，由于缺乏客观标准与有效沟通机制，个体之间往往在“忍耐”与“冲突”之间反复摇摆。</p><p>本项目提出了一套基于行为可视化的宿舍环境协同系统，通过电子显示屏与环境传感器，将原本不可见的噪音与作息状态转化为可理解的“安静指数”，并在夜间自动进入监测模式，实现对宿舍环境的实时反馈。同时，系统采用非指向性的提示方式，避免将问题归因于个体，从而降低人际压力。</p><p>在参与机制上，项目引入“去APP依赖”的分层设计，即使在部分用户不接入系统的情况下，仍可通过公共屏幕实现基础的信息传达与行为引导。该方案尝试在个体自由与群体秩序之间建立一种柔性的平衡机制，使共享空间具备自我调节的能力。</p>',
+        wd7_material: '电子显示屏、环境传感器、状态反馈界面', wd7_type: '宿舍环境协同系统 / 行为可视化'
       },
       en: {
         nav_about: 'About', nav_work: 'Works', nav_services: 'Services', nav_competitions: 'Competitions', nav_testimonials: 'Testimonials', nav_contact: 'Contact',
@@ -3903,6 +4006,7 @@
         w4_title: '#04 Deep Sea Breathing', w4_desc: 'As social pressure spreads silently like the deep sea, the breathing gill structures on the garment surface transform anxiety into visible undulating ripples.',
         w5_title: '#05 Imprint — Flowing Traces', w5_desc: 'Using "sand" as a medium, transforming invisible time perception into observable, touchable flowing traces. Distance means engagement; the audience becomes the participant.',
         w6_title: '#06 YZS® Merch Series', w6_desc: 'Bringing design from screen to reality, making every piece of merch a "touchable expression" in daily life — restrained, direct, yet sharp.',
+        w7_title: '#07 Quiet Index', w7_desc: 'Set in the shared space of a university dormitory, this project turns invisible noise and routine states into a readable "Quiet Index" through environmental sensors and a public display, easing nighttime tension without singling out individuals.',
         svc_brand: 'Brand Visual Identity', svc_social: 'Social Media Links',
         t1_text: '"Zishuo\'s control over design details is truly impressive. From initial brand research to building a cohesive visual language, he demonstrated insight and execution far beyond his years. He\'s not just designing — he\'s telling a brand\'s story, where every color choice, every letter spacing, and every line is thoughtfully considered. The entire collaboration was efficient and enjoyable; he always understood our needs precisely and delivered solutions that genuinely surprised us. The final result far exceeded our expectations. Highly recommended."', t1_name: 'Li Ming', t1_role: 'A Design Company',
         t2_text: '"Zishuo has a rare combination: the perceptiveness of an art student, plus a fearless curiosity for technical tools. His understanding of brand visuals goes beyond making things look good — he thinks philosophically about \'why do it this way\'. His exploration of AIGC and vibe coding isn\'t superficial but truly integrated into his design workflow. He\'s always pushing multiple things forward — brand design, website building, social media — none half-hearted, never waiting to be told what to do. Completing the full pipeline from brand positioning to visual execution independently as an undergraduate shows exceptional self-drive."', t2_name: 'Liu Yanjun', t2_role: 'South China Zhuzhen Tech',
@@ -3911,7 +4015,7 @@
         contact_sub: 'If you\'re also pondering the boundary between "being" and "nothingness", or just want to chat — silence itself is a response.',
         footer_slogan: 'Perception reset, everything begins anew',
         settings_theme: 'Toggle Theme', settings_lang: 'Language',
-        wd1_title: '43+1 — <span class="serif">Force & Balance</span>', wd2_title: 'Memory of the Flesh / <span class="serif">皮囊记忆</span>', wd3_title: 'Pain — <span class="serif">Disciplined Skin</span>', wd4_title: 'Deep Sea Breathing — <span class="serif">Pressure Metabolism</span>', wd5_title: 'Imprint — Flowing Traces', wd6_title: 'YZS® Merch Series — <span class="serif">Touchable Attitude</span>',
+        wd1_title: '43+1 — <span class="serif">Force & Balance</span>', wd2_title: 'Memory of the Flesh / <span class="serif">皮囊记忆</span>', wd3_title: 'Pain — <span class="serif">Disciplined Skin</span>', wd4_title: 'Deep Sea Breathing — <span class="serif">Pressure Metabolism</span>', wd5_title: 'Imprint — Flowing Traces', wd6_title: 'YZS® Merch Series — <span class="serif">Touchable Attitude</span>', wd7_title: 'Quiet Index — <span class="serif">Dormitory Coordination System</span>',
         wd_concept: 'Concept', wd_material: 'Material', wd_date: 'Date', wd_number: 'No.', wd_creator: 'Creator', wd_type: 'Type', wd_team: 'Team', wd_inspiration: 'Inspiration',
         wd1_quote: 'Hovering between action and restraint —<br>the moment force is frozen',
         wd1_desc: '<p>The work "#01 43+1" draws inspiration from a bodily moment of "force and balance". It captures the instant of raising a hammer high, about to strike — the internal tension of the body, a suspension between action and restraint.</p><p>I wanted to capture this moment of "frozen force", choosing hammers and nails to build this three-dimensional structure. The hammer should be the dominant tool, but here it is fixed in the world of nails — stripped of aggression, supported and surrounded by them.</p>',
@@ -3931,7 +4035,10 @@
         wd6_title: 'YZS® Merch Series — <span class="serif">Touchable Attitude</span>',
         wd6_quote: 'Good design shouldn\'t only exist in portfolios or on screens —<br>it should be carried, used, consumed,<br>even marked by time',
         wd6_desc: '<p>YZS is not just a name — it\'s an attitude being created. We bring design from screen to reality, making every piece of merch a "touchable expression" in your daily life. From minimalist visual symbols to material choices in every detail, YZS merch continues a consistent design logic — restrained, direct, yet sharp.</p><p>It doesn\'t seek a loud presence, but quietly builds connections in every moment of use. We believe good design shouldn\'t only exist in portfolios or on screens — it should be carried, used, consumed, even marked by time. YZS merch is design\'s first step into reality.</p>',
-        wd6_material: 'Mixed materials (fabric, metal, paper, prints)', wd6_type: 'Brand merchandise / Physical design'
+        wd6_material: 'Mixed materials (fabric, metal, paper, prints)', wd6_type: 'Brand merchandise / Physical design',
+        wd7_quote: 'Make noise visible,<br>make routines understandable,<br>and let shared space learn soft self-regulation',
+        wd7_desc: '<p>In university dormitories, a typical multi-occupant shared space, differences in schedules and living habits often turn into latent environmental stress. At night in particular, noise has a direct impact on sleep quality. Yet without objective standards or an effective communication mechanism, residents often swing between silent endurance and open conflict.</p><p>This project proposes a dormitory coordination system based on behavior visualization. Through a public electronic display and environmental sensors, originally invisible noise levels and routine states are translated into a readable "Quiet Index". The system automatically enters monitoring mode at night and provides real-time feedback on the dorm environment. At the same time, it uses non-directional prompts, avoiding the assignment of blame to any individual and reducing interpersonal pressure.</p><p>In terms of participation, the project adopts a layered design that reduces app dependency. Even when some users are not connected to the system, the shared screen can still deliver basic information and guide behavior. The proposal attempts to build a soft balancing mechanism between individual freedom and collective order, giving the shared space a capacity for self-adjustment.</p>',
+        wd7_material: 'Electronic display, environmental sensors, feedback interface', wd7_type: 'Dormitory coordination system / Behavior visualization'
       },
       ja: {
         nav_about: '紹介', nav_work: '作品', nav_services: 'サービス', nav_competitions: 'コンペ', nav_testimonials: '評価', nav_contact: '連絡',
@@ -3948,6 +4055,7 @@
         w4_title: '#04 深海の呼吸', w4_desc: '社会的圧力が深海のように静かに広がるとき、衣服表面の呼吸鰓構造が不安を目に見える波紋に変換する。',
         w5_title: '#05 拓印——流れる痕跡', w5_desc: '「砂」を媒介として、目に見えない時間の知覚を観察可能で触れることのできる流動する痕跡に変換する。距離は介入であり、観客は参加者となる。',
         w6_title: '#06 YZS® グッズシリーズ', w6_desc: 'デザインをスクリーンから現実へ。すべてのグッズを日常生活の中の「触れる表現」に——抑制的で、直接的で、しかし鋭さを失わない。',
+        w7_title: '#07 Quiet Index / 静けさ指数', w7_desc: '大学寮という典型的な共有空間において、本プロジェクトは電子表示と環境センサーを通じて、見えない騒音や生活リズムを理解可能な「静けさ指数」へ変換し、個人を名指しせずに夜間の潜在的な緊張を和らげる。',
         svc_brand: 'ブランドビジュアル構築', svc_social: 'SNSリンク',
         t1_text: '「子碩のデザインディテールへのこだわりは驚嘆に値する。ブランドリサーチからビジュアル言語の構築まで、同世代を超える洞察力と実行力を見せてくれた。彼はただデザインしているのではなく、ブランドの物語を語っているのだ——色彩の一つひとつ、字間の一つひとつ、線の一本一本に深い思慮が込められている。協業全体が効率的で心地よく、我々のニーズを的確に汲み取り、驚きのあるソリューションを提供してくれた。最終成果は我々の期待をはるかに超えた。強くお薦めする。」', t1_name: '李明', t1_role: 'とあるデザイン会社',
         t2_text: '「子碩には珍しい組み合わせがある：美術学生の感性と、技術ツールへの恐れ知らずの探究心。ブランドビジュアルへの理解は見た目を良くすることに留まらず、「なぜこうするのか」を哲学的に考えられる。AIGCやvibe codingの探求も表面的ではなく、自身のデザインワークフローに真に統合している。常に複数のことを同時に推進し——ブランドデザイン、ウェブ構築、SNS運営——どれも手を抜かず、指示を待たず、常に自ら方向を見つける。学部段階でブランドポジショニングからビジュアル実装まで一貫して独立完成できる、自己駆動力が極めて強い、将来有望。」', t2_name: '劉彦君', t2_role: '華南筑真科技',
@@ -3956,7 +4064,7 @@
         contact_sub: '「存在」と「無」の境界について考えているなら、あるいはただ話したいだけなら——沈黙そのものが一つの応答です。',
         footer_slogan: '感覚をリセット、すべてが再び始まる',
         settings_theme: 'テーマ切替', settings_lang: '言語',
-        wd1_title: '43+1 — <span class="serif">力と均衡</span>', wd2_title: '皮膚の記憶 / <span class="serif">Memory of the Flesh</span>', wd3_title: '痛み — <span class="serif">規律された皮膚</span>', wd4_title: '深海の呼吸 — <span class="serif">圧力代謝の儀式</span>', wd5_title: '拓印——流れる痕跡', wd6_title: 'YZS® グッズシリーズ — <span class="serif">触れる態度</span>',
+        wd1_title: '43+1 — <span class="serif">力と均衡</span>', wd2_title: '皮膚の記憶 / <span class="serif">Memory of the Flesh</span>', wd3_title: '痛み — <span class="serif">規律された皮膚</span>', wd4_title: '深海の呼吸 — <span class="serif">圧力代謝の儀式</span>', wd5_title: '拓印——流れる痕跡', wd6_title: 'YZS® グッズシリーズ — <span class="serif">触れる態度</span>', wd7_title: '静けさ指数 — <span class="serif">Quiet Index</span>',
         wd_concept: 'コンセプト', wd_material: '素材', wd_date: '日付', wd_number: '番号', wd_creator: '制作者', wd_type: 'タイプ', wd_team: 'チーム', wd_inspiration: 'インスピレーション',
         wd1_quote: '行動と抑制の間の漂い——<br>力が凝固する瞬間',
         wd1_desc: '<p>作品「#01 43+1」は「力と均衡」に関する身体の瞬間からインスピレーションを得ている。ハンマーを高く振り上げ、打ち下ろそうとする瞬間を捉えた——身体内部の張力、行動と抑制の間の宙吊り状態。</p><p>この「力が凝固する」瞬間を捉えたいと思い、ハンマーと釘でこの立体構造を構築した。ハンマーは本来支配的な道具であるべきだが、ここでは釘の世界に固定され——攻撃性を失い、釘たちに支えられ、囲まれている。</p>',
@@ -3976,7 +4084,10 @@
         wd6_title: 'YZS® グッズシリーズ — <span class="serif">触れる態度</span>',
         wd6_quote: '良いデザインはポートフォリオやスクリーンの中だけに存在すべきではない——<br>携帯され、使用され、消費され、<br>時間に痕跡を残されるべきだ',
         wd6_desc: '<p>YZS は単なる名前ではなく、創造されつつある態度である。デザインをスクリーンから現実に持ち帰り、すべてのグッズを日常生活の中の「触れる表現」にする。ミニマルな視覚記号から、ディテールの素材選びまで、YZS グッズは一貫したデザインロジックを継承する——抑制的で、直接的で、しかし鋭さを失わない。</p><p>喧騒な存在感を求めるのではなく、使われるすべての瞬間に静かに繋がりを築く。良いデザインはポートフォリオやスクリーンの中だけに存在すべきではなく、携帯され、使用され、消費され、時間に痕跡を残されるべきだと私たちは信じている。YZS グッズは、デザインが現実に踏み出す第一歩である。</p>',
-        wd6_material: '多様な素材（布地、金属、紙製品、印刷物）', wd6_type: 'ブランドグッズ / 実物デザイン'
+        wd6_material: '多様な素材（布地、金属、紙製品、印刷物）', wd6_type: 'ブランドグッズ / 実物デザイン',
+        wd7_quote: '騒音を見える化し、<br>生活リズムを理解可能にし、<br>共有空間にやわらかな自己調整を与える',
+        wd7_desc: '<p>大学寮という典型的な複数人共有空間では、生活リズムや習慣の違いがしばしば潜在的な環境ストレスへと変わる。特に夜間には、騒音が睡眠の質に大きく影響する。しかし、客観的な基準や有効なコミュニケーション手段が欠けているため、個人は「我慢」と「衝突」の間を揺れ動きやすい。</p><p>本プロジェクトは、行動の可視化に基づく寮環境協調システムを提案する。電子表示と環境センサーによって、これまで見えなかった騒音や生活状態を理解しやすい「静けさ指数」に変換し、夜間には自動的にモニタリングモードへ移行して、寮環境のリアルタイムなフィードバックを行う。同時に、個人を指し示さない非指向的な提示方法を採用し、人間関係上の圧力を軽減する。</p><p>参加の仕組みとしては、「アプリ依存を減らす」レイヤー設計を導入し、一部の利用者がシステムに接続していない場合でも、共有スクリーンによって基本的な情報伝達と行動誘導を実現できる。個人の自由と集団の秩序のあいだに柔らかな均衡を築き、共有空間に自己調整能力を与えることを目指している。</p>',
+        wd7_material: '電子表示、環境センサー、フィードバックUI', wd7_type: '寮環境協調システム / 行動可視化'
       }
     };
 
