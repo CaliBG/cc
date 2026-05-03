@@ -4387,7 +4387,7 @@
       var state = 'idle';
       var cameraEnabled = false;
       var isLoading = false;
-      var modulePromise = null;
+      var scriptPromise = null;
       var landmarkerPromise = null;
       var faceLandmarker = null;
       var stream = null;
@@ -4499,25 +4499,35 @@
         targetY = clamp((((event.beta || 0) - 45) / 36) * pointerGain, -1, 1);
       }
 
-      function loadVisionModule() {
-        if (modulePromise) return modulePromise;
-        modulePromise = import('/vendor/mediapipe/vision_bundle.mjs');
-        return modulePromise;
+      function loadVisionScript() {
+        if (window.__mediapipeVision && window.__mediapipeVision.FilesetResolver && window.__mediapipeVision.FaceLandmarker) {
+          return Promise.resolve(window.__mediapipeVision);
+        }
+        if (scriptPromise) return scriptPromise;
+        scriptPromise = new Promise(function(resolve, reject) {
+          var script = document.createElement('script');
+          script.src = '/vendor/mediapipe/vision_bundle_legacy.js';
+          script.async = true;
+          script.onload = function() {
+            if (window.__mediapipeVision && window.__mediapipeVision.FilesetResolver && window.__mediapipeVision.FaceLandmarker) {
+              resolve(window.__mediapipeVision);
+            } else {
+              reject(new Error('MediaPipe globals missing after script load'));
+            }
+          };
+          script.onerror = function() {
+            reject(new Error('Failed to load local MediaPipe script'));
+          };
+          document.head.appendChild(script);
+        });
+        return scriptPromise;
       }
 
       async function ensureFaceLandmarker() {
         if (faceLandmarker) return faceLandmarker;
         if (landmarkerPromise) return landmarkerPromise;
-        landmarkerPromise = loadVisionModule()
-          .then(async function() {
-            var visionModule = window.vision || {};
-            return visionModule;
-          })
-          .then(async function(legacyVision) {
-            var module = await loadVisionModule();
-            var resolved = module && typeof module === 'object'
-              ? Object.assign({}, module.default || {}, module, legacyVision)
-              : legacyVision;
+        landmarkerPromise = loadVisionScript()
+          .then(async function(resolved) {
             var FilesetResolverCtor = resolved.FilesetResolver;
             var FaceLandmarkerCtor = resolved.FaceLandmarker;
             if (!FilesetResolverCtor || !FaceLandmarkerCtor) {
