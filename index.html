@@ -425,7 +425,7 @@
       position: relative;
       z-index: 1;
       width: 100%;
-      max-width: 1200px;
+      max-width: 1040px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -479,12 +479,12 @@
     /* SplitText hero title */
     .hero-split-title {
       font-family: var(--font-sans);
-      font-size: clamp(48px, 10vw, 128px);
+      font-size: clamp(44px, 7vw, 96px);
       font-weight: 800;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
+      letter-spacing: 0;
+      line-height: 1.04;
       color: var(--text-primary);
-      margin-bottom: 48px;
+      margin-bottom: 32px;
       text-align: center;
       overflow: visible;
       display: inline-block;
@@ -537,12 +537,12 @@
     }
 
     .hero-sub {
-      font-size: 18px;
+      font-size: 16px;
       color: var(--text-secondary);
       line-height: 1.7;
-      max-width: 520px;
+      max-width: 620px;
       font-weight: 300;
-      margin-bottom: 48px;
+      margin-bottom: 38px;
       opacity: 0;
       animation: fadeIn 1s 0.6s var(--transition) forwards;
     }
@@ -1935,9 +1935,9 @@
       .footer-links a:nth-child(3n+3) { justify-content: flex-end; }
       .footer-links a:nth-last-child(-n+3) { border-bottom: none; }
       .footer-links a svg { width: 10px; height: 10px; }
-      .hero-split-title { font-size: clamp(36px, 12vw, 80px); margin-bottom: 32px; }
+      .hero-split-title { font-size: clamp(34px, 11vw, 64px); margin-bottom: 24px; }
       .mobile-br { display: block; }
-      .hero-sub { font-size: 13px; margin-bottom: 32px; }
+      .hero-sub { font-size: 13px; margin-bottom: 28px; }
       .btn-primary, .btn-outline { font-size: 12px; padding: 12px 24px; }
       .hero-depth-toggle { width: 100%; justify-content: center; }
       .hero-depth-status { font-size: 11px; }
@@ -4401,6 +4401,8 @@
       var depthErrorReason = '';
       var pointerGain = 1.55;
       var cameraGain = 1.8;
+      var verticalMotionSign = -1;
+      var mediapipeAssetBase = new URL('vendor/mediapipe/', document.baseURI).href;
 
       function clamp(value, min, max) {
         return Math.min(max, Math.max(min, value));
@@ -4490,13 +4492,13 @@
         var rect = hero.getBoundingClientRect();
         if (!rect.width || !rect.height) return;
         targetX = clamp((((clientX - rect.left) / rect.width - 0.5) * 2) * pointerGain, -1, 1);
-        targetY = clamp((((clientY - rect.top) / rect.height - 0.5) * 2) * pointerGain, -1, 1);
+        targetY = clamp((((clientY - rect.top) / rect.height - 0.5) * 2) * pointerGain * verticalMotionSign, -1, 1);
       }
 
       function updateFromOrientation(event) {
         if (cameraEnabled || !isMobile || event.gamma === null) return;
         targetX = clamp(((event.gamma || 0) / 24) * pointerGain, -1, 1);
-        targetY = clamp((((event.beta || 0) - 45) / 36) * pointerGain, -1, 1);
+        targetY = clamp((((event.beta || 0) - 45) / 36) * pointerGain * verticalMotionSign, -1, 1);
       }
 
       function loadVisionScript() {
@@ -4506,7 +4508,7 @@
         if (scriptPromise) return scriptPromise;
         scriptPromise = new Promise(function(resolve, reject) {
           var script = document.createElement('script');
-          script.src = '/vendor/mediapipe/vision_bundle_legacy.js';
+          script.src = new URL('vision_bundle_legacy.js', mediapipeAssetBase).href;
           script.async = true;
           script.onload = function() {
             if (window.__mediapipeVision && window.__mediapipeVision.FilesetResolver && window.__mediapipeVision.FaceLandmarker) {
@@ -4534,10 +4536,10 @@
               throw new Error('MediaPipe module exports missing');
             }
 
-            var vision = await FilesetResolverCtor.forVisionTasks('/vendor/mediapipe/wasm');
+            var vision = await FilesetResolverCtor.forVisionTasks(new URL('wasm', mediapipeAssetBase).href);
             faceLandmarker = await FaceLandmarkerCtor.createFromOptions(vision, {
               baseOptions: {
-                modelAssetPath: '/vendor/mediapipe/face_landmarker.task'
+                modelAssetPath: new URL('face_landmarker.task', mediapipeAssetBase).href
               },
               runningMode: 'VIDEO',
               numFaces: 1,
@@ -4587,7 +4589,7 @@
               var faceWidth = Math.max(0.08, Math.abs(right.x - left.x));
               var faceHeight = Math.max(0.12, Math.abs(chin.y - brow.y));
               targetX = clamp(centerX * Math.min(3.4, 0.42 / faceWidth) * cameraGain, -1, 1);
-              targetY = clamp(centerY * Math.min(3.4, 0.52 / faceHeight) * cameraGain, -1, 1);
+              targetY = clamp(centerY * Math.min(3.4, 0.52 / faceHeight) * cameraGain * verticalMotionSign, -1, 1);
             }
           }
         }
